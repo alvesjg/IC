@@ -1,0 +1,173 @@
+@book{books/Vazirani,
+  added-at = {2011-04-12T00:00:00.000+0200},
+  author = {Vazirani, Vijay V.},
+  biburl = {https://www.bibsonomy.org/bibtex/2bb95cede4448cf7da64abed2f29c58b0/dblp},
+  ee = {http://www.springer.com/computer/theoretical+computer+science/book/978-3-540-65367-7},
+  interhash = {b7940da2ca2d4d6bc4c0529a5a341004},
+  intrahash = {bb95cede4448cf7da64abed2f29c58b0},
+  isbn = {978-3-540-65367-7},
+  keywords = {dblp},
+  pages = {I-IXI, 1-378},
+  publisher = {Springer},
+  timestamp = {2011-04-29T15:26:40.000+0200},
+  title = {Approximation algorithms.},
+  year = 2001
+}
+
+@article{Byrka&Aardal'10,
+author = {Byrka, Jaroslaw and Aardal, Karen},
+title = {An Optimal Bifactor Approximation Algorithm for the Metric Uncapacitated Facility Location Problem},
+journal = {SIAM Journal on Computing},
+volume = {39},
+number = {6},
+pages = {2212-2231},
+year = {2010},
+doi = {10.1137/070708901},
+URL = { 
+        https://doi.org/10.1137/070708901
+},
+eprint = { 
+        https://doi.org/10.1137/070708901
+}
+,
+    abstract = { We obtain a 1.5-approximation algorithm for the metric uncapacitated facility location (UFL) problem, which improves on the previously best known 1.52-approximation algorithm by Mahdian, Ye, and Zhang. Note that the approximability lower bound by Guha and Khuller is \$1.463\dots\$. An algorithm is a (\$\lambda\_f\$,\$\lambda\_c\$)-approximation algorithm if the solution it produces has total cost at most \$\lambda\_f\cdot F^*+\lambda\_c\cdot C^*\$, where \$F^*\$ and \$C^*\$ are the facility and the connection cost of an optimal solution. Our new algorithm, which is a modification of the \$(1+2/e)\$-approximation algorithm of Chudak and Shmoys, is a \$(1.6774,1.3738)\$-approximation algorithm for the UFL problem and is the first one that touches the approximability limit curve \$(\gamma\_f,1+2e^{-\gamma\_f})\$ established by Jain, Mahdian, and Saberi. As a consequence, we obtain the first optimal approximation algorithm for instances dominated by connection costs. When combined with a \$(1.11,1.7764)\$-approximation algorithm proposed by Jain et al., and later analyzed by Mahdian et al., we obtain the overall approximation guarantee of 1.5 for the metric UFL problem. We also describe how to use our algorithm to improve the approximation ratio for the 3-level version of UFL. }
+}
+
+@article{Charikar&Guha'05,
+author = {Charikar, Moses and Guha, Sudipto},
+title = {Improved Combinatorial Algorithms for Facility Location Problems},
+journal = {SIAM Journal on Computing},
+volume = {34},
+number = {4},
+pages = {803-824},
+year = {2005},
+doi = {10.1137/S0097539701398594},
+URL = { 
+        https://doi.org/10.1137/S0097539701398594
+},
+eprint = { 
+        https://doi.org/10.1137/S0097539701398594
+}
+,
+    abstract = { We present improved combinatorial approximation algorithms for the uncapacitated facility location problem. Two central ideas in most of our results are cost scaling and greedy improvement. We present a simple greedy local search algorithm which achieves an approximation ratio of \$2.414+\epsilon\$ in \$\tilde{O}(n^2/\epsilon)\$ time. This also yields a bicriteria approximation tradeoff of \$(1+\gamma,1+2/\gamma)\$ for facility cost versus service cost which is better than previously known tradeoffs and close to the best possible. Combining greedy improvement and cost scaling with a recent primal-dual algorithm for facility location due to Jain and Vazirani, we get an approximation ratio of \$1.853\$ in \$\tilde{O}(n^3)\$ time. This is very close to the approximation guarantee of the best known algorithm which is linear programming (LP)-based. Further, combined with the best known LP-based algorithm for facility location, we get a very slight improvement in the approximation factor for facility location, achieving \$1.728\$. We also consider a variant of the capacitated facility location problem and present improved approximation algorithms for this. }
+}
+@article{LI'13,
+title = {A 1.488 approximation algorithm for the uncapacitated facility location problem},
+journal = {Information and Computation},
+volume = {222},
+pages = {45-58},
+year = {2013},
+note = {38th International Colloquium on Automata, Languages and Programming (ICALP 2011)},
+issn = {0890-5401},
+doi = {https://doi.org/10.1016/j.ic.2012.01.007},
+url = {https://www.sciencedirect.com/science/article/pii/S0890540112001459},
+author = {Shi Li},
+keywords = {Approximation, Facility location problem, Theory},
+abstract = {We present a 1.488-approximation algorithm for the metric uncapacitated facility location (UFL) problem. Previously, the best algorithm was due to Byrka (2007). Byrka proposed an algorithm parametrized by γ and used it with γ≈1.6774. By either running his algorithm or the algorithm proposed by Jain, Mahdian and Saberi (STOCʼ02), Byrka obtained an algorithm that gives expected approximation ratio 1.5. We show that if γ is randomly selected, the approximation ratio can be improved to 1.488. Our algorithm cuts the gap with the 1.463 approximability lower bound by almost 1/3.}
+}
+
+@article{GUHA1999228,
+title = {Greedy Strikes Back: Improved Facility Location Algorithms},
+journal = {Journal of Algorithms},
+volume = {31},
+number = {1},
+pages = {228-248},
+year = {1999},
+issn = {0196-6774},
+doi = {https://doi.org/10.1006/jagm.1998.0993},
+url = {https://www.sciencedirect.com/science/article/pii/S0196677498909932},
+author = {Sudipto Guha and Samir Khuller},
+abstract = {A fundamental facility location problem is to choose the location of facilities, such as industrial plants and warehouses, to minimize the cost of satisfying the demand for some commodity. There are associated costs for locating the facilities, as well as transportation costs for distributing the commodities. We assume that the transportation costs form a metric. This problem is commonly referred to as theuncapacitated facility locationproblem. Application to bank account location and clustering, as well as many related pieces of work, are discussed by Cornuejols, Nemhauser, and Wolsey. Recently, the first constant factor approximation algorithm for this problem was obtained by Shmoys, Tardos, and Aardal. We show that a simple greedy heuristic combined with the algorithm by Shmoys, Tardos, and Aardal, can be used to obtain an approximation guarantee of 2.408. We discuss a few variants of the problem, demonstrating better approximation factors for restricted versions of the problem. We also show that the problem is max SNP-hard. However, the inapproximability constants derived from the max SNP hardness are very close to one. By relating this problem to Set Cover, we prove a lower bound of 1.463 on the best possible approximation ratio, assumingNP∉DTIME[nO(loglogn)].}
+}
+
+@article{HSU1979209,
+title = {Easy and hard bottleneck location problems},
+journal = {Discrete Applied Mathematics},
+volume = {1},
+number = {3},
+pages = {209-215},
+year = {1979},
+issn = {0166-218X},
+doi = {https://doi.org/10.1016/0166-218X(79)90044-1},
+url = {https://www.sciencedirect.com/science/article/pii/0166218X79900441},
+author = {Wen-Lian Hsu and George L. Nemhauser},
+abstract = {We consider a bottleneck location problem on a graph and present an efficient (polynomial time) algorithm for solving it. The problem involve the location of K noxious facilities that are to be placed as far as possilbe from the other facilities, and the objective is to maximize the minimum distance from the noxious facilities to the others. We then show that two other bottleneck (min-max) location problems, finding K-centers and absolute K-centers of a graph appear to be very difficult to solve even for reasonably good approximate solutions.}
+}
+@article{HochShmoys'85,
+author = {Hochbaum, Dorit and Shmoys, David},
+year = {1985},
+month = {05},
+pages = {180-184},
+title = {A Best Possible Heuristic for the $k$-Center Problem},
+volume = {10},
+journal = {Mathematics of Operations Research (MOR)},
+doi = {10.1287/moor.10.2.180}
+}
+
+@article{GONZALEZ1985293,
+title = {Clustering to minimize the maximum intercluster distance},
+journal = {Theoretical Computer Science},
+volume = {38},
+pages = {293-306},
+year = {1985},
+issn = {0304-3975},
+doi = {https://doi.org/10.1016/0304-3975(85)90224-5},
+url = {https://www.sciencedirect.com/science/article/pii/0304397585902245},
+author = {Teofilo F. Gonzalez},
+keywords = {Algorithms, clustering, NP-completeness, approximation algorithms, minimizing the maximum intercluster distance},
+abstract = {The problem of clustering a set of points so as to minimize the maximum intercluster distance is studied. An O(kn) approximation algorithm, where n is the number of points and k is the number of clusters, that guarantees solutions with an objective function value within two times the optimal solution value is presented. This approximation algorithm succeeds as long as the set of points satisfies the triangular inequality. We also show that our approximation algorithm is best possible, with respect to the approximation bound, if P ≠ NP.}
+}
+
+@inproceedings{JMS'02,
+author = {Jain, Kamal and Mahdian, Mohammad and Saberi, Amin},
+title = {A New Greedy Approach for Facility Location Problems},
+year = {2002},
+isbn = {1581134959},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/509907.510012},
+doi = {10.1145/509907.510012},
+abstract = {We present a simple and natural greedy algorithm for the metric uncapacitated facility location problem achieving an approximation guarantee of 1.61. We use this algorithm to find better approximation algorithms for the capacitated facility location problem with soft capacities and for a common generalization of the k-median and facility location problems. We also prove a lower bound of 1+2/e on the approximability of the k-median problem. At the end, we present a discussion about the techniques we have used in the analysis of our algorithm, including a computer-aided method for proving bounds on the approximation factor.},
+booktitle = {Proceedings of the Thirty-Fourth Annual ACM Symposium on Theory of Computing},
+pages = {731–740},
+numpages = {10},
+location = {Montreal, Quebec, Canada},
+series = {STOC'02}
+}
+
+@article{BPRST'17,
+author = {Byrka, Jaros\l{}aw and Pensyl, Thomas and Rybicki, Bartosz and Srinivasan, Aravind and Trinh, Khoa},
+title = {An Improved Approximation for K-Median and Positive Correlation in Budgeted Optimization},
+year = {2017},
+issue_date = {April 2017},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {13},
+number = {2},
+issn = {1549-6325},
+url = {https://doi.org/10.1145/2981561},
+doi = {10.1145/2981561},
+abstract = {Dependent rounding is a useful technique for optimization problems with hard budget constraints. This framework naturally leads to negative correlation properties. However, what if an application naturally calls for dependent rounding on the one hand and desires positive correlation on the other? More generally, we develop algorithms that guarantee the known properties of dependent rounding but also have nearly bestpossible behavior—near-independence, which generalizes positive correlation—on “small” subsets of the variables. The recent breakthrough of Li and Svensson for the classical k-median problem has to handle positive correlation in certain dependent rounding settings, and does so implicitly. We improve upon Li-Svensson’s approximation ratio for k-median from 2.732 + ϵ to 2.675 + ϵ by developing an algorithm that improves upon various aspects of their work. Our dependent rounding approach helps us improve the dependence of the runtime on the parameter ϵ from Li-Svensson’s NO(1/ϵ2) to NO((1/ϵ)log(1/ϵ)).},
+journal = {ACM Trans. Algorithms},
+month = {mar},
+articleno = {23},
+numpages = {31},
+keywords = {approximation algorithms, k-median, dependent rounding, facility location problems, Combinatorial optimization}
+}
+
+@book{books/WS,
+  added-at = {2013-01-09T00:00:00.000+0100},
+  author = {Williamson, David P. and Shmoys, David B.},
+  biburl = {https://www.bibsonomy.org/bibtex/221e625e4d68828727b30c5488bc2cd3b/dblp},
+  ee = {http://www.cambridge.org/de/knowledge/isbn/item5759340/?site_locale=de_DE},
+  interhash = {3413e8a66855af1121837c6af2cbbea3},
+  intrahash = {21e625e4d68828727b30c5488bc2cd3b},
+  isbn = {978-0-521-19527-0},
+  keywords = {dblp},
+  pages = {I-XI, 1-504},
+  publisher = {Cambridge University Press},
+  timestamp = {2013-01-10T11:39:33.000+0100},
+  title = {The Design of Approximation Algorithms.},
+  year = 2011
+}
+
