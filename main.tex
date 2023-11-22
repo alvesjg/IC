@@ -54,6 +54,8 @@ Este é o projeto de pesquisa do aluno de graduação João Guilherme Alves Sant
 
 \section{Introdução}
 
+Ao longo do estudo da computação, nos deparamos com significativas dificuldades computacionais na resolução de certos problemas, especialmente em muitos cenários de otimização nos quais buscamos minimizar ou maximizar uma função sobre um domínio específico. Nesse contexto, algoritmos de aproximação surgiram para que pudessemos sacrificar a otimalidade para encontrar, eficientemente, um ponto cujo valor garante uma relação pré-estabelecida com o valor ótimo.
+
 Clustering são problemas cujo objetivo é agrupar objetos de maneira que objetos no mesmo cluster apresentam mais semelhanças quando comparados a objetos em clusters diferentes. Tais semelhanças serão definidas pelo problema em questão. Neste projeto, iremos estudar três problemas de clustering: $k$-centros, localização de instalações e $k$-mediana. 
 
 
@@ -125,8 +127,10 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
             \end{cases}\]\\
     Se $\alpha(n)=1$, então $d$ obedece a desigualdade triangular e A é um algoritmo exato. O que, pelo Teorema~\ref{theorem:2.1}, é absurdo. \\
     Então, suponha $\alpha(n)>1$. \\
-    O algortimo aplicado à instância I' encontra uma solução C. É fácil perceber que o conjunto $C$, dos centros de clusters, representa um conjunto dominante em $G'$ de tamanho $k$. Como $d(e) = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$. Se raio$(C)=1$ então todos os vértices então ligados aos centros dos seus cluster com arestas de $G$, assim $C$ também é um conjunto dominante em $G$. Se raio$(C) = \alpha(n) + 1$, então não existe $C'$ tal que raio$(C')=1$, pois caso existisse ele seria escolhido pelo algoritmo, uma vez que $C'$ é uma solução ótima de custo $1$ e o algoritmo garante uma resposta de custo no máximo $\alpha(n)$ vezes o ótimo, o que não é o caso de $C$. \\
-    Assim, conseguimos resolver o $k$-conjunto dominante em tempo polinomial o que, assumindo $P \not= \NP$, é um absurdo.
+    O algortimo aplicado à instância I' encontra uma solução C. É fácil perceber que o conjunto $C$, dos centros de clusters, representa um conjunto dominante em $G'$ de tamanho $k$. Como $d(e) = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$.\\
+    Se raio$(C)=1$ então todos os vértices então ligados aos centros dos seus cluster com arestas de $G$, assim $C$ também é um conjunto dominante em $G$. \\
+    Se raio$(C) = \alpha(n) + 1$, então não existe $C'$ tal que raio$(C')=1$, pois caso existisse ele seria escolhido pelo algoritmo, uma vez que $C'$ é uma solução ótima de custo $1$ e o algoritmo garante uma resposta de custo no máximo $\alpha(n)$ vezes o ótimo, o que não é o caso de $C$. Assim, $G'$ não contém um conjunto dominante de tamanho $k$ que utilize apenas arestas de G. \\
+    Portanto, conseguimos resolver o $k$-conjunto dominante em tempo polinomial o que, assumindo $P \not= \NP$, é um absurdo.
 \end{proof}
     Fica, então, explicita a impossibilidade de encontrarmos algoritmos de aproximação para a versão geral do problema. \\
     Agora que justificamos o estudo de algoritmos de aproximação para esse problema, podemos começar a falar deles. Começaremos por um algoritmo simples, mas que garante uma boa razão de aproximação.
