@@ -10,6 +10,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amsthm}
+\usepackage{amssymb}
 %% Floating package
 \usepackage{floatflt,epsfig,epsf}
 \renewcommand{\baselinestretch}{1.5}
@@ -29,14 +30,7 @@
 \begin{document}
 \begin{center}
   
-{\Large {\bf Projeto de Pesquisa para Iniciação Científica}
-
-{\large {\em Algoritmos de Aproximação para Problemas de Clustering}} 
-
-%\footnote{ Este pedido est� inserido no Projeto
-%     \textsc{Aspectos Estruturais e Algor�tmicos de Objetos
-%        Combinat�rios} (Proc.\ FAPESP no.\ 96/04505--2), sob
-%      coordena��o do professor Yoshiharu Kohayakawa.  }
+{\Large {\bf Algoritmos de Aproximação para Problemas de Clustering}
 }
 
 \vspace{0.2cm}
@@ -52,17 +46,23 @@ Este é o projeto de pesquisa do aluno de graduação João Guilherme Alves Sant
 \end{abstract}
 
 \end{center}
+\newpage
+
+\tableofcontents
+
+\newpage
 
 \section{Introdução}
 
-Clustering são problemas cujo objetivo é agrupar objetos de maneira que objetos no mesmo cluster apresentam mais semelhanças quando comparados a objetos em clusters diferentes. Tais semelhanças serão definidas pelo problema em questão. Neste projeto, iremos estudar três problemas de clustering: $k$-center, localização de instalações e $k$-median. 
+Clustering são problemas cujo objetivo é agrupar objetos de maneira que objetos no mesmo cluster apresentam mais semelhanças quando comparados a objetos em clusters diferentes. Tais semelhanças serão definidas pelo problema em questão. Neste projeto, iremos estudar três problemas de clustering: $k$-centros, localização de instalações e $k$-mediana. 
 
 
-O primeiro deles, o $k$-center, é um problema clássico de otimização combinatória. Dadas $n$ cidades com distâncias especificadas entre elas e um número $k$, o problema quer determinar qual o melhor jeito de construir $k$ depósitos dentre um conjunto determinado das cidades tais que a maior distância entre uma cidade e o depósito mais próximo seja a menor possível.
+
+O primeiro deles, o $k$-centros, é um problema clássico de otimização combinatória. Dadas $n$ cidades com distâncias especificadas entre elas e um número $k$, o problema quer determinar qual o melhor jeito de construir $k$ depósitos dentre um conjunto determinado das cidades tais que a maior distância entre uma cidade e o depósito mais próximo seja a menor possível.
 
 Nosso problema é modelado como um grafo completo $G(V,E)$, onde $V$ são as cidades e temos uma função distância~$d$ em que $d(e)$ representa a distância das cidades ligadas pela aresta $e$. O objetivo é encontrar um subconjunto $C \subseteq V$ de tamanho $k$ que minimize $\max_{v\in V}d(v,C)$ sendo $d(v,C) = \min_{u\in C}d(vu)$.
 
-Trabalharemos aqui com a versão métrica do problema em que a função $d$ obedece a desigualdade triangular, ou seja, $d(uv) \leq d(ux) + d(xv)$ para todas as triplas de vértices $u$, $x$, $v$. Veremos que, para qualquer função polinomialmente computável~$\alpha(n)$, não existe $\alpha(n)$-aproximação para a versão não métrica desse problema, assumindo $P\not=\NP$. Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema do $k$-center, assumindo $P\not=\NP$. Assim, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2. 
+Trabalharemos aqui com a versão métrica do problema em que a função $d$ obedece a desigualdade triangular, ou seja, $d(uv) \leq d(ux) + d(xv)$ para todas as triplas de vértices $u$, $x$, $v$. Veremos que, para qualquer função polinomialmente computável~$\alpha(n)$, não existe $\alpha(n)$-aproximação para a versão não métrica desse problema, assumindo $P\not=\NP$. Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema do $k$-centros, assumindo $P\not=\NP$. Assim, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2. 
 
 
 Localização de instalações é um problema clássico de otimização que determina a melhor localização para instalações, como fábricas ou depósitos, com base em demandas geográficas, custos de abertura de instalações e distâncias de transporte. Além disso, eles podem ser modelados para outras aplicações como problemas de posicionamento de caches em um computador ou problemas de projeto de redes.
@@ -71,74 +71,65 @@ Existem várias versões do problema de localização de instalações. O mais s
 
 No problema de localização de instalações sem capacidades, temos um conjunto de clientes $D$ e um conjunto de instalações $F$. Para cada cliente $j \in D$ e cada instalação $i \in F$, há um custo $c_{ij}$ em associar o cliente $j$ à instalação $i$. Além disso, existe um custo de abertura $f_i$ para cada instalação $i \in F$. O objetivo do problema é escolher um subconjunto $F' \subseteq F$ que minimize o custo total de abertura das instalações em~$F'$ somado ao custo de associação de cada cliente $j \in D$ à instalação em~$F'$ mais próxima a ele. Em outras palavras, queremos encontrar $F' \subseteq F$ que minimize $\sum_{i\in F'} f_i + \sum_{j \in D} \min_{i\in F'}c_{ij}$.
 
-Diversos métodos podem ser utilizados para aproximar o problema de localização de instalações. Charikar e Guha desenvolveram um algoritmo com razão de aproximação $2.414$ utilizando o método de busca local~\cite{Charikar&Guha'05}.  Esse problema também pode ser modelado como um problema de programação inteira e, por isso, técnicas envolvendo programação linear podem ser aplicadas a ele.  Por exemplo, há algoritmos que fazem o arredondamento de soluções da relaxação linear do programa inteiro para obter uma solução do problema.  Alguns destes algoritmos atingem boas razões de aproximação, por exemplo, chegando a 1.677~\cite{Byrka&Aardal'10}. Entretanto, a melhor aproximação encontrada utiliza o método primal-dual e garante razão de aproximação 1.488~\cite{LI'13}. Essa não é muito distante do melhor que se poderia encontrar, uma vez que Guha e Khuller mostraram que não existe algoritmo para esse problema com razão de aproximação melhor que 1.463~\cite{GUHA1999228}, a menos que $P = \NP$.
+Diversos métodos podem ser utilizados para aproximar o problema de localização de instalações. Charikar e Guha desenvolveram um algoritmo com razão de aproximação $2.414$ utilizando o método de busca local~\cite{Charikar&Guha'05}.  Esse problema também pode ser modelado como um problema de programação inteira e, por isso, técnicas envolvendo programação linear podem ser aplicadas a ele.  Por exemplo, há algoritmos que fazem o arredondamento de soluções da relaxação linear do programa inteiro para obter uma solução do problema.  Alguns destes algoritmos atingem boas razões de aproximação, por exemplo, chegando a 1.677~\cite{Byrka&Aardal'10}. Entretanto, a melhor aproximação encontrada utiliza de vários métodos, incluindo o primal-dual, e garante uma razão de aproximação 1.488~\cite{LI'13}. Essa não é muito distante do melhor que se poderia encontrar, uma vez que Guha e Khuller mostraram que não existe algoritmo para esse problema com razão de aproximação melhor que 1.463~\cite{GUHA1999228}, a menos que $P = \NP$.
 
-O problema $k$-median é muito parecido com o problema de localização de instalações. A diferença aqui é que não temos custo para a abertura de instalações e podemos abrir no máximo $k$ delas. Assim, como no $k$-center também vamos modelar nosso problema como um grafo e vamos também trabalhar com a versão métrica do problema.
+O problema $k$-mediana é muito parecido com o problema de localização de instalações. A diferença aqui é que não temos custo para a abertura de instalações e podemos abrir no máximo $k$ delas. Assim, como no $k$-centros também vamos modelar nosso problema como um grafo e vamos também trabalhar com a versão métrica do problema.
 
-Uma instância do $k$-median consiste em um grafo ($F,C$)-bipartido completo, sendo $F$ o conjunto das instalações e $C$ o conjunto das cidades, um número inteiro $k$ positivo que representa a quantidade de instalações que podem ser abertas e um custo $c_{ij}$ de conexão de cada cidade $j$ a cada instalação $i$. Devemos determinar um conjunto $I \subseteq F$ tal que $|I| \leq k$ de instalações a serem abertas e uma função que atribua cada cidade a uma instalação aberta tal que minimize o custo total de conexão.
+Uma instância do $k$-mediana consiste em um grafo ($F,C$)-bipartido completo, sendo $F$ o conjunto das instalações e $C$ o conjunto das cidades, um número inteiro $k$ positivo que representa a quantidade de instalações que podem ser abertas e um custo $c_{ij}$ de conexão de cada cidade $j$ a cada instalação $i$. Devemos determinar um conjunto $I \subseteq F$ tal que $|I| \leq k$ de instalações a serem abertas e uma função que atribua cada cidade a uma instalação aberta tal que minimize o custo total de conexão.
 
-Dentre os três problemas apresentados, esse é o que tem a maior folga entre o melhor resultado de inaproximabilidade e a razão do melhor algoritmo de aproximação. Jain, Mahdian e Saberi provaram que não existe algoritmo polinomial com razão de aproximação $1+ \frac{2}{e}$ para o $k$-median ~\cite{JMS'02}, enquanto a melhor aproximação encontrada tem razão $2.675 + \epsilon$ e utiliza o método primal-dual com relaxação Lagrangeana~\cite{BPRST'17}.
+Dentre os três problemas apresentados, esse é o que tem a maior folga entre o melhor resultado de inaproximabilidade e a razão do melhor algoritmo de aproximação. Jain, Mahdian e Saberi provaram que não existe algoritmo polinomial com razão de aproximação $1+ \frac{2}{e}$ para o $k$-mediana ~\cite{JMS'02}, enquanto a melhor aproximação encontrada tem razão $2.675 + \epsilon$~\cite{BPRST'17}.
 
 \newpage
-\section{$k$-Center}
+\section{$k$-centros}
 
-\red{É bom definir o problema novamente?.}\\
-\red{Falar sobre cada cluster, centros de cluster, raio. Facilitará nas explicações seguintes.}\\
-Vamos definir alguns termos que facilitarão as explicações seguintes. O subconjunto $C \subseteq V$ de tamanho $k$ será formado por vértices que chamaremos de centros de cluster. Os vértices de $V$ serão particionados em $k$ conjuntos chamados clusters e em cada um deles terá exatamente um centro de cluster. Um vértice estará no mesmo cluster que o centro de cluster mais próximo a ele. Cada cluster terá um raio que é a maior distância entre o seu centro e um vértice qualquer dele. O nosso problema se resume a encontrar um conjunto $C$ que minimize o maior desses raios.\\
-\red{Mostrar que é NP-difícil.} \\
-Antes de começar a falar sobre algoritmos de aproximação para o problema do $k$-center, precisamos mostrar que, assumindo $P\not=\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, precisamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema do $k$ conjunto dominante.
+Vamos definir alguns termos que facilitarão as explicações seguintes. Os vértices do conjunto $C \subseteq V$ de tamanho $k$ serão chamados de \emph{centros de cluster}. Os vértices de $V$ serão particionados em $k$ conjuntos chamados \emph{clusters} e cada um deles terá exatamente um centro de cluster. Um vértice estará no mesmo cluster que um centro de cluster mais próximo a ele. Cada cluster terá um \emph{raio} que é a maior distância entre o seu centro e um vértice qualquer dele. O nosso problema se resume a encontrar um conjunto $C$ que minimize o maior desses raios. Denotamos por raio$(C)$ o maior raio de um cluster induzido por $C$.\\
+Antes de começar a falar sobre algoritmos de aproximação para o problema do $k$-centros, vamos mostrar que, assumindo $P\not=\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema do $k$-conjunto dominante.
 
 \begin{definition}
-    Seja $G = (V,E)$ um grafo, um conjunto $D \subseteq V$ é chamado conjunto dominante se para todo vértice $u \in V \setminus D$, existe um vértice $v \in D$ tal que $uv \in E$.
+    Seja $G = (V,E)$ um grafo. Um conjunto $D \subseteq V$ é chamado \emph{dominante} se, para todo vértice $u \in V \setminus D$, existe um vértice $v \in D$ tal que $uv \in E$.
 \end{definition}
 
-\begin{problem}[$k$ conjunto dominante]
+\begin{problem}[$k$-conjunto dominante]
     Dado um grafo $G$ e um inteiro $k$, decidir se $G$ tem um conjunto dominante $D$ tal que $|D| \leq k$.      
 \end{problem}
-Esse problema é $\NP$-completo e usaremos ele para mostrar que o problema $k$-center é $\NP$-difícil. \red{Precisa mostrar que ele é $\NP$-completo?}
+Esse problema é $\NP$-completo, sendo o problema GT2 do famoso livro de Garey e Johnson~\cite{garey1979computers}, usaremos este problema para mostrar que o problema dos $k$-centros é $\NP$-difícil.
 
-\begin{theorem}
-    O problema $k$-center é $\NP$-difícil.
+\begin{theorem}\label{theorem:2.1}
+    O problema dos $k$-centros para instâncias métricas é $\NP$-difícil.
 \end{theorem}
 
 \begin{proof}
-    \begin{it}
-    Suponha que exista um algoritmo $A$ que resolve o problema do $k$-center em tempo polinomial e seja $I(G,k)$ uma instância do problema $k$ conjunto dominante. Vamos criar uma instância $I'(G',k,d)$ do problema $k$-center reduzindo a instância I. A instância $I'$ tem grafo $G'(V,E')$ completo tal que: \\
-    $d(e) = \begin{cases}
+    Suponha que exista um algoritmo $A$ que resolve o problema do $k$-centros em tempo polinomial. Seja $G = (V,E)$ um grafo e $I(G,k)$ uma instância do problema $k$-conjunto dominante. Vamos criar uma instância $I'(G',k,d)$ do problema dos $k$-centros a partir da instância I. A instância $I'$ tem grafo $G'(V,E')$ completo tal que, para todo $e \in E'$, \\
+    \[
+    d(e) = \begin{cases}
             1, \text{ se } e \in E \\
             2, \text{ caso contrário.} 
-            \end{cases}
-            \forall e \in E'$\\
+            \end{cases}\]\\
+    Note que d satisfaz a desigualdade triangular.\\
+    O algortimo aplicado à instância I' encontra uma solução C. É fácil perceber que o conjunto $C$, dos centros de clusters, representa um conjunto dominante em $G'$ de tamanho $k$. Se raio$(C)=1$ então todos os vértices então ligados aos centros dos seus cluster com uma arestas de $G$, assim $C$ também é um conjunto dominante em $G$. Como $A$ minimiza esse raio, se raio$(C)=2$, não existe uma solução de $I'$ em que os vértices estejam ligados aos centros dos seus clusters apenas por arestas de $G$ e, por isso, não existe um conjunto dominante de tamanho menor ou igual a $k$ em $G$.
 
-    Assim, $A$ retorna uma solução para o problema do $k$-center na instância $I'$. É fácil perceber que o conjunto $C \in V $, dos centros de clusters, representa um conjunto dominante em $G'$. Se a solução encontrada pelo algoritmo $A$ tem o maior raio de cluster como 1, quer dizer que todos os vértices então ligados aos centros dos seus cluster com uma aresta que já existia em $G$, assim $C$ representa um conjunto dominante em $G$ e tem tamanho $k$. Como $A$ minimiza esse raio, se a solução encontrada por ele tem maior raio de cluster como 2, não existe uma solução de $I'$ em que os vértices estejam ligados aos centros dos seus clusters apenas por arestas já existentes em $G$ e, por isso, não existe um conjunto dominante de tamanho menor ou igual a $k$ em $G$.
-
-    Portanto, conseguimos resolver em tempo polinomial o problema do $k$ conjunto dominante o que é um absurdo.
-        \end{it}
+    Portanto, conseguimos resolver em tempo polinomial o problema do $k$-conjunto dominante, o que é um absurdo.
 \end{proof}
 
-Agora que justificamos a existência de algoritmos de aproximação para esse problema, podemos começar a falar deles. Começaremos mostrando o porquê de falarmos desses algoritmos apenas para a versão métrica do problema.
+O resultado acima pode ser adaptado para dar um resultado mais forte de inaproximabilidade para a versão geral do problema, não restrita a métrica.
 \begin{theorem}
-    Seja $\alpha(n)$ uma função computável, não existe $\alpha(n)$-aproximação para a versão não métrica do $k$-center.
+    Seja $\alpha(n)$ uma função computável com $\alpha(n)\geq 1$ para todo $n$. Não existe $\alpha(n)$-aproximação para a versão geral do $k$-centros.
 \end{theorem}
 
 \begin{proof}
-    \begin{it}
-        A demonstração desse teorema é muito parecida com a do teorema 2.1. \\
-        Suponha que exista um algoritmo polinomial $A$ que é uma $\alpha(n)$-aproximação do $k$-center e seja $I(G,k)$ uma instância do problema $k$ conjunto dominante. Vamos criar uma instância $I'(G',k,d)$ do problema $k$-center reduzindo a instância I. A instância $I'$ tem grafo $G'(V,E')$ completo tal que: \\
-
-    $d(e) = \begin{cases}
+        A demonstração desse teorema é muito parecida com a do Teorema~\ref{theorem:2.1}. \\
+        Seja $G = (V,E)$. Suponha que exista um algoritmo polinomial $A$ que é uma $\alpha(n)$-aproximação do $k$-centros e seja $I(G,k)$ uma instância do problema $k$-conjunto dominante. Vamos criar uma instância $I'(G',k,d)$ do problema dos $k$-centros a partir da instância I. A instância $I'$ tem grafo $G'(V,E')$ completo tal que, para cada $e \in E'$, \\
+    \[d(e) = \begin{cases}
             1, \text{ se } e \in E \\
             \alpha(n)+1, \text{ caso contrário.} 
-            \end{cases}
-            \forall e \in E'$\\
-    Perceba que $d$ não obedece a desigualdade triangular, uma vez que sabemos que $\alpha(n) > 1$, assumindo $P \not= \NP$.  \\
-    Assim, $A$ retorna uma solução viável para o problema do $k$-center na instância $I'$ tal que $\frac{m(A(I'))}{m^*(I')} \leq \alpha(n)$ e, portanto, $m(A(I')) \leq \alpha(n) \; m^*(I')$. \red{definir a função m junto com as outras definições no começo}.
-    Como as arestas tem distância 1 ou $\alpha(n)+1$, então existem duas possibilidades de resposta tanto para $m(A(I'))$ quanto para $m^*(I')$ : $1$ ou $\alpha(n) + 1$. Se $m^*(I') = 1$, o único resultado que deixa a inequação verdadeira é $m(A(I'))=1$, se $m^*(I')=\alpha(n)+1$ não existe outro valor possível se não $m(A(I'))=m^*(I')$. \\
-    Portanto, nosso algoritmo sempre escolhe o ótimo. Podemos afirmar que se $m^*(I') = 1$ então existe conjunto dominante em $G$ com tamanho menor ou igual a k e, caso contrário, não existe. \\
-    Assim, conseguimos resolvemos o $k$ conjunto dominante em tempo polinomial o que, assumindo $P \not= \NP$ é um absurdo.
-    \end{it}
+            \end{cases}\]\\
+    Se $\alpha(n)=1$, então $d$ obedece a desigualdade triangular e A é um algoritmo exato. O que, pelo Teorema~\ref{theorem:2.1}, é absurdo. \\
+    Então, suponha $\alpha(n)>1$. \\
+    O algortimo aplicado à instância I' encontra uma solução C. É fácil perceber que o conjunto $C$, dos centros de clusters, representa um conjunto dominante em $G'$ de tamanho $k$. Como $d(e) = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$. Se raio$(C)=1$ então todos os vértices então ligados aos centros dos seus cluster com arestas de $G$, assim $C$ também é um conjunto dominante em $G$. Se raio$(C) = \alpha(n) + 1$, então não existe $C'$ tal que raio$(C')=1$, pois caso existisse ele seria escolhido pelo algoritmo, uma vez que $C'$ é uma solução ótima de custo $1$ e o algoritmo garante uma resposta de custo no máximo $\alpha(n)$ vezes o ótimo, o que não é o caso de $C$. \\
+    Assim, conseguimos resolver o $k$-conjunto dominante em tempo polinomial o que, assumindo $P \not= \NP$, é um absurdo.
 \end{proof}
-    Fica, então, explicita a impossibilidade de encontrarmos algoritmos de aproximação para a versão não métrica do problema. 
+    Fica, então, explicita a impossibilidade de encontrarmos algoritmos de aproximação para a versão geral do problema. \\
+    Agora que justificamos o estudo de algoritmos de aproximação para esse problema, podemos começar a falar deles. Começaremos por um algoritmo simples, mas que garante uma boa razão de aproximação.
     
 \subsection{Algoritmo guloso.}
     
