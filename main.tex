@@ -11,9 +11,30 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
+\usepackage{tikz}
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm}
 %% Floating package
 \usepackage{floatflt,epsfig,epsf}
 \renewcommand{\baselinestretch}{1.5}
+% Renomeia os rótulos para as estruturas de controle
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\listalgorithmname}{Lista de Algoritmos}
+\renewcommand{\algorithmicrequire}{\textbf{Requer:}}
+\renewcommand{\algorithmicensure}{\textbf{Garante:}}
+\renewcommand{\algorithmicend}{\textbf{Fim}}
+\renewcommand{\algorithmicif}{\textbf{Se}}
+\renewcommand{\algorithmicthen}{\textbf{Então}}
+\renewcommand{\algorithmicelse}{\textbf{Senão}}
+\renewcommand{\algorithmicfor}{\textbf{Para}}
+\renewcommand{\algorithmicdo}{\textbf{faça}}
+\renewcommand{\algorithmicwhile}{\textbf{Enquanto}}
+\renewcommand{\algorithmicfunction}{\textbf{Função}}
+
+\newcommand{\opt}{\ensuremath{\mathrm{opt}}}
+\newcommand{\OPT}{\ensuremath{\mathrm{opt}}}
+\newcommand{\Opt}{\ensuremath{\mathrm{opt}}}
+\newcommand{\val}{\ensuremath{\mathrm{val}}}
 
 \newtheorem{theorem}{Teorema}[section]
 \newtheorem{corollary}{Corolário}[theorem]
@@ -26,7 +47,7 @@
 \newcommand{\red}[1]{{\color{red}{#1}}}
 
 % \setlength{\parskip}{0.1cm}
-
+\sloppy
 \begin{document}
 \begin{center}
   
@@ -108,12 +129,12 @@ Esse problema é $\NP$-completo, sendo o problema GT2 do famoso livro de Garey e
             2, \text{ caso contrário.} 
             \end{cases}\]\\
     Note que d satisfaz a desigualdade triangular.\\
-    O algortimo aplicado à instância I' encontra uma solução C. É fácil perceber que o conjunto $C$, dos centros de clusters, representa um conjunto dominante em $G'$ de tamanho $k$. Se raio$(C)=1$ então todos os vértices então ligados aos centros dos seus cluster com uma arestas de $G$, assim $C$ também é um conjunto dominante em $G$. Como $A$ minimiza esse raio, se raio$(C)=2$, não existe uma solução de $I'$ em que os vértices estejam ligados aos centros dos seus clusters apenas por arestas de $G$ e, por isso, não existe um conjunto dominante de tamanho menor ou igual a $k$ em $G$.
+    O algortimo aplicado à instância I' encontra uma solução C. É fácil perceber que o conjunto $C$, dos centros de clusters, representa um conjunto dominante em $G'$ de tamanho $k$. Se raio$(C)=1$ então todos os vértices estão ligados aos centros dos seus cluster com uma arestas de $G$, assim $C$ também é um conjunto dominante em $G$. Como $A$ minimiza esse raio, se raio$(C)=2$, não existe uma solução de $I'$ em que os vértices estejam ligados aos centros dos seus clusters apenas por arestas de $G$ e, por isso, não existe um conjunto dominante de tamanho menor ou igual a $k$ em $G$.
 
     Portanto, conseguimos resolver em tempo polinomial o problema do $k$-conjunto dominante, o que é um absurdo.
 \end{proof}
 
-O resultado acima pode ser adaptado para dar um resultado mais forte de inaproximabilidade para a versão geral do problema, não restrita a métrica.
+O resultado acima pode ser adaptado para dar um resultado mais forte de inaproximabilidade para a versão geral do problema, não restrita à métrica.
 \begin{theorem}
     Seja $\alpha(n)$ uma função computável com $\alpha(n)\geq 1$ para todo $n$. Não existe $\alpha(n)$-aproximação para a versão geral do $k$-centros.
 \end{theorem}
@@ -125,18 +146,81 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
             1, \text{ se } e \in E \\
             \alpha(n)+1, \text{ caso contrário.} 
             \end{cases}\]\\
-    Se $\alpha(n)=1$, então $d$ obedece a desigualdade triangular e A é um algoritmo exato. O que, pelo Teorema~\ref{theorem:2.1}, é absurdo. \\
+    Se $\alpha(n)=1$, então $d$ obedece a desigualdade triangular e A é um algoritmo exato, o que, pelo Teorema~\ref{theorem:2.1}, é absurdo. \\
     Então, suponha $\alpha(n)>1$. \\
-    O algortimo aplicado à instância I' encontra uma solução C. É fácil perceber que o conjunto $C$, dos centros de clusters, representa um conjunto dominante em $G'$ de tamanho $k$. Como $d(e) = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$.\\
-    Se raio$(C)=1$ então todos os vértices então ligados aos centros dos seus cluster com arestas de $G$, assim $C$ também é um conjunto dominante em $G$. \\
-    Se raio$(C) = \alpha(n) + 1$, então não existe $C'$ tal que raio$(C')=1$, pois caso existisse ele seria escolhido pelo algoritmo, uma vez que $C'$ é uma solução ótima de custo $1$ e o algoritmo garante uma resposta de custo no máximo $\alpha(n)$ vezes o ótimo, o que não é o caso de $C$. Assim, $G'$ não contém um conjunto dominante de tamanho $k$ que utilize apenas arestas de G. \\
+    O algortimo aplicado à instância I' encontra uma solução C de tamanho $k$. É fácil perceber que o conjunto $C$, dos centros de clusters, representa um conjunto dominante em $G'$. Como $d(e) = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$.\\
+    Se raio$(C)=1$ então todos os vértices estão ligados aos centros dos seus cluster com arestas de $G$, assim $C$ também é um conjunto dominante em $G$. \\
+    Se raio$(C) = \alpha(n) + 1$, então não existe $C'$ tal que raio$(C')=1$, pois caso existisse ele seria escolhido pelo algoritmo, uma vez que $C'$ é uma solução ótima de custo $1$ e o algoritmo garante uma resposta de valor no máximo $\alpha(n)$ vezes o ótimo, o que não é o caso de $C$. Assim, $G'$ não contém um conjunto dominante de tamanho $k$ que utilize apenas arestas de G. \\
     Portanto, conseguimos resolver o $k$-conjunto dominante em tempo polinomial o que, assumindo $P \not= \NP$, é um absurdo.
 \end{proof}
     Fica, então, explicita a impossibilidade de encontrarmos algoritmos de aproximação para a versão geral do problema. \\
     Agora que justificamos o estudo de algoritmos de aproximação para esse problema, podemos começar a falar deles. Começaremos por um algoritmo simples, mas que garante uma boa razão de aproximação.
     
+\newpage
 \subsection{Algoritmo guloso.}
+    Seja $G = (V,E)$ o grafo recebido nosso problema e $c_e$ o custo de uma aresta $e \in E$.
+    Relembremos a função d$(u,S)$ que recebe um vértice $u$ e um conjunto de vértices $S$ tal que,
+    \[ \text{d}(u,S) = \min_{v\in S} c_{uv}
+        \]
+    A ideia desse algoritmo guloso se concentrará em, a cada iteração, escolher o vértice u tal que d$(u,C)$ seja a maior possível, sendo $C$ os centros de cluster escolhidos até aquele momento.
+
+    \begin{algorithm}
+		\begin{algorithmic}[1]
+			\Function{guloso}{$G,c,k$}
+			\State Escolha arbitrariamente $u \in V$.
+            \State $C \gets \{u\}$.
+            \While{$|C| \leq k$}
+            \State $v \gets \arg\max_{v \in V} \text{d}(j,C)$
+            \State $C \gets C \cup \{v\}$
+            \EndWhile 
+			\State Devolva $C$.
+			\EndFunction
+		\end{algorithmic}
+	\end{algorithm}
     
+    \begin{theorem}
+        O algoritmo \sc{guloso}$(G,c,k)$ é uma $2$-aproximação do $k$-centros.
+    \end{theorem}
+    \begin{proof}
+        Primeiramente, vamos mostrar que o algoritmo é polinomial. A única linha que não é claramente polinomial é a linha $5$. Podemos calcular a distância de um conjunto de vértices para todos os outros vértices facilmente apenas com uma pequena modificação no algoritmo de Dijkstra. No começo do algoritmo, no lugar de colocar apenas um vértice na fila de prioridade com distância 0, colocamos todos os vértices do conjunto que queremos. Assim, calculamos a menor distância de todos os vértices para um vértice qualquer do conjunto desejado em tempo $O(|E|\log|V|)$, uma vez que nosso grafo é conexo. \\
+        Seja $C^*$ o conjunto de centros de cluster de uma resposta ótima. Vamos mostrar que $r=$ raio$(C) \leq 2$ raio$(C^*)=r^*$. Perceba que a distância entre dois vértices quaisquer de um mesmo cluster é no máximo $2r^*$, uma vez que vale a desigualdade triangular.\\ 
+        Se em $C$ escolhermos vértices que estão, dois a dois, em cluster diferentes em $C^*$, então, no máximo, a maior distância entre um vértice qualquer e o centro do seu cluster será $2r^*$. \\
+        Senão, suponha sem perda de generalidade que $C_{i-1} = \{ u_1,u_2,\ldots,u_{i-1}\}$ é o $C$ ao final da iteração $i-1$ e que todos eles estão em cluster diferentes em $C^*$. Seja $u_i$ o vértice escolhido na iteração $i$ e suponha que ele está no mesmo cluster que um vértice $u_j$ para algum $j=1,\ldots,i-1$. Então, $d(u_i,C) \leq 2r^*$, pois para cada $u_j$ a distância entre quaisquer dois vértices que estão no mesmo cluster que ele em $C^*$ é $\leq 2r^*$, assim se o vértice mais distante de $C_{i-1}$ tem distância no máximo $2r^*$ e a partir desse momento a distância de um vértice qualquer para $C$ apenas diminui, então $r\leq 2r^*$.
+    \end{proof}
+    Vamos mostrar que essa análise é justa, ou seja, existe uma instância $I(G,d,k)$ em que o algoritmo devolve uma solução $C$ tal que raio$(C) \leq \opt(I)$. \\
+    O grafo G contém mais que $k+1$ vértices e as arestas têm distância 1 ou 2. O grafo induzido pelas arestas de distância 1 é uma estrela, como mostrado na figura abaixo.
+    \[
+    \begin{tikzpicture}
+        % Number of outer vertices in the star
+        \def\n{8}
+        
+        % Radius of the star
+        \def\r{2cm}
+        
+        % Rotation angle
+        \def\rotationangle{90}
+        
+        % Draw the central vertex
+        \draw (0,0) node[circle, draw, minimum size=10pt, inner sep=1.5pt] (center) {};
+        
+        % Draw the outer vertices, rotated
+        \begin{scope}[rotate=\rotationangle]
+          \foreach \i in {1,...,\n} {
+            \draw (\i*360/\n:\r) node[circle, draw, minimum size=10pt, inner sep=1.5pt] (\i) {};
+          }
+        \end{scope}
+        
+        % Connect the central vertex to every outer vertex
+        \foreach \i in {1,...,\n} {
+          \draw (center) -- (\i);
+        }
+        \draw (4) node[shift={(0.75,0.2)}] {\rotatebox{30}{\scalebox{1.5}{$\ldots$}}} (4);
+      \end{tikzpicture}
+      \] \\
+      Claramente, o raio da resposta ótima dessa instância é 1 e inclui o vértice do centro da estrela como um dos centros de cluster. \\
+      Note que se, no algoritmo guloso, o vértice escolhido arbitrariamente for algum dos vértices da ponta dessa estrela o vértice do centro nunca será escolhido. Assim, serão escolhidos apenas vértices da ponta da estrela e como temos mais que $k$ delas, sempre existirá um vértice ligado ao centro do seu cluster com uma aresta de distância 2.
+\newpage
+\subsection{Método do gargalo}
 \newpage
 \bibliographystyle{plain}
 \bibliography{aprox.bib}
