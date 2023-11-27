@@ -182,7 +182,7 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
         O algoritmo \sc{guloso}$(G,c,k)$ é uma $2$-aproximação do $k$-centros.
     \end{theorem}
     \begin{proof}
-        Primeiramente, vamos mostrar que o algoritmo é polinomial. A única linha que não é claramente polinomial é a linha $5$. Podemos calcular a distância de um conjunto de vértices para todos os outros vértices facilmente apenas com uma pequena modificação no algoritmo de Dijkstra. No começo do algoritmo, no lugar de colocar apenas um vértice na fila de prioridade com distância 0, colocamos todos os vértices do conjunto que queremos. Assim, calculamos a menor distância de todos os vértices para um vértice qualquer do conjunto desejado em tempo $O(|E|\log|V|)$, uma vez que nosso grafo é conexo. \\
+        Primeiramente, vamos mostrar que o algoritmo é polinomial. A única linha que não é claramente polinomial é a linha $5$. Podemos calcular a distância de um conjunto de vértices para todos os outros vértices facilmente apenas com uma pequena modificação no algoritmo de Dijkstra. No começo do algoritmo, no lugar de colocar apenas um vértice na fila de prioridade com distância 0, colocamos todos os vértices do conjunto que queremos. Assim, calculamos a menor distância de todos os vértices para um vértice qualquer do conjunto desejado em tempo $O(|E|\log|V|)$, uma vez que nosso grafo é conexo. Além disso, o algoritmo tem complexidade $O(k|E|\log|V| )$.\\
         Seja $C^*$ o conjunto de centros de cluster de uma resposta ótima. Vamos mostrar que $r=$ raio$(C) \leq 2$ raio$(C^*)=r^*$. Perceba que a distância entre dois vértices quaisquer de um mesmo cluster é no máximo $2r^*$, uma vez que vale a desigualdade triangular.\\ 
         Se em $C$ escolhermos vértices que estão, dois a dois, em cluster diferentes em $C^*$, então, no máximo, a maior distância entre um vértice qualquer e o centro do seu cluster será $2r^*$. \\
         Senão, suponha sem perda de generalidade que $C_{i-1} = \{ u_1,u_2,\ldots,u_{i-1}\}$ é o $C$ ao final da iteração $i-1$ e que todos eles estão em cluster diferentes em $C^*$. Seja $u_i$ o vértice escolhido na iteração $i$ e suponha que ele está no mesmo cluster que um vértice $u_j$ para algum $j=1,\ldots,i-1$. Então, $d(u_i,C) \leq 2r^*$, pois para cada $u_j$ a distância entre quaisquer dois vértices que estão no mesmo cluster que ele em $C^*$ é $\leq 2r^*$, assim se o vértice mais distante de $C_{i-1}$ tem distância no máximo $2r^*$ e a partir desse momento a distância de um vértice qualquer para $C$ apenas diminui, então $r\leq 2r^*$.
@@ -221,6 +221,12 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
       Note que se, no algoritmo guloso, o vértice escolhido arbitrariamente for algum dos vértices da ponta dessa estrela o vértice do centro nunca será escolhido. Assim, serão escolhidos apenas vértices da ponta da estrela e como temos mais que $k$ delas, sempre existirá um vértice ligado ao centro do seu cluster com uma aresta de distância 2.
 \newpage
 \subsection{Método do gargalo}
+Os chamados problemas de gargalo são aqueles definidos em grafos com pesos nas arestas tais que a resposta ótima é o peso de uma aresta. \\
+Para esse algoritmo será necessário saber o que é um conjunto independente de vértices.
+\begin{definition}
+    Seja $G = (V,E)$ um grafo. Um conjunto $S \subseteq V$ é um conjunto \emph{independente} se não existe $e \in E$ que tenha ambos os extremos em $S$.
+\end{definition}
+Seja $I(G,d,k)$ uma instância do problema do $k$-centros. Vamos supor que as arestas $E = \{e_1,e_2,\ldots,e_{|E|}\}$ de $G$ estejam dispostas de forma que $d(e_i) \leq d(e_{i+1})$ para todo $i \in [|E|-1]$. Como sabemos que é possível ordenar em tempo polinomial, podemos assumir isso.
 \newpage
 \bibliographystyle{plain}
 \bibliography{aprox.bib}
