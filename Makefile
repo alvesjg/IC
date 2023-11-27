@@ -21,6 +21,6 @@ $(MAIN).aux: $(MAIN).tex
 	$(PDFLATEX) $<
 
 clean:
-	rm -f *.aux *.log *.bbl *.blg *.out $(MAIN).pdf *.synctex.gz
+	rm -f *.aux *.log *.bbl *.blg *.out $(MAIN).pdf *.synctex.gz *.toc
 
 .PHONY: all clean
