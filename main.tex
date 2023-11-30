@@ -40,8 +40,8 @@
 \newtheorem{corollary}{Corolário}[theorem]
 \newtheorem{lemma}[theorem]{Lema} 
 
-\newtheorem{definition}{Definição}[section]
-\newtheorem{problem}{Problema}[section] %[defini]
+\newtheorem{definition}[theorem]{Definição}
+\newtheorem{problem}[theorem]{Problema}
 \newcommand{\scs}{\mbox{{\sc scs}}}
 \newcommand{\NP}{\mathit{NP}}
 \newcommand{\red}[1]{{\color{red}{#1}}}
@@ -187,7 +187,7 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
         Se em $C$ escolhermos vértices que estão, dois a dois, em cluster diferentes em $C^*$, então, no máximo, a maior distância entre um vértice qualquer e o centro do seu cluster será $2r^*$. \\
         Senão, suponha sem perda de generalidade que $C_{i-1} = \{ u_1,u_2,\ldots,u_{i-1}\}$ é o $C$ ao final da iteração $i-1$ e que todos eles estão em cluster diferentes em $C^*$. Seja $u_i$ o vértice escolhido na iteração $i$ e suponha que ele está no mesmo cluster que um vértice $u_j$ para algum $j=1,\ldots,i-1$. Então, $d(u_i,C) \leq 2r^*$, pois para cada $u_j$ a distância entre quaisquer dois vértices que estão no mesmo cluster que ele em $C^*$ é $\leq 2r^*$, assim se o vértice mais distante de $C_{i-1}$ tem distância no máximo $2r^*$ e a partir desse momento a distância de um vértice qualquer para $C$ apenas diminui, então $r\leq 2r^*$.
     \end{proof}
-    Vamos mostrar que essa análise é justa, ou seja, existe uma instância $I(G,d,k)$ em que o algoritmo devolve uma solução $C$ tal que raio$(C) \leq \opt(I)$. \\
+    Vamos mostrar que essa análise é justa, ou seja, existe uma instância $I(G,d,k)$ em que o algoritmo devolve uma solução $C$ tal que raio$(C) = 2 \opt(I)$. \\
     O grafo G contém mais que $k+1$ vértices e as arestas têm distância 1 ou 2. O grafo induzido pelas arestas de distância 1 é uma estrela, como mostrado na figura abaixo.
     \[
     \begin{tikzpicture}
@@ -226,7 +226,53 @@ Para esse algoritmo será necessário saber o que é um conjunto independente de
 \begin{definition}
     Seja $G = (V,E)$ um grafo. Um conjunto $S \subseteq V$ é um conjunto \emph{independente} se não existe $e \in E$ que tenha ambos os extremos em $S$.
 \end{definition}
-Seja $I(G,d,k)$ uma instância do problema do $k$-centros. Vamos supor que as arestas $E = \{e_1,e_2,\ldots,e_{|E|}\}$ de $G$ estejam dispostas de forma que $d(e_i) \leq d(e_{i+1})$ para todo $i \in [|E|-1]$. Como sabemos que é possível ordenar em tempo polinomial, podemos assumir isso.
+Seja $I(G,d,k)$ uma instância do problema do $k$-centros. Vamos supor que as arestas $E = \{e_1,e_2,\ldots,e_{|E|}\}$ de $G$ estejam dispostas de forma que $d(e_i) \leq d(e_{i+1})$ para todo $i \in [|E|-1]$. Como sabemos que é possível ordenar em tempo polinomial, podemos assumir isso. \\
+Seja $E_i = \{e_1,e_2,\ldots,e_i\}$ e $G_i = (V,E_i)$. Seja também $i^*$ o menor $i$ tal que $G_i$ tem um $k$-conjunto dominante. Como $G$ é um completo, $i^*$ existe. Claramente $d(e_{i^*}) = \opt(I)$, porém não conseguimos encontrar $i^*$ eficientente, uma vez que não é possível saber se um grafo tem um $k$-conjunto dominante em tempo polinomial. Portanto, vamos usar um conjunto independente maximal para aproximar uma resposta.
+
+\begin{lemma}
+    Seja $G = (V,E)$ um grafo. Um conjunto independente maximal em $G$ é também um conjunto dominante.
+\end{lemma}
+\begin{proof}
+    Seja $S$ um conjunto independente maximal e suponha, por absurdo, que ele não é um conjunto dominante. Então, existe vértice $u \in V \setminus S$ que não é vizinho de nenhum dos vértices de $S$. Portanto, $S \cup \{u\}$ é também um conjunto independente e $S \subset \{S \cup \{u\}\}$. Contradição, pois $S$ é maximal.
+\end{proof}
+Então, se encontrarmos um conjunto independente maximal de tamanho $k$ em $G$ teremos um conjunto dominante de mesmo tamanho. No entanto, não conseguimos garantir que iremos encontrar esse conjunto em $G$ e, por isso, vamos definir e usar $G^2$.
+\begin{definition}
+    Seja $G= (V,E)$ um grafo. $G^2 = (V,E')$ é chamado \emph{quadrado} de $G$ e $E' = E \cup \{uv: \text{distância de u a v em $G$ é $2$}\}$.
+\end{definition}
+Dada a definição vamos enunciar e provar um lema que nos ajudará no algoritmo.
+\begin{lemma}\label{lemma:2.9}
+    Seja $G$ um grafo e $G^2$ o seu quadrado. Se $G$ contém um $k$-conjunto dominante então todo conjunto independente maximal em $G^2$ tem tamanho no máximo $k$.
+\end{lemma}
+\begin{proof}
+    Vamos mostrar pela contrapositiva.\\
+    Seja $G = (V,E)$ um grafo e $G^2$ o seu quadrado. Suponha que $G^2$ tem um conjunto independente maximal $S \subset V$ tal que $|S| > k$. Seja $D$ um conjunto dominante em $G$, vamos mostrar que $|D| > k$. \\
+    Por definição, não existe um caminho de tamanho $2$ ou uma aresta entre dois vértices de $S$ em $G$. Seja $u \in D$, vamos mostrar que $u$ cobre no máximo $1$ vértice de $S$. \\Se $u \in S$, o único vértice de $S$ coberto por $u$ é ele mesmo, uma vez que não existe aresta entre dois vértices de $S$ em $G$. \\
+    Se $u \not \in S$, $u$ pode cobrir apenas um vértice de $S$, caso cobrisse $2$, digamos $v$ e $w$, existiriam as arestas $uv$ e $uw$ e essas arestas formariam um caminho de tamanho $2$ de $v$ para $w$. Assim, $v$ e $w$ não podem pertencer a $S$ ao mesmo tempo. \\
+    Portanto, $|D| \geq |S| > k$.
+\end{proof}
+Agora, temos todas as definições e lemas que serão necessário para nosso algoritmo.
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \Function{gargalo}{$G,d,k$}
+        \State $i \leftarrow 0$
+        \State $M_0 \leftarrow V$
+        \While{$|M_i| > k$}
+            \State $i\leftarrow i + 1$
+            \State Seja $M_i$ um conjunto independente maximal em $G_i^2$
+        \EndWhile
+        \State Devolva $M_i$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{theorem}
+    O algoritmo {\sc gargalo}$(G,d,k)$ é uma $2$-aproximação do problema do $k$-centros.
+\end{theorem}
+\begin{proof}
+    Primeiro vamos mostrar que o algoritmo é polinomial. \\
+    Como $G_{i^*}$ tem um $k$-conjunto dominante, então o loop vai parar no máximo quando $i=i^*$, pois pelo Lema~\ref{lemma:2.9} qualquer conjunto independente maximal em $G_{i^*}$ encontrado terá tamanho pelo menos $k$.
+    Também é fácil mostrar que é possível encontrar um conjunto independente maximal em tempo polinomial, podemos começar com um vértice só e colocar arbitrariamente vértices que não sejam vizinhos.
+\end{proof}
 \newpage
 \bibliographystyle{plain}
 \bibliography{aprox.bib}
