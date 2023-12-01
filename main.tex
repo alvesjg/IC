@@ -283,7 +283,7 @@ Agora, temos todas as definições e lemas que serão necessários para nosso al
 \begin{proof}
     Primeiro vamos mostrar que o algoritmo é polinomial. \\
     Como $G_{i^*}$ tem um $k$-conjunto dominante, então o loop vai parar no máximo quando $i=i^*$, pois pelo Lema~\ref{lemma:2.10} qualquer conjunto independente maximal encontrado em $G_{i^*}$ terá tamanho no máximo $k$.
-    Também é fácil mostrar que é possível encontrar um conjunto independente maximal em tempo polinomial. Um algoritmo simples que começa com um conjunto $A = \{u\}$ sendo $u$ um vértice arbitrário e, a cada iteração, é colocado em $A$ um vértice que não é adjacente a nenhum vértice $A$ até não ser mais possível é suficiente. \red{Faço um lema para explicar melhor?}\\
+    Também é fácil mostrar que é possível encontrar um conjunto independente maximal em tempo polinomial. Um algoritmo simples que começa com um conjunto $A = \{u\}$ sendo $u$ um vértice arbitrário e, a cada iteração, é colocado em $A$ um vértice que não é adjacente a nenhum vértice de $A$ até não ser mais possível é suficiente. \red{Faço um lema para explicar melhor?}\\
     Agora, vamos mostrar que é uma $2$-aproximação. \\
     Seja max$(H)$ o maior valor de uma aresta em um grafo $H$ com peso nas arestas. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal, então pelo Lema~\ref{lemma:2.8} ele é um $k$-conjunto dominante. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i})$. \\Assim, max$(M_{i'}) \leq $ max$(G_{i'}^2) \leq 2$ max$(G_{i'}) \leq 2$ max$(G_{i^*})= 2 \opt(I)$. 
 \end{proof}
