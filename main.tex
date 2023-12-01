@@ -105,8 +105,8 @@ Dentre os três problemas apresentados, esse é o que tem a maior folga entre o 
 \newpage
 \section{$k$-Centros}
 
-Vamos definir alguns termos que facilitarão as explicações seguintes. Os vértices do conjunto $C \subseteq V$ de tamanho $k$ serão chamados \emph{centros de cluster}. Os vértices de $V$ serão particionados em $k$ conjuntos chamados \emph{clusters} e cada um deles terá exatamente um centro de cluster. Um vértice estará no mesmo cluster que um centro de cluster mais próximo a ele. Cada cluster terá um \emph{raio} que é a maior distância entre o seu centro e um vértice qualquer dele. O nosso problema se resume a encontrar um conjunto $C$ que minimize o maior desses raios. Denotamos por raio$(C)$ o maior raio de um cluster induzido por $C$.\\
-Antes de começar a falar sobre algoritmos de aproximação para o problema dos $k$-centros, vamos mostrar que, assumindo $P\not=\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema do $k$-conjunto dominante.
+Seja $I(G,d,k)$ uma instância do problema dos $k$-centros e $C \subseteq V$ uma solução viável para $I$. Vamos definir alguns termos que facilitarão as explicações seguintes. Os vértices de $C$ serão chamados \emph{centros de cluster}. Os vértices de $V$ serão particionados em $k$ conjuntos chamados \emph{clusters} e cada um deles terá exatamente um centro de cluster. Um vértice estará no mesmo cluster que um centro de cluster mais próximo a ele. Cada cluster terá um \emph{raio} que é a maior distância entre o seu centro e um vértice qualquer dele. O nosso problema se resume a encontrar um conjunto $C$ que minimize o maior desses raios. Denotamos por raio$(C)$ o maior raio de um cluster induzido por $C$.\\
+Antes de falarmos sobre algoritmos de aproximação para o problema dos $k$-centros, vamos mostrar que, assumindo $P\not=\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema do $k$-conjunto dominante.
 
 \begin{definition}
     Seja $G = (V,E)$ um grafo. Um conjunto $D \subseteq V$ é chamado \emph{dominante} se, para todo vértice $u \in V \setminus D$, existe um vértice $v \in D$ tal que $uv \in E$.
@@ -117,7 +117,7 @@ Antes de começar a falar sobre algoritmos de aproximação para o problema dos 
 \end{problem}
 Esse problema é $\NP$-completo, sendo o problema GT2 do famoso livro de Garey e Johnson~\cite{garey1979computers}. Usaremos este problema para mostrar que o problema dos $k$-centros é $\NP$-difícil.
 
-\begin{theorem}\label{theorem:2.1}
+\begin{theorem}\label{theorem:2.3}
     O problema dos $k$-centros para instâncias métricas é $\NP$-difícil.
 \end{theorem}
 
@@ -129,39 +129,40 @@ Esse problema é $\NP$-completo, sendo o problema GT2 do famoso livro de Garey e
             2, \text{ caso contrário.} 
             \end{cases}\]\\
     Note que $d$ satisfaz a desigualdade triangular e pode ser obtida de $I$ em tempo polinomial.\\
-    O algoritmo aplicado à instância $I'$ encontra uma solução $C$, ou seja, um conjunto de $k$ centros de cluster. \\Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster com uma aresta de $G$ e assim $C$ é um conjunto dominante em $G$. Como o algoritmo $A$ minimiza o raio de $C$, se raio$(C)=2$, não existe uma solução para $I'$ em que os vértices estejam ligados ao centro do seus clusters apenas por arestas de $G$ e, por isso, não existe um conjunto dominante de tamanho menor ou igual a $k$ em $G$.
+    O algoritmo aplicado à instância $I'$ encontra uma solução $C$, ou seja, um conjunto de $k$ centros de cluster. \\Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster com uma aresta de $G$ e assim $C$ é um conjunto dominante em $G$. \\
+    Como o algoritmo $A$ minimiza o raio de $C$, se raio$(C)=2$, não existe uma solução para $I'$ em que os vértices estejam ligados ao centro do seus clusters apenas por arestas de $G$ e, por isso, não existe um conjunto dominante de tamanho menor ou igual a $k$ em $G$.
 
     Portanto, conseguimos resolver em tempo polinomial o problema do $k$-conjunto dominante, o que implicaria que $P = \NP$.
 \end{proof}
 
 O resultado acima pode ser adaptado para dar um resultado mais forte de inaproximabilidade para a versão geral do problema, não restrita à métrica.
 \begin{theorem}
-    Seja $\alpha(n)$ uma função computável com $\alpha(n)\geq 1$ para todo $n$. Não existe $\alpha(n)$-aproximação para a versão geral do $k$-centros, onde $n$ é o número de vértices do grafo da instância.
+    Seja $\alpha(n)$ uma função computável com $\alpha(n)\geq 1$ para todo $n$. Não existe $\alpha(n)$-aproximação para a versão geral do $k$-centros, onde $n$ é o número de vértices do grafo da instância, a menos que $P=\NP$.
 \end{theorem}
 
 \begin{proof}
-        A demonstração desse teorema é muito parecida com a do Teorema~\ref{theorem:2.1}. \\
+        A demonstração desse teorema é muito parecida com a do Teorema~\ref{theorem:2.3}. \\
         Seja $G = (V,E)$. Suponha que exista um algoritmo polinomial $A$ que é uma $\alpha(n)$-aproximação do $k$-centros e seja $I(G,k)$ uma instância do problema do $k$-conjunto dominante em que $G$ tem $n$ vértices. Vamos criar uma instância $I'(G',k,d)$ do problema dos $k$-centros a partir da instância $I$. A instância $I'$ tem como grafo $G'(V,E')$ completo tal que, para cada $e \in E'$, \\
     \[d(e) = \begin{cases}
             1, \text{ se } e \in E \\
             \alpha(n)+1, \text{ caso contrário.} 
             \end{cases}\]\\
     Como $\alpha(n)$ é uma função computável, essa instância pode ser construída a partir de $I$ em tempo polinomial. \\
-    Se $\alpha(n)=1$, então $d$ obedece a desigualdade triangular e $A$ é um algoritmo polinomial e exato, o que, pelo Teorema~\ref{theorem:2.1}, é absurdo. Então, suponha $\alpha(n)>1$. \\
+    Se $\alpha(n)=1$, então $d$ obedece a desigualdade triangular e $A$ é um algoritmo polinomial e exato, o que, pelo Teorema~\ref{theorem:2.3}, é absurdo. Então, suponha $\alpha(n)>1$. \\
     O algoritmo aplicado à instância $I'$ encontra uma solução $C$ de tamanho $k$. Como $d(e) = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$.\\
     Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster com aresta de $G$, e assim $C$ é um conjunto dominante em $G$. \\
     Se raio$(C) = \alpha(n) + 1$, então $\opt(I) \geq \frac{\alpha(n)+1}{\alpha(n)}>1$. Assim, não existe solução $C'$ tal que raio$(C')=1$ e não existe $k$-conjunto dominante em $G'$ que utilize apenas arestas de $G$.
     Portanto, conseguimos resolver o problema do $k$-conjunto dominante em tempo polinomial o que, assumindo que $P \not= \NP$, é um absurdo.
 \end{proof}
     Fica, então, explícita a impossibilidade de encontrarmos algoritmos de aproximação para a versão geral do problema dos $k$-centros.\\
-    Agora que justificamos o estudo de algoritmos de aproximação para esse problema vamos mostrar um limitante inferior para a razão de aproximação para algoritmos desse problema.
+    Agora que justificamos o estudo de algoritmos de aproximação para esse problema vamos mostrar um limitante inferior para a razão de aproximação desses algoritmos.
     
     \begin{theorem}
-        Seja $\varepsilon \in (0,1]$. Não existe $(2-\varepsilon)$-aproximação para o problema dos $k$-centros.
+        Seja $\varepsilon \in (0,1]$. Não existe $(2-\varepsilon)$-aproximação para o problema dos $k$-centros, a menos que $P=\NP$.
     \end{theorem}
-    A prova do Teorema~\ref{theorem:2.1} essencialmente serve também para esse Teorema, a única diferença é que aqui precisamo assumir a existência de um algoritmo que é uma $(2 - \varepsilon)$-aproximação para o problema dos $k$-centros.
+    A prova do Teorema~\ref{theorem:2.3} essencialmente serve também para esse Teorema, a única diferença é que aqui precisamos assumir a existência de um algoritmo que é uma $(2 - \varepsilon)$-aproximação para o problema dos $k$-centros.
 
-    Começaremos por um algoritmo simples, mas que garante uma boa razão de aproximação.
+    Começaremos por um algoritmo simples, mas que garante a melhor razão de aproximação.
     
 \newpage
 \subsection{Algoritmo guloso.}
@@ -186,13 +187,13 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
 	\end{algorithm}
     
     \begin{theorem}
-        O algoritmo {\sc guloso}$(G,d,k)$ é uma $2$-aproximação do $k$-centros.
+        O algoritmo {\sc guloso}$(G,d,k)$ é uma $2$-aproximação do problema dos $k$-centros.
     \end{theorem}
     \begin{proof}
-        Primeiramente, vamos mostrar que o algoritmo é polinomial. A única linha que não é claramente polinomial é a linha $5$. Para cada vértice $v \in V$, vamos olhar a distância de $|C|$ arestas. Como $|C| \leq |V|$, então iremos olhar a distância de no máximo $|V|^2$ arestas a cada iteração. \\
+        Primeiramente, vamos mostrar que o algoritmo é polinomial. A única linha que não é claramente polinomial é a linha $5$. Para cada vértice $v \in V$, vamos olhar a distância de $|C|$ arestas. Como $|C| \leq |V|$, então iremos olhar a distância de no máximo $|V|^2$ arestas a cada iteração. Assim, nosso algoritmo roda em tempo $O(k|V|^2)$. \\
         Seja $C^*$ um conjunto ótimo de centros de cluster para $I(G,d,k)$. Vamos mostrar que raio$(C) \leq 2\opt(I) $. Perceba que a distância entre dois vértices quaisquer de um mesmo cluster de $C^*$ é no máximo $2\opt(I)$, uma vez que vale a desigualdade triangular.\\ 
         Se há um vértice de $C$ em cada cluster de $C^*$, todos os vértices estão a uma distância de no máximo $2\opt(I)$ de um centro de cluster de $C$. Então raio$(C) \leq 2\opt(I)$. \\
-        Senão, suponha sem perda de generalidade que $C_{i-1} = \{ u_1,u_2,\ldots,u_{i-1}\}$ é o $C$ ao final da iteração $i-1$ e cada $u_j$ está em um cluster diferente de $C^*$. Seja $u_i$ o vértice escolhido na iteração $i$ e suponha que ele está no mesmo cluster que um vértice $u_j$ para algum $j=1,\ldots,i-1$. Então, $d(u_i,C_{i-1}) \leq d(u_iu_j) \leq 2\opt(I)$. Como $j$ maximiza $d(v,C_{i-1})$, então raio$(C) \leq 2\opt(I)$.
+        Senão, suponha sem perda de generalidade que $C_{i-1} = \{ u_1,u_2,\ldots,u_{i-1}\}$ é o $C$ ao final da iteração $i-1$ e cada $u_j$ está em um cluster diferente de $C^*$. Seja $u_i$ o vértice escolhido na iteração $i$ e suponha que ele está no mesmo cluster que um vértice $u_j$ para algum $j=1,\ldots,i-1$. Então, $d(u_i,C_{i-1}) \leq d(u_iu_j) \leq 2\opt(I)$. Como $u_i$ maximiza $d(v,C_{i-1})$, então raio$(C) \leq 2\opt(I)$.
     \end{proof}
     Vamos mostrar que essa análise é justa, ou seja, existe uma instância $I(G,d,k)$ em que o algoritmo devolve uma solução $C$ tal que raio$(C) = 2 \opt(I)$. \\
     O grafo $G$ contém pelo menos $k+2$ vértices e as arestas têm distância 1 ou 2. O grafo induzido pelas arestas de distância 1 é uma estrela, como mostrado na figura abaixo.
@@ -225,7 +226,7 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
       \end{tikzpicture}
       \] \\
       Claramente, o raio de uma resposta ótima dessa instância é 1 e inclui o vértice do centro da estrela como um dos centros de cluster. \\
-      Note que se, no algoritmo guloso, o vértice escolhido arbitrariamente for algum dos vértices da ponta dessa estrela o vértice do centro nunca será escolhido. Assim, serão escolhidos apenas vértices da ponta da estrela e como temos mais que $k$ delas, sempre existirá um vértice ligado ao centro do seu cluster com uma aresta de distância 2.
+      Note que se, no algoritmo guloso, o vértice escolhido arbitrariamente for algum dos vértices da ponta dessa estrela o vértice do centro nunca será escolhido. Assim, serão escolhidos apenas vértices da ponta da estrela e como temos pelo menos $k+1$ delas, sempre existirá um vértice ligado ao centro do seu cluster com uma aresta de distância 2.
 \newpage
 
 
@@ -239,29 +240,29 @@ Para esse algoritmo será necessário saber o que é um conjunto independente de
 Seja $I(G,d,k)$ uma instância do problema dos $k$-centros. Vamos supor que as arestas $E = \{e_1,e_2,\ldots,e_{|E|}\}$ de $G$ estejam dispostas de forma que $d(e_i) \leq d(e_{i+1})$ para todo $i \in [|E|-1]$. Como sabemos que é possível ordenar em tempo polinomial, podemos assumir isso. \\
 Seja $E_i = \{e_1,e_2,\ldots,e_i\}$ e $G_i = (V,E_i)$. Seja também $i^*$ o menor $i$ tal que $G_i$ tem um $k$-conjunto dominante. Como $G$ é completo, $i^*$ existe. Claramente $d(e_{i^*}) = \opt(I)$, porém não conseguimos encontrar $i^*$ eficientemente, uma vez que não é possível saber se um grafo tem um $k$-conjunto dominante em tempo polinomial, a menos que $P = \NP$. Portanto, vamos usar um conjunto independente maximal para aproximar uma resposta.
 
-\begin{lemma}\label{lemma:2.7}
+\begin{lemma}\label{lemma:2.8}
     Seja $G = (V,E)$ um grafo. Um conjunto independente maximal em $G$ é também um conjunto dominante.
 \end{lemma}
 \begin{proof}
-    Seja $S$ um conjunto independente maximal e suponha, por absurdo, que ele não é um conjunto dominante. Então, existe vértice $u \in V \setminus S$ que não é vizinho de nenhum dos vértices de $S$. Portanto, $S \cup \{u\}$ é também um conjunto independente e $S \subset \{S \cup \{u\}\}$. Contradição, pois $S$ é maximal.
+    Seja $G = (V,E)$ e $S$ um conjunto independente maximal em $G$. Suponha, por absurdo, que $S$ não é um conjunto dominante. Então, existe vértice $u \in V \setminus S$ que não é vizinho de nenhum dos vértices de $S$. Portanto, $S \cup \{u\}$ é também um conjunto independente e $S \subset \{S \cup \{u\}\}$. Contradição, pois $S$ é maximal.
 \end{proof}
 Então, se encontrarmos um conjunto independente maximal de tamanho $k$ em $G$ teremos um conjunto dominante de mesmo tamanho. No entanto, não conseguimos garantir que iremos encontrar esse conjunto em $G$ e, por isso, vamos definir e usar $G^2$.
 \begin{definition}
     Seja $G= (V,E)$ um grafo. $G^2 = (V,E')$ é chamado \emph{quadrado} de $G$ e $E' = E \cup \{uv: \text{distância de u a v em $G$ é $2$}\}$.
 \end{definition}
 Dada a definição vamos enunciar e provar um lema que nos ajudará no algoritmo.
-\begin{lemma}\label{lemma:2.9}
-    Seja $G$ um grafo e $G^2$ o seu quadrado. Se $G$ contém um $k$-conjunto dominante então todo conjunto independente maximal em $G^2$ tem tamanho no máximo~$k$.
+\begin{lemma}\label{lemma:2.10}
+    Seja $G$ um grafo, $G^2$ o seu quadrado e $k$ um inteiro positivo. Se $G$ contém um $k$-conjunto dominante então todo conjunto independente maximal em $G^2$ tem tamanho no máximo~$k$.
 \end{lemma}
 \begin{proof}
     Vamos mostrar pela contrapositiva.\\
-    Seja $G = (V,E)$ um grafo e $G^2$ o seu quadrado. Suponha que $G^2$ tem um conjunto independente maximal $S \subset V$ tal que $|S| > k$. Seja $D$ um conjunto dominante em $G$, vamos mostrar que $|D| > k$. \\
+    Seja $G = (V,E)$ um grafo, $G^2$ o seu quadrado e $k$ um inteiro positivo. Suponha que $G^2$ tem um conjunto independente maximal $S \subset V$ tal que $|S| > k$. Seja $D$ um conjunto dominante em $G$, vamos mostrar que $|D| > k$. \\
     Por definição, não existe um caminho de tamanho $2$ ou uma aresta entre dois vértices de $S$ em $G$. Seja $u \in D$, vamos mostrar que $u$ cobre no máximo $1$ vértice de $S$ em $G$. \\
     Se $u \in S$, o único vértice de $S$ coberto por $u$ é ele mesmo, uma vez que não existe aresta entre dois vértices de $S$ em $G$. \\
-    Se $u \not \in S$, $u$ pode cobrir apenas um vértice de $S$, caso cobrisse $2$, digamos $v$ e $w$, existiriam as arestas $uv$ e $uw$ e essas arestas formariam um caminho de tamanho $2$ de $v$ para $w$. Assim, $vw$ é uma aresta em $G^2$ e $v$ e $w$ não podem pertencer a $S$ ao mesmo tempo. \\
+    Se $u \not \in S$, $u$ pode cobrir apenas um vértice de $S$, caso cobrisse $2$, digamos $v$ e $w$, então $P = (vu,uw)$ é um caminho de tamanho $2$ com extremos em $v$ e $w$ em $G$. Assim, $vw$ é uma aresta em $G^2$ e $v$ e $w$ não podem pertencer a $S$ ao mesmo tempo. \\
     Portanto, $|D| \geq |S| > k$.
 \end{proof}
-Agora, temos todas as definições e lemas que serão necessário para nosso algoritmo.
+Agora, temos todas as definições e lemas que serão necessários para nosso algoritmo.
 \begin{algorithm}
     \begin{algorithmic}[1]
         \Function{gargalo}{$G,d,k$}
@@ -281,26 +282,10 @@ Agora, temos todas as definições e lemas que serão necessário para nosso alg
 \end{theorem}
 \begin{proof}
     Primeiro vamos mostrar que o algoritmo é polinomial. \\
-    Como $G_{i^*}$ tem um $k$-conjunto dominante, então o loop vai parar no máximo quando $i=i^*$, pois pelo Lema~\ref{lemma:2.9} qualquer conjunto independente maximal em $G_{i^*}$ encontrado terá tamanho no máximo $k$.
-    Também é fácil mostrar que é possível encontrar um conjunto independente maximal em tempo polinomial, um algoritmo simples que começa com um vértice arbitrário e colocamos um vértice que não é adjacente a nenhum vértice do conjunto independente até não ser mais possível é suficiente. \red{Faço um lema para abordar melhor?}\\
+    Como $G_{i^*}$ tem um $k$-conjunto dominante, então o loop vai parar no máximo quando $i=i^*$, pois pelo Lema~\ref{lemma:2.10} qualquer conjunto independente maximal encontrado em $G_{i^*}$ terá tamanho no máximo $k$.
+    Também é fácil mostrar que é possível encontrar um conjunto independente maximal em tempo polinomial. Um algoritmo simples que começa com um conjunto $A = \{u\}$ sendo $u$ um vértice arbitrário e, a cada iteração, é colocado em $A$ um vértice que não é adjacente a nenhum vértice $A$ até não ser mais possível é suficiente. \red{Faço um lema para explicar melhor?}\\
     Agora, vamos mostrar que é uma $2$-aproximação. \\
-    Seja max$(H)$ o maior valor de uma aresta em um grafo $H$ com peso nas arestas. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal, então pelo Lema~\ref{lemma:2.7} ele é um $k$-conjunto dominante. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i})$. \\Assim, max$(M_{i'}) \leq $ max$(G_{i'}^2) \leq 2$ max$(G_{i'}) \leq 2$ max$(G_{i^*})= 2 \opt(I)$. 
-\end{proof}
-
-\subsection{Inaproximabilidade}
-
-\begin{proof}
-    Suponha que exista um algoritmo $A$ que é uma $(2-\varepsilon)$-aproximação para o problema dos $k$-centros em tempo polinomial. Seja $G = (V,E)$ um grafo e $I(G,k)$ uma instância do problema $k$-conjunto dominante. Vamos criar uma instância $I'(G',k,d)$ do problema dos $k$-centros a partir da instância I. A instância $I'$ tem grafo $G'(V,E')$ completo tal que, para todo $e \in E'$, \\
-    \[
-    d(e) = \begin{cases}
-            1, \text{ se } e \in E \\
-            2, \text{ caso contrário.} 
-            \end{cases}\]\\
-    Note que d satisfaz a desigualdade triangular.\\
-    O algortimo aplicado à instância I' encontra uma solução C. É fácil perceber que o conjunto $C$, dos centros de clusters, representa um conjunto dominante em $G'$ de tamanho $k$.\\
-    Se raio$(C)=1$ então todos os vértices estão ligados aos centros dos seus cluster com uma arestas de $G$, assim $C$ também é um conjunto dominante em $G$. \\ 
-    Se raio$(C)=2$, não existe uma solução $C'$ tal que raio$(C') = 1$, uma vez que o algoritmo $A$ garante uma solução com valor no máximo $(2-\varepsilon)\opt(I)$ e, caso existisse, $C$ não satisfaria essa cota. Assim, não existe $k$-conjunto dominante em $G$. \\ 
-    Portanto, conseguimos resolver em tempo polinomial o problema do $k$-conjunto dominante, o que é um absurdo.
+    Seja max$(H)$ o maior valor de uma aresta em um grafo $H$ com peso nas arestas. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal, então pelo Lema~\ref{lemma:2.8} ele é um $k$-conjunto dominante. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i})$. \\Assim, max$(M_{i'}) \leq $ max$(G_{i'}^2) \leq 2$ max$(G_{i'}) \leq 2$ max$(G_{i^*})= 2 \opt(I)$. 
 \end{proof}
 \newpage
 \bibliographystyle{plain}
