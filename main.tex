@@ -75,7 +75,9 @@ Este é o projeto de pesquisa do aluno de graduação João Guilherme Alves Sant
 
 \section{Introdução}
 
-Ao longo do estudo da computação, nos deparamos com significativas dificuldades computacionais na resolução de certos problemas, especialmente em muitos cenários de otimização nos quais buscamos minimizar ou maximizar uma função sobre um domínio específico. Nesse contexto, algoritmos de aproximação surgiram para que pudéssemos sacrificar a otimalidade para encontrar, eficientemente, uma solução cujo valor garante uma relação pré-estabelecida com o valor ótimo. Em geral, definimos o valor ótimo de uma instância $I$ de um problema como \opt($I$).
+Problemas de otimização têm o objetivo de encontrar um ponto ótimo de uma função definida sobre um certo domínio. Especificamente, os problemas de otimização combinatória têm domínio finito. Muitos desses problemas são $\NP$-difíceis. Portanto, como é imaginado que $P\not=\NP$, encontrar a solução exata desses problemas é nada eficiente. Em geral, definimos o valor ótimo de uma instância $I$ de um problema como \opt($I$).
+
+Nesse contexto, algoritmos de aproximação surgiram para que pudéssemos sacrificar a otimalidade da solução ótima para encontrar, eficientemente, uma solução cujo valor garante uma relação pré-estabelecida com o valor ótimo. 
 
 Clustering são problemas cujo objetivo é agrupar objetos de maneira que objetos no mesmo cluster apresentam mais semelhanças quando comparados a objetos em clusters diferentes. Tais semelhanças serão definidas pelo problema em questão. Neste projeto, iremos estudar três problemas de clustering: $k$-centros, localização de instalações e $k$-mediana. 
 
@@ -226,7 +228,7 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
       \end{tikzpicture}
       \] \\
       Claramente, o raio de uma resposta ótima dessa instância é 1 e inclui o vértice do centro da estrela como um dos centros de cluster. \\
-      Note que se, no algoritmo guloso, o vértice escolhido arbitrariamente for algum dos vértices da ponta dessa estrela o vértice do centro nunca será escolhido. Assim, serão escolhidos apenas vértices da ponta da estrela e como temos pelo menos $k+1$ delas, sempre existirá um vértice ligado ao centro do seu cluster com uma aresta de distância 2.
+      Note que se, no algoritmo guloso, o vértice escolhido arbitrariamente for algum dos vértices da ponta dessa estrela o vértice do centro nunca será escolhido. Assim, serão escolhidos apenas vértices da ponta da estrela e como temos pelo menos $k+1$ delas, sempre existirá um vértice ligado ao centro do seu cluster com uma aresta de distância~2.
 \newpage
 
 
@@ -248,7 +250,7 @@ Seja $E_i = \{e_1,e_2,\ldots,e_i\}$ e $G_i = (V,E_i)$. Seja também $i^*$ o meno
 \end{proof}
 Então, se encontrarmos um conjunto independente maximal de tamanho $k$ em $G$ teremos um conjunto dominante de mesmo tamanho. No entanto, não conseguimos garantir que iremos encontrar esse conjunto em $G$ e, por isso, vamos definir e usar $G^2$.
 \begin{definition}
-    Seja $G= (V,E)$ um grafo. $G^2 = (V,E')$ é chamado \emph{quadrado} de $G$ e $E' = E \cup \{uv: \text{distância de u a v em $G$ é $2$}\}$.
+    Seja $G= (V,E)$ um grafo. $G^2 = (V,E^2)$ é chamado \emph{quadrado} de $G$ e $E^2 = E \cup \{uv: \text{distância de u a v em $G$ é $2$}\}$.
 \end{definition}
 Dada a definição vamos enunciar e provar um lema que nos ajudará no algoritmo.
 \begin{lemma}\label{lemma:2.10}
@@ -282,10 +284,11 @@ Agora, temos todas as definições e lemas que serão necessários para nosso al
 \end{theorem}
 \begin{proof}
     Primeiro vamos mostrar que o algoritmo é polinomial. \\
-    Como $G_{i^*}$ tem um $k$-conjunto dominante, então o loop vai parar no máximo quando $i=i^*$, pois pelo Lema~\ref{lemma:2.10} qualquer conjunto independente maximal encontrado em $G_{i^*}$ terá tamanho no máximo $k$.
+    Como $G_{i^*}$ tem um $k$-conjunto dominante, então o loop vai parar no máximo quando $i=i^*$, pois pelo Lema~\ref{lemma:2.10} qualquer conjunto independente maximal encontrado em $G_{i^*}^2$ terá tamanho no máximo $k$.
     Também é fácil mostrar que é possível encontrar um conjunto independente maximal em tempo polinomial. Um algoritmo simples que começa com um conjunto $A = \{u\}$ sendo $u$ um vértice arbitrário e, a cada iteração, é colocado em $A$ um vértice que não é adjacente a nenhum vértice de $A$ até não ser mais possível é suficiente. \red{Faço um lema para explicar melhor?}\\
+    Além disso, também conseguimos construir o grafo $G_i^2$ em tempo polinomial. Começaremos $E_i^2$ como uma cópia de $E_i$ e, para cada tripla de vértice $(u,v,k)$ caso já não exista uma aresta $uk \in E_i$, vamos inseri-la em $E_i^2$ se $v,k \in E_i$. Como tempos no máximo $|V|^3$ triplas de vértices e todas as operações que serão feitas são feitas em tempo polinomial, então podemos construir $G_i^2$ em tempo polinomial. \\
     Agora, vamos mostrar que é uma $2$-aproximação. \\
-    Seja max$(H)$ o maior valor de uma aresta em um grafo $H$ com peso nas arestas. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal, então pelo Lema~\ref{lemma:2.8} ele é um $k$-conjunto dominante. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i})$. \\Assim, max$(M_{i'}) \leq $ max$(G_{i'}^2) \leq 2$ max$(G_{i'}) \leq 2$ max$(G_{i^*})= 2 \opt(I)$. 
+    Seja max$(H)$ o maior valor de uma aresta em um grafo $H$ com peso nas arestas. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal, então pelo Lema~\ref{lemma:2.8} ele é um $k$-conjunto dominante e como $M_{i'}$ é um subgrafo de $G_{i'}^2$ então max$(M_{i'}) \leq \text{max}(G_{i'}^2) $. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i})$. \\Assim, max$(M_{i'}) \leq $ max$(G_{i'}^2) \leq 2$ max$(G_{i'}) \leq 2$ max$(G_{i^*})= 2 \opt(I)$. 
 \end{proof}
 \newpage
 \bibliographystyle{plain}
