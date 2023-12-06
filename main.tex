@@ -300,26 +300,26 @@ Antes de falarmos sobre algoritmos de aproximação para o problema da localiza�
 
 
 \begin{problem}(Cobertura por vértices)
-    Dado um grafo $G$ e um inteiro $k$, decidir se $G$ contém um conjunto $S \subseteq V$ que é uma cobertura por vértices de tamanho $k$.
+    Dado um grafo $G$ e um inteiro $k$, decidir se $G$ tem uma cobertura por vértices de tamanho $k$.
 \end{problem}
 Esse problema é $\NP$-completo, sendo um dos famosos $21$ problemas do Karp~\cite{Karp1972}. Usaremos este problema para mostrar que o problema localização de instalações é $\NP$-difícil.
 
 \begin{theorem}
-    O problema da localização de instalações é $\NP$-difícil.
+    O problema localização de instalações é $\NP$-difícil.
 \end{theorem}
 
 \begin{proof}
-    Suponha que exista um algoritmo $A$ que resolve o problema da localização de instalações em tempo polinomial. \\
-    Seja $I(G,k)$ uma instância do problema da cobertura por vértices em que $G = (V,E)$. Vamos criar uma instância $I'(F,D,c',f)$ do problema de localização de instalações a partir de $I$.\\
-    O conjunto de possíveis instalações a serem abertas $F$ será o conjunto de vértices $V$. O conjunto de clientes $D$ será o conjunto de arestas $E$. O custo de abertura $f_i$ será 1 para cada instalação $i$. O custo de atribuição $c_{ij} \text{, para } i \in F \text{ e } j \in D$, será 0 caso o vértice referente a $i$ seja extremo da aresta referente a $j$ e 2 caso contrário. \\
-    A resposta ótima será a menor quantidade de instalações que precisamos abrir até que todos os clientes possam ser atribuídos a instalações em que o seu custo de atribuição seja 0. Se um cliente está atribuído a uma instalação cujo custo de atribuição é 2, podemos diminuir o custo total abrindo uma instalação que o custo de sua atribuição seja 0, uma vez que abrir a instalação custaria 1 e diminuiríamos o custo de atribuição do cliente de 2 para 0. Sabemos que essa instalação existe, pois cada cliente contém duas instalações com custo de atribuição 0. \\
+    Suponha que exista um algoritmo $A$ que resolva o problema localização de instalações em tempo polinomial. \\
+    Seja $I(G,k)$ uma instância do problema da cobertura por vértices em que $G = (V,E)$. Vamos criar uma instância $I'(F,D,c,f)$ do problema de localização de instalações a partir de $I$.\\
+    O conjunto de possíveis instalações a serem abertas $F$ será o conjunto de vértices $V$. O conjunto de clientes $D$ será o conjunto de arestas $E$. O custo de abertura $f_i$ será 1 para cada instalação $i$. O custo de atribuição $c_{ij} \text{, para } i \in F \text{ e } j \in D$, será 0 se o vértice referente a $i$ é extremo da aresta referente a $j$ e 2 caso contrário. \\
+    A resposta ótima será a menor quantidade de instalações que precisamos abrir até que todos os clientes possam ser atribuídos a instalações em que o seu custo de atribuição é 0. Se um cliente está atribuído a uma instalação cujo custo de atribuição é 2, podemos diminuir o custo total abrindo uma instalação em que o custo de sua atribuição é 0, uma vez que abrir a instalação custaria 1 e diminuiríamos o custo de atribuição do cliente de 2 para 0. Sabemos que essa instalação existe, pois cada para cliente existem duas instalações com custo de atribuição 0. \\
     Assim, é fácil notar que esse é o tamanho mínimo de uma cobertura por vértices em $G$. Portanto, se o custo total da solução do algoritmo $A$ aplicado a instância $I'$ é menor ou igual a $k$, então a resposta para $I$ é sim. Caso contrário, a resposta é não. \\
-    Portanto, resolvemos o problema da cobertura de vértices em tempo polinomial, o que, assumindo $P\not=\NP$, é um absurdo.
+    Desse modo, resolvemos o problema da cobertura por vértices em tempo polinomial, o que, assumindo $P\not=\NP$, é um absurdo.
 \end{proof}
 \subsection{Algoritmos baseados no programa linear}
-Nessa seção vamos mostrar dois algoritmos para o problema de localização de instalações: o arredondamento do programa linear e um algoritmo que utiliza o método primal-dual. \\
-Para isso, vamos modelar o nosso problema como um programa inteiro. Vamos relaxa-lo e mostrar o seu dual que será usados em ambos os algoritmos. \\
-Nosso programa inteiro terá dois tipos de variáveis: as variáveis $y_i$ para cada $i \in F$ que terá valor 1 se a instalação $i$ foi aberta e 0 caso contrário, e as variáveis $x_{ij}$ para cada $i \in F$ e $j \in D$ que terá valor 1 se o cliente $j$ estiver atribuído a instalação $i$. Então o programa inteiro para a instância $I(F,D,c,f)$ é:
+Nessa seção vamos mostrar dois algoritmos para o problema localização de instalações: o arredondamento do programa linear e um algoritmo que utiliza o método primal-dual. \\
+Para isso, vamos modelar o nosso problema como um programa inteiro. Vamos relaxa-lo e mostrar o seu dual que será usado em ambos os algoritmos. \\
+Nosso programa inteiro terá dois tipos de variáveis: as variáveis $y_i$ para cada $i \in F$ que terá valor 1 se a instalação $i$ foi aberta e 0 caso contrário, e as variáveis $x_{ij}$ para cada $i \in F$ e $j \in D$ que terá valor 1 se o cliente $j$ estiver atribuído a instalação $i$ e 0 caso contrário. Então o programa inteiro para a instância $I(F,D,c,f)$ é:
 \begin{align}
  \text{Minimize} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \\
  \text{sujeito a} \quad & \sum_{i\in F} x_{ij}=1, \quad \forall j \in D \\
@@ -355,7 +355,7 @@ Para a relaxação, apenas impomos que $x_{ij} \geq 0$ e $y_i \geq 0$. Assim, te
 \red{Interpretar o dual.}
 \newpage
 \subsubsection{Arredondamento do programa linear.}
-Vamos assumir aqui que a função custo está no espaço métrico. Como a função custo só está definida de um cliente para uma instalação, então a desigualdade triangular terá uma cara diferente. Seja $j,l$ clientes e $i,k$ instalações, então
+Vamos assumir aqui que a função custo está no espaço métrico. Como a função custo só está definida de um cliente para uma instalação, então a desigualdade triangular terá uma cara diferente. Sejam $j,l$ clientes e $i,k$ instalações, então
 \[c_{ij} \leq c_{il} + c_{kl} + c_{kj}\]
 Vamos então definir algumas coisas que serão necessárias no nosso algoritmo.
 \begin{definition}
@@ -368,7 +368,7 @@ Dada essa definição, vamos enunciar um lema que irá nos ajudar a provar uma c
 \begin{proof}
     Como $i \in N(j)$, então $x^*_{ij}>0$. Assim, pelas folgas complementares $v^*_j - w^*_{ij} = c_{ij}$. Como $w^*_{ij} \leq 0$, $c_{ij} \leq v^*_j$. 
 \end{proof}
-Com esse lema, sabemos que se em um conjunto $S \in F$ de instalações abertas para todo cliente $j \in D$ existe uma instalação aberta $i$ em $N(j)$, então $c_{ij}\leq v_j^*$ e o custo total de atribuição seria no máximo $\sum_{j\in D}v_j^* \leq \opt$, uma vez que vale a dualidade fraca. Entretanto, não é garantido uma cota superior para o custo de abertura de $S$. Vamos descobrir com encontrar um $S$ com um bom custo de abertura e um bom custo de atribuição. Seja $j_k$ um cliente qualquer. Se abrirmos a instalação $i_k$ mais barata de $N(j_k)$ conseguimos limitar o custo de sua abertura.
+Com esse lema, sabemos que se em um conjunto $S \in F$ de instalações abertas para todo cliente $j \in D$ existe uma instalação aberta $i$ em $N(j)$, então $c_{ij}\leq v_j^*$ e o custo total de atribuição seria no máximo $\sum_{j\in D}v_j^* \leq \opt$, uma vez que vale a dualidade fraca. Entretanto, não é garantido uma cota superior para o custo de abertura de $S$. Vamos descobrir como encontrar um $S$ com um bom custo de abertura e um bom custo de atribuição. Seja $j_k$ um cliente qualquer. Se abrirmos a instalação $i_k$ mais barata de $N(j_k)$ conseguimos limitar o custo de sua abertura.
 \[
     f_{i_k} = f_{i_k} \underbrace{\sum_{i \in N(j_k)}x^*_{ij_k}}_{=1} = \sum_{i \in N(j_k)}f_{i_k}x^*_{ij_k} \leq \sum_{i \in N(j_k)}f_{i_k}y^*_{i}
 \]
@@ -378,7 +378,7 @@ Essa informação será importante para a prova da razão do nosso algoritmo. Ag
 \begin{definition}
     Seja $j\in D$ um cliente. Definimos $N^2(j)$ o conjunto dos clientes $i \in D$ tal que $N(i) \cap N(j) \not = \emptyset$.
 \end{definition}
-Agora, vamos definir o algoritmo. $S$ será o conjunto das facilidades a serem abertas e $\sigma : D \rightarrow F $ a função que atribui um cliente a uma instalação aberta, ambos serão montados durante o algoritmo.
+Agora, vamos definir o algoritmo. $S$ será o conjunto das instalações a serem abertas e $\sigma : D \rightarrow F $ a função que atribui um cliente a uma instalação aberta, ambos serão montados durante o algoritmo.
 \begin{algorithm}
     \begin{algorithmic}[1]
         \Function{LI}{$F,D,c,f$}
@@ -402,8 +402,9 @@ Agora, vamos definir o algoritmo. $S$ será o conjunto das facilidades a serem a
     O algoritmo {\sc LI} é uma $4$-aproximação para o problema da localização de instalações.
 \end{theorem}
 \begin{proof}
-    Primeiro, vamos mostrar que o algoritmo é polinomial. Sabemos que é possível encontrar uma solução para o problema linear e o seu dual em tempo polinomial. Sabemos que o loop uma hora irá parar, uma vez que sempre retiramos pelo menos um elemento de $C$. Além disso, temos apenas comparações e operações de conjuntos o que sabemos que é possível fazer em tempo polinomial.
+    Primeiro, vamos mostrar que o algoritmo é polinomial. Sabemos que é possível encontrar uma solução para o problema linear e o seu dual em tempo polinomial. Sabemos que o loop irá rodar no máximo $|D|$ vezes, uma vez que sempre retiramos pelo menos um elemento de $C$. Além disso, temos apenas comparações e operações de conjuntos o que sabemos que é possível fazer em tempo polinomial.
     Agora, vamos mostrar que é uma $4$-aproximação.\\
+    Perceba que para $k_1$ e $k_2$ de diferentes iterações, $N(j_{k_1})\cap N(j_{k_2}) = \emptyset$, uma vez que se eles tivessem alguma instalação em comum nas suas vizinhanças eles seriam retirados de $C$ na mesma iteração. Seja $F' \subseteq F$, tal que $F' = \bigcup_k N(j_k)$. \\
     Vimos que $f_{i_k} \leq \sum_{i \in N(j_k)}f_{i_k}y^*_{i}$, então se somarmos para todo $k$, temos
     \[ \sum_kf_{i_k} \leq \sum_k \sum_{i \in N(j_k)}f_{i_k}y^*_{i} = \sum_{i \in S}f_{i_k}y^*_{i} \leq \sum_{i \in F}f_{i_k}y^*_{i} \leq \opt\]
     Agora, vamos fixar uma iteração $k$, seja $i = i_k$ e $j = j_k$. Pelo Lema~\ref{lemma:3.5}, sabemos que $c_{ij} \leq v^*_j$. Seja $l \in N^2(j) \setminus j$. Pela desigualdade triangular, seja $h \in N(l) \cap N(j)$, e como $j$ minimiza $v^*_j$, temos
