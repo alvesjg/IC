@@ -29,7 +29,7 @@
 \renewcommand{\algorithmicfor}{\textbf{Para}}
 \renewcommand{\algorithmicdo}{\textbf{faça}}
 \renewcommand{\algorithmicwhile}{\textbf{Enquanto}}
-\renewcommand{\algorithmicfunction}{\textbf{Função}}
+\renewcommand{\algorithmicfunction}{\textbf{Algoritmo}}
 
 \newcommand{\opt}{\ensuremath{\mathrm{opt}}}
 \newcommand{\OPT}{\ensuremath{\mathrm{opt}}}
@@ -45,13 +45,12 @@
 \newcommand{\scs}{\mbox{{\sc scs}}}
 \newcommand{\NP}{\mathit{NP}}
 \newcommand{\red}[1]{{\color{red}{#1}}}
-
 % \setlength{\parskip}{0.1cm}
 \sloppy
 \begin{document}
 \begin{center}
   
-{\Large {\bf Algoritmos de Aproximação para Problemas de Clustering}
+{\Large {\bf Algoritmos de Aproximação para \\Problemas de Clustering}
 }
 
 \vspace{0.2cm}
@@ -75,39 +74,60 @@ Este é o projeto de pesquisa do aluno de graduação João Guilherme Alves Sant
 
 \section{Introdução}
 
-Problemas de otimização têm o objetivo de encontrar um ponto ótimo de uma função definida sobre um certo domínio. Especificamente, os problemas de otimização combinatória têm domínio finito. Muitos desses problemas são $\NP$-difíceis. Portanto, como é imaginado que $P\not=\NP$, encontrar a solução exata desses problemas é nada eficiente. Em geral, definimos o valor ótimo de uma instância $I$ de um problema como \opt($I$).
+Problemas de otimização têm o objetivo de encontrar um ponto ótimo de uma função definida sobre um certo domínio. Especificamente, os problemas de otimização combinatória têm domínio finito. Muitos desses problemas são $\NP$-difíceis. Para problemas $\NP$-difíceis, não existem algoritmos eficientes que encontrem uma solução ótima para toda instância de tais problemas a menos que $P = \NP$.
 
-Nesse contexto, algoritmos de aproximação surgiram para que pudéssemos sacrificar a otimalidade da solução ótima para encontrar, eficientemente, uma solução cujo valor garante uma relação pré-estabelecida com o valor ótimo. 
+Nesse contexto, algoritmos de aproximação surgiram. A ideia é abrir mão de encontrar soluções ótimas para encontrar, eficientemente, uma solução cujo valor garante uma relação pré-estabelecida com o valor ótimo. 
 
-Clustering são problemas cujo objetivo é agrupar objetos de maneira que objetos no mesmo cluster apresentam mais semelhanças quando comparados a objetos em clusters diferentes. Tais semelhanças serão definidas pelo problema em questão. Neste projeto, iremos estudar três problemas de clustering: $k$-centros, localização de instalações e $k$-mediana. 
+Clustering refere-se a uma classe de problemas de otimização cujo objetivo é agrupar objetos de maneira que objetos no mesmo cluster apresentam mais semelhanças quando comparados a objetos em clusters diferentes. Tais semelhanças serão definidas pelo problema em questão. Neste projeto, iremos estudar, sob o ponto de vista de algoritmos de aproximação, três problemas de clustering $\NP$-difíceis: localização de instalações, $k$-mediana e $k$-centros. 
+
+Localização de instalações é um problema que visa determinar a melhor localização para instalações, como fábricas ou depósitos, com base no custo de abertura das instalações e custos de transporte. Além disso, pode ser modelado para outras aplicações como problemas de posicionamento de caches em um computador ou problemas de projeto de redes.
+
+Existem várias versões do problema de localização de instalações, a mais simples delas é a versão sem capacidades em que as instalações não têm limitações para suprir os clientes.
+
+No problema de localização de instalações sem capacidades, temos um grafo $(F,D)$-bipartido completo em que $D$ é o conjunto de clientes a serem atendidos e $F$ o conjunto de instalações que podem ser abertas. Para cada cliente $j \in D$ e cada instalação $i \in F$, há um custo $c_{ij}$ para a aresta $ij$ em associar o cliente $j$ à instalação $i$. Além disso, existe um custo de abertura $f_i$ para cada instalação $i \in F$. O objetivo do problema é escolher um conjunto $F' \subseteq F$ e uma função que associe cada cliente a uma instalação aberta tal que o custo total de abertura das instalações em~$F'$ somado ao custo de associação de cada cliente $j \in D$ à instalação em que ele está associado seja minimizado. Em outras palavras, queremos encontrar $F' \subseteq F$ e uma função $\sigma$ que minimize $\sum_{i\in F'} f_i + \sum_{j \in D} c_{\sigma(j)j}$. 
+
+O problema $k$-mediana é muito parecido com o problema de localização de instalações. A diferença aqui é que não temos custo para a abertura de instalações e podemos abrir no máximo $k$ delas.
+ 
+Assim como no localização de instalações, no problema $k$-mediana temos um grafo $(F,D)$-bipartido completo em que $D$ é o conjunto de clientes a serem atendidos e $F$ o conjunto de instalações que podem ser abertas. Para cada cliente $j \in D$ e cada instalação $i \in F$, há um custo $c_{ij}$ para a aresta $ij$ em associar o cliente $j$ à instalação $i$. Temos também um inteiro $k$ que representa a quantidade de instalações que podem ser abertas. Então, queremos encontrar um conjunto $F' \subseteq F$ de tamanho $k$ e uma função que associe cada cliente a uma instalação aberta tal que o custo total de associação seja minimizado.
+
+No problema dos $k$-centros não existe essa diferenciação entre instalações que podem ser abertas e clientes, teremos cidades e escolheremos $k$ delas para construir instalações.
+
+Então, temos um grafo $G(V,E)$ completo em que $V$ são cidades e temos um custo $c_{e}$ para associar as cidades que são extremos de $e$. Temos também um inteiro $k$ que representa a quantidade de cidades em que uma instalação será aberta. Cada cidade será associada a uma cidade com uma instalação aberta com menor custo de associação entre elas. O objetivo do nosso problema é diminuir o maior custo de associação entre uma cidade qualquer e a cidade a qual ela está associada.
 
 
 
-O primeiro deles, o $k$-centros, é um problema clássico de otimização combinatória. Dadas $n$ cidades com distâncias especificadas entre elas e um número $k$, o problema quer determinar qual o melhor jeito de construir $k$ depósitos dentre um conjunto determinado das cidades tais que a maior distância entre uma cidade e o depósito mais próximo seja a menor possível.
-
-Nosso problema é modelado como um grafo completo $G(V,E)$, onde $V$ são as cidades e temos uma função distância~$d$ em que $d(e)$ representa a distância das cidades ligadas pela aresta $e$. O objetivo é encontrar um subconjunto $C \subseteq V$ de tamanho $k$ que minimize $\max_{v\in V}d(v,C)$ sendo $d(v,C) = \min_{u\in C}d(vu)$.
-
-Trabalharemos aqui com a versão métrica do problema em que a função $d$ obedece a desigualdade triangular, ou seja, $d(uv) \leq d(ux) + d(xv)$ para todas as triplas de vértices $u$, $x$, $v$. Veremos que, para qualquer função polinomialmente computável~$\alpha(n)$, não existe $\alpha(n)$-aproximação para a versão não métrica desse problema, assumindo $P\not=\NP$. Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema do $k$-centros, assumindo $P\not=\NP$. Assim, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2. 
+Diversos métodos podem ser utilizados para aproximar o problema de localização de instalações. Charikar e Guha desenvolveram um algoritmo com razão de aproximação $2.414$ utilizando o método de busca local~\cite{Charikar&Guha'05}.  Esse problema também pode ser modelado como um problema de programação inteira e, por isso, técnicas envolvendo programação linear podem ser aplicadas a ele.  Por exemplo, há algoritmos que fazem o arredondamento de soluções da relaxação linear do programa inteiro para obter uma solução aproximada do problema.  Alguns destes algoritmos atingem boas razões de aproximação, por exemplo, chegando a 1.677~\cite{Byrka&Aardal'10}. Entretanto, a melhor aproximação encontrada utiliza de vários métodos, incluindo o conhecido método primal-dual, e garante uma razão de aproximação 1.488~\cite{LI'13}. Essa não é muito distante do melhor que se poderia encontrar, uma vez que Guha e Khuller mostraram que não existe algoritmo para esse problema com razão de aproximação melhor que 1.463~\cite{GUHA1999228}, a menos que $P = \NP$.
 
 
-Localização de instalações é um problema clássico de otimização que determina a melhor localização para instalações, como fábricas ou depósitos, com base em demandas geográficas, custos de abertura de instalações e distâncias de transporte. Além disso, eles podem ser modelados para outras aplicações como problemas de posicionamento de caches em um computador ou problemas de projeto de redes.
+Dentre os três problemas apresentados, o $k$-mediana é o que tem a maior folga entre o melhor resultado de inaproximabilidade e a razão do melhor algoritmo de aproximação conhecido. Jain, Mahdian e Saberi provaram que não existe algoritmo polinomial com razão de aproximação $1+ \frac{2}{e}$ para o $k$-mediana~\cite{JMS'02}, assumindo que $P \not = \NP$, enquanto a melhor aproximação encontrada tem razão $2.675 + \epsilon$~\cite{BPRST'17}.
 
-Existem várias versões do problema de localização de instalações. O mais simples deles é o de localização de instalações sem capacidades, ou seja, em que as instalações não tem limitações para suprir clientes.
 
-No problema de localização de instalações sem capacidades, temos um conjunto de clientes $D$ e um conjunto de instalações $F$. Para cada cliente $j \in D$ e cada instalação $i \in F$, há um custo $c_{ij}$ em associar o cliente $j$ à instalação $i$. Além disso, existe um custo de abertura $f_i$ para cada instalação $i \in F$. O objetivo do problema é escolher um subconjunto $F' \subseteq F$ que minimize o custo total de abertura das instalações em~$F'$ somado ao custo de associação de cada cliente $j \in D$ à instalação em~$F'$ mais próxima a ele. Em outras palavras, queremos encontrar $F' \subseteq F$ que minimize $\sum_{i\in F'} f_i + \sum_{j \in D} \min_{i\in F'}c_{ij}$.
+Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema dos $k$-centros, assumindo que $P\not=\NP$. Neste caso, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2.
+% O primeiro deles, o $k$-centros, é um problema clássico de otimização combinatória. Dadas $n$ cidades com distâncias especificadas entre elas e um número $k$, o problema quer determinar qual o melhor jeito de construir $k$ depósitos dentre um conjunto determinado das cidades tais que a maior distância entre uma cidade e o depósito mais próximo seja a menor possível.
 
-Diversos métodos podem ser utilizados para aproximar o problema de localização de instalações. Charikar e Guha desenvolveram um algoritmo com razão de aproximação $2.414$ utilizando o método de busca local~\cite{Charikar&Guha'05}.  Esse problema também pode ser modelado como um problema de programação inteira e, por isso, técnicas envolvendo programação linear podem ser aplicadas a ele.  Por exemplo, há algoritmos que fazem o arredondamento de soluções da relaxação linear do programa inteiro para obter uma solução do problema.  Alguns destes algoritmos atingem boas razões de aproximação, por exemplo, chegando a 1.677~\cite{Byrka&Aardal'10}. Entretanto, a melhor aproximação encontrada utiliza de vários métodos, incluindo o primal-dual, e garante uma razão de aproximação 1.488~\cite{LI'13}. Essa não é muito distante do melhor que se poderia encontrar, uma vez que Guha e Khuller mostraram que não existe algoritmo para esse problema com razão de aproximação melhor que 1.463~\cite{GUHA1999228}, a menos que $P = \NP$.
+% Nosso problema é modelado como um grafo completo $G(V,E)$, onde $V$ são as cidades e temos uma função distância~$d$ em que $d(e)$ representa a distância das cidades ligadas pela aresta $e$. O objetivo é encontrar um subconjunto $C \subseteq V$ de tamanho $k$ que minimize $\max_{v\in V}d(v,C)$ sendo $d(v,C) = \min_{u\in C}d(vu)$.
 
-O problema $k$-mediana é muito parecido com o problema de localização de instalações. A diferença aqui é que não temos custo para a abertura de instalações e podemos abrir no máximo $k$ delas. Assim, como no $k$-centros também vamos modelar nosso problema como um grafo e vamos também trabalhar com a versão métrica do problema.
+% Trabalharemos aqui com a versão métrica do problema em que a função $d$ obedece a desigualdade triangular, ou seja, $d(uv) \leq d(ux) + d(xv)$ para todas as triplas de vértices $u$, $x$, $v$. Veremos que, para qualquer função polinomialmente computável~$\alpha(n)$, não existe $\alpha(n)$-aproximação para a versão não métrica desse problema, assumindo $P\not=\NP$. Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema do $k$-centros, assumindo $P\not=\NP$. Assim, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2. 
 
-Uma instância do $k$-mediana consiste em um grafo ($F,C$)-bipartido completo, sendo $F$ o conjunto das instalações e $C$ o conjunto das cidades, um número inteiro $k$ positivo que representa a quantidade de instalações que podem ser abertas e um custo $c_{ij}$ de conexão de cada cidade $j$ a cada instalação $i$. Devemos determinar um conjunto $I \subseteq F$ tal que $|I| \leq k$ de instalações a serem abertas e uma função que atribua cada cidade a uma instalação aberta tal que minimize o custo total de conexão.
 
-Dentre os três problemas apresentados, esse é o que tem a maior folga entre o melhor resultado de inaproximabilidade e a razão do melhor algoritmo de aproximação. Jain, Mahdian e Saberi provaram que não existe algoritmo polinomial com razão de aproximação $1+ \frac{2}{e}$ para o $k$-mediana ~\cite{JMS'02}, enquanto a melhor aproximação encontrada tem razão $2.675 + \epsilon$~\cite{BPRST'17}.
+% Localização de instalações é um problema clássico de otimização que determina a melhor localização para instalações, como fábricas ou depósitos, com base em demandas geográficas, custos de abertura de instalações e distâncias de transporte. Além disso, eles podem ser modelados para outras aplicações como problemas de posicionamento de caches em um computador ou problemas de projeto de redes.
+
+% Existem várias versões do problema de localização de instalações. O mais simples deles é o de localização de instalações sem capacidades, ou seja, em que as instalações não tem limitações para suprir clientes.
+
+
+
+% Diversos métodos podem ser utilizados para aproximar o problema de localização de instalações. Charikar e Guha desenvolveram um algoritmo com razão de aproximação $2.414$ utilizando o método de busca local~\cite{Charikar&Guha'05}.  Esse problema também pode ser modelado como um problema de programação inteira e, por isso, técnicas envolvendo programação linear podem ser aplicadas a ele.  Por exemplo, há algoritmos que fazem o arredondamento de soluções da relaxação linear do programa inteiro para obter uma solução do problema.  Alguns destes algoritmos atingem boas razões de aproximação, por exemplo, chegando a 1.677~\cite{Byrka&Aardal'10}. Entretanto, a melhor aproximação encontrada utiliza de vários métodos, incluindo o primal-dual, e garante uma razão de aproximação 1.488~\cite{LI'13}. Essa não é muito distante do melhor que se poderia encontrar, uma vez que Guha e Khuller mostraram que não existe algoritmo para esse problema com razão de aproximação melhor que 1.463~\cite{GUHA1999228}, a menos que $P = \NP$.
+
+% O problema $k$-mediana é muito parecido com o problema de localização de instalações. A diferença aqui é que não temos custo para a abertura de instalações e podemos abrir no máximo $k$ delas. Assim, como no $k$-centros também vamos modelar nosso problema como um grafo e vamos também trabalhar com a versão métrica do problema.
+
+% Uma instância do $k$-mediana consiste em um grafo ($F,C$)-bipartido completo, sendo $F$ o conjunto das instalações e $C$ o conjunto das cidades, um número inteiro $k$ positivo que representa a quantidade de instalações que podem ser abertas e um custo $c_{ij}$ de conexão de cada cidade $j$ a cada instalação $i$. Devemos determinar um conjunto $I \subseteq F$ tal que $|I| \leq k$ de instalações a serem abertas e uma função que atribua cada cidade a uma instalação aberta tal que minimize o custo total de conexão.
+
+% Dentre os três problemas apresentados, esse é o que tem a maior folga entre o melhor resultado de inaproximabilidade e a razão do melhor algoritmo de aproximação. Jain, Mahdian e Saberi provaram que não existe algoritmo polinomial com razão de aproximação $1+ \frac{2}{e}$ para o $k$-mediana ~\cite{JMS'02}, enquanto a melhor aproximação encontrada tem razão $2.675 + \epsilon$~\cite{BPRST'17}.
 
 \newpage
 \section{$k$-Centros}
 
-Seja $I(G,d,k)$ uma instância do problema dos $k$-centros e $C \subseteq V$ uma solução viável para $I$. Vamos definir alguns termos que facilitarão as explicações seguintes. Os vértices de $C$ serão chamados \emph{centros de cluster}. Os vértices de $V$ serão particionados em $k$ conjuntos chamados \emph{clusters} e cada um deles terá exatamente um centro de cluster. Um vértice estará no mesmo cluster que um centro de cluster mais próximo a ele. Cada cluster terá um \emph{raio} que é a maior distância entre o seu centro e um vértice qualquer dele. O nosso problema se resume a encontrar um conjunto $C$ que minimize o maior desses raios. Denotamos por raio$(C)$ o maior raio de um cluster induzido por $C$.\\
+Seja $I(G,c,k)$ uma instância do problema dos $k$-centros e $C \subseteq V$ uma solução viável para $I$. Vamos definir alguns termos que facilitarão as explicações seguintes. Os vértices de $C$ serão chamados \emph{centros de cluster}. Os vértices de $V$ serão particionados em $k$ conjuntos chamados \emph{clusters} e cada um deles terá exatamente um centro de cluster. Um vértice estará no mesmo cluster que um centro de cluster associado a ele. Cada cluster terá um \emph{raio} que é o maior custo entre o seu centro e um vértice qualquer dele. O nosso problema se resume a encontrar um conjunto $C$ que minimize o maior desses raios. Denotamos por raio$(C)$ o maior raio de um cluster induzido por $C$.\\
 Antes de falarmos sobre algoritmos de aproximação para o problema dos $k$-centros, vamos mostrar que, assumindo $P\not=\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema do $k$-conjunto dominante.
 
 \begin{definition}
@@ -124,14 +144,14 @@ Esse problema é $\NP$-completo, sendo o problema GT2 do famoso livro de Garey e
 \end{theorem}
 
 \begin{proof}
-    Suponha que exista um algoritmo $A$ que resolve o problema dos $k$-centros em tempo polinomial. Seja $G = (V,E)$ um grafo e $I(G,k)$ uma instância do problema $k$-conjunto dominante. Vamos criar uma instância $I'(G',k,d)$ do problema dos $k$-centros a partir da instância $I$. A instância $I'$ tem como grafo $G'(V,E')$ completo tal que, para todo $e \in E'$, \\
+    Suponha que exista um algoritmo $A$ que resolve o problema dos $k$-centros em tempo polinomial. Seja $G = (V,E)$ um grafo e $I(G,k)$ uma instância do problema $k$-conjunto dominante. Vamos criar uma instância $I'(G',c,k)$ do problema dos $k$-centros a partir da instância $I$. A instância $I'$ tem como grafo $G'(V,E')$ completo tal que, para todo $e \in E'$, \\
     \[
-    d(e) = \begin{cases}
+    c_e = \begin{cases}
             1, \text{ se } e \in E \\
             2, \text{ caso contrário.} 
             \end{cases}\]\\
-    Note que $d$ satisfaz a desigualdade triangular e pode ser obtida de $I$ em tempo polinomial.\\
-    O algoritmo aplicado à instância $I'$ encontra uma solução $C$, ou seja, um conjunto de $k$ centros de cluster. \\Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster com uma aresta de $G$ e assim $C$ é um conjunto dominante em $G$. \\
+    Note que $c$ satisfaz a desigualdade triangular e pode ser obtida de $I$ em tempo polinomial.\\
+    O algoritmo aplicado à instância $I'$ encontra uma solução $C$, ou seja, um conjunto de $k$ centros de cluster. Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster com uma aresta de $G$ e assim $C$ é um conjunto dominante em $G$. \\
     Como o algoritmo $A$ minimiza o raio de $C$, se raio$(C)=2$, não existe uma solução para $I'$ em que os vértices estejam ligados ao centro do seus clusters apenas por arestas de $G$ e, por isso, não existe um conjunto dominante de tamanho menor ou igual a $k$ em $G$.
 
     Portanto, conseguimos resolver em tempo polinomial o problema do $k$-conjunto dominante, o que implicaria que $P = \NP$.
@@ -144,14 +164,14 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
 
 \begin{proof}
         A demonstração desse teorema é muito parecida com a do Teorema~\ref{theorem:2.3}. \\
-        Seja $G = (V,E)$. Suponha que exista um algoritmo polinomial $A$ que é uma $\alpha(n)$-aproximação do $k$-centros e seja $I(G,k)$ uma instância do problema do $k$-conjunto dominante em que $G$ tem $n$ vértices. Vamos criar uma instância $I'(G',k,d)$ do problema dos $k$-centros a partir da instância $I$. A instância $I'$ tem como grafo $G'(V,E')$ completo tal que, para cada $e \in E'$, \\
-    \[d(e) = \begin{cases}
+        Seja $G = (V,E)$. Suponha que exista um algoritmo polinomial $A$ que é uma $\alpha(n)$-aproximação do $k$-centros e seja $I(G,k)$ uma instância do problema do $k$-conjunto dominante em que $G$ tem $n$ vértices. Vamos criar uma instância $I'(G',c,k)$ do problema dos $k$-centros a partir da instância $I$. A instância $I'$ tem como grafo $G'(V,E')$ completo tal que, para cada $e \in E'$, \\
+    \[c_e = \begin{cases}
             1, \text{ se } e \in E \\
             \alpha(n)+1, \text{ caso contrário.} 
             \end{cases}\]\\
     Como $\alpha(n)$ é uma função computável, essa instância pode ser construída a partir de $I$ em tempo polinomial. \\
-    Se $\alpha(n)=1$, então $d$ obedece a desigualdade triangular e $A$ é um algoritmo polinomial e exato, o que, pelo Teorema~\ref{theorem:2.3}, é absurdo. Então, suponha $\alpha(n)>1$. \\
-    O algoritmo aplicado à instância $I'$ encontra uma solução $C$ de tamanho $k$. Como $d(e) = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$.\\
+    Se $\alpha(n)=1$, então $c$ obedece a desigualdade triangular e $A$ é um algoritmo polinomial e exato, o que, pelo Teorema~\ref{theorem:2.3}, é absurdo. Então, suponha $\alpha(n)>1$. \\
+    O algoritmo aplicado à instância $I'$ encontra uma solução $C$ de tamanho $k$. Como $c_e = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$.\\
     Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster com aresta de $G$, e assim $C$ é um conjunto dominante em $G$. \\
     Se raio$(C) = \alpha(n) + 1$, então $\opt(I) \geq \frac{\alpha(n)+1}{\alpha(n)}>1$. Assim, não existe solução $C'$ tal que raio$(C')=1$ e não existe $k$-conjunto dominante em $G'$ que utilize apenas arestas de $G$.
     Portanto, conseguimos resolver o problema do $k$-conjunto dominante em tempo polinomial o que, assumindo que $P \not= \NP$, é um absurdo.
@@ -167,20 +187,20 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
     Começaremos por um algoritmo simples, mas que garante a melhor razão de aproximação.
     
 \newpage
-\subsection{Algoritmo guloso.}
-    Seja $G = (V,E)$ o grafo da instância do problema e $d(e)$ o custo de uma aresta $e \in E$.
-    Relembremos a função $d(u,S)$ que é definida para um vértice $u$ e um conjunto $S$ de vértices  por,
-    \[ d(u,S) = \min_{v\in S} d(uv)
+\subsection{Algoritmo guloso}
+    Seja $G = (V,E)$ o grafo da instância do problema e $c_e$ o custo de uma aresta $e \in E$.
+    Definimos a função $c(u,S)$ que é definida para um vértice $u$ e um conjunto $S$ de vértices  por,
+    \[ c(u,S) = \min_{v\in S} c_{uv}
         \]
-    A ideia desse algoritmo guloso se concentrará em, a cada iteração, escolher o vértice $u$ tal que $d(u,C)$ seja o maior possível, sendo $C$ o conjunto dos centros de cluster escolhidos até aquele momento.
+    A ideia desse algoritmo guloso se concentrará em, a cada iteração, escolher o vértice $u$ tal que $c(u,C)$ seja o maior possível, sendo $C$ o conjunto dos centros de cluster escolhidos até aquele momento.
 
     \begin{algorithm}
 		\begin{algorithmic}[1]
-			\Function{guloso}{$G,d,k$}
+			\Function{G}{$G,c,k$}
 			\State Escolha arbitrariamente $u \in V$.
             \State $C \gets \{u\}$.
             \While{$|C| \leq k$}
-            \State $v \gets \arg\max_{j \in V} d(j,C)$
+            \State $v \gets \arg\max_{j \in V} c(j,C)$
             \State $C \gets C \cup \{v\}$
             \EndWhile 
 			\State Devolva $C$.
@@ -189,16 +209,17 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
 	\end{algorithm}
     
     \begin{theorem}
-        O algoritmo {\sc guloso}$(G,d,k)$ é uma $2$-aproximação do problema dos $k$-centros.
+        O algoritmo {\sc G}$(G,c,k)$ é uma $2$-aproximação do problema dos $k$-centros.
     \end{theorem}
     \begin{proof}
-        Primeiramente, vamos mostrar que o algoritmo é polinomial. A única linha que não é claramente polinomial é a linha $5$. Para cada vértice $v \in V$, vamos olhar a distância de $|C|$ arestas. Como $|C| \leq |V|$, então iremos olhar a distância de no máximo $|V|^2$ arestas a cada iteração. Assim, nosso algoritmo roda em tempo $O(k|V|^2)$. \\
-        Seja $C^*$ um conjunto ótimo de centros de cluster para $I(G,d,k)$. Vamos mostrar que raio$(C) \leq 2\opt(I) $. Perceba que a distância entre dois vértices quaisquer de um mesmo cluster de $C^*$ é no máximo $2\opt(I)$, uma vez que vale a desigualdade triangular.\\ 
-        Se há um vértice de $C$ em cada cluster de $C^*$, todos os vértices estão a uma distância de no máximo $2\opt(I)$ de um centro de cluster de $C$. Então raio$(C) \leq 2\opt(I)$. \\
-        Senão, suponha sem perda de generalidade que $C_{i-1} = \{ u_1,u_2,\ldots,u_{i-1}\}$ é o $C$ ao final da iteração $i-1$ e cada $u_j$ está em um cluster diferente de $C^*$. Seja $u_i$ o vértice escolhido na iteração $i$ e suponha que ele está no mesmo cluster que um vértice $u_j$ para algum $j=1,\ldots,i-1$. Então, $d(u_i,C_{i-1}) \leq d(u_iu_j) \leq 2\opt(I)$. Como $u_i$ maximiza $d(v,C_{i-1})$, então raio$(C) \leq 2\opt(I)$.
+        Primeiramente, vamos mostrar que o algoritmo é polinomial. A única linha que não é claramente polinomial é a linha $5$. Para cada vértice $v \in V$, vamos olhar o custo de $|C|$ arestas. Como $|C| \leq |V|$, então iremos olhar o custo de no máximo $|V|^2$ arestas a cada iteração. Assim, nosso algoritmo roda em tempo $O(k|V|^2)$. \\
+        Seja $C^*$ um conjunto ótimo de centros de cluster para $I(G,c,k)$. Vamos mostrar que raio$(C) \leq 2\opt(I) $. Perceba que o custo entre dois vértices quaisquer de um mesmo cluster de $C^*$ é no máximo $2\opt(I)$, uma vez que vale a desigualdade triangular.\\ 
+        Se há um vértice de $C$ em cada cluster de $C^*$, todos os vértices estão ligados com uma aresta de custo no máximo $2\opt(I)$ a um centro de cluster de $C$. Então raio$(C) \leq 2\opt(I)$. \\
+        Senão, suponha sem perda de generalidade que $C_{i-1} = \{ u_1,u_2,\ldots,u_{i-1}\}$ é o $C$ ao final da iteração $i-1$ e cada $u_j$ está em um cluster diferente de $C^*$. Seja $u_i$ o vértice escolhido na iteração $i$ e suponha que ele está no mesmo cluster que um vértice $u_j$ para algum $j=1,\ldots,i-1$. Então, $c(u_i,C_{i-1}) \leq c(u_iu_j) \leq 2\opt(I)$. Como $u_i$ maximiza $c(v,C_{i-1})$, então raio$(C) \leq 2\opt(I)$.
     \end{proof}
+    Esse algoritmo é de autoria de Gonzalez~\cite{GONZALEZ1985293}.
     Vamos mostrar que essa análise é justa, ou seja, existe uma instância $I(G,d,k)$ em que o algoritmo devolve uma solução $C$ tal que raio$(C) = 2 \opt(I)$. \\
-    O grafo $G$ contém pelo menos $k+2$ vértices e as arestas têm distância 1 ou 2. O grafo induzido pelas arestas de distância 1 é uma estrela, como mostrado na figura abaixo.
+    O grafo $G$ contém pelo menos $k+2$ vértices e as arestas têm custo 1 ou 2. O grafo induzido pelas arestas de custo 1 é uma estrela, como mostrado na figura abaixo.
     \[
     \begin{tikzpicture}
         % Number of outer vertices in the star
@@ -228,7 +249,7 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
       \end{tikzpicture}
       \] \\
       Claramente, o raio de uma resposta ótima dessa instância é 1 e inclui o vértice do centro da estrela como um dos centros de cluster. \\
-      Note que se, no algoritmo guloso, o vértice escolhido arbitrariamente for algum dos vértices da ponta dessa estrela o vértice do centro nunca será escolhido. Assim, serão escolhidos apenas vértices da ponta da estrela e como temos pelo menos $k+1$ delas, sempre existirá um vértice ligado ao centro do seu cluster com uma aresta de distância~2.
+      Note que se, no algoritmo guloso, o vértice escolhido arbitrariamente for algum dos vértices da ponta dessa estrela o vértice do centro nunca será escolhido. Assim, serão escolhidos apenas vértices da ponta da estrela e como temos pelo menos $k+1$ delas, sempre existirá um vértice ligado ao centro do seu cluster com uma aresta de custo 2.
 \newpage
 
 
@@ -239,8 +260,8 @@ Para esse algoritmo será necessário saber o que é um conjunto independente de
 \begin{definition}
     Seja $G = (V,E)$ um grafo. Um conjunto $S \subseteq V$ é um conjunto \emph{independente} se não existe $e \in E$ que tenha ambos os extremos em $S$.
 \end{definition}
-Seja $I(G,d,k)$ uma instância do problema dos $k$-centros. Vamos supor que as arestas $E = \{e_1,e_2,\ldots,e_{|E|}\}$ de $G$ estejam dispostas de forma que $d(e_i) \leq d(e_{i+1})$ para todo $i \in [|E|-1]$. Como sabemos que é possível ordenar em tempo polinomial, podemos assumir isso. \\
-Seja $E_i = \{e_1,e_2,\ldots,e_i\}$ e $G_i = (V,E_i)$. Seja também $i^*$ o menor $i$ tal que $G_i$ tem um $k$-conjunto dominante. Como $G$ é completo, $i^*$ existe. Claramente $d(e_{i^*}) = \opt(I)$, porém não conseguimos encontrar $i^*$ eficientemente, uma vez que não é possível saber se um grafo tem um $k$-conjunto dominante em tempo polinomial, a menos que $P = \NP$. Portanto, vamos usar um conjunto independente maximal para aproximar uma resposta.
+Seja $I(G,c,k)$ uma instância do problema dos $k$-centros. Vamos supor que as arestas $E = \{e_1,e_2,\ldots,e_{|E|}\}$ de $G$ estejam dispostas de forma que $c_{e_i} \leq c_{e_{i+1}}$ para todo $i \in [|E|-1]$. Como sabemos que é possível ordenar em tempo polinomial, podemos assumir isso. \\
+Seja $E_i = \{e_1,e_2,\ldots,e_i\}$ e $G_i = (V,E_i)$. Seja também $i^*$ o menor $i$ tal que $G_i$ tem um $k$-conjunto dominante. Como $G$ é completo, $i^*$ existe. Claramente $c_{e_{i^*}} = \opt(I)$, porém não conseguimos encontrar $i^*$ eficientemente, uma vez que não é possível saber se um grafo tem um $k$-conjunto dominante em tempo polinomial, a menos que $P = \NP$. Portanto, vamos usar um conjunto independente maximal para aproximar uma resposta.
 
 \begin{lemma}\label{lemma:2.8}
     Seja $G = (V,E)$ um grafo. Um conjunto independente maximal em $G$ é também um conjunto dominante.
@@ -248,9 +269,9 @@ Seja $E_i = \{e_1,e_2,\ldots,e_i\}$ e $G_i = (V,E_i)$. Seja também $i^*$ o meno
 \begin{proof}
     Seja $G = (V,E)$ e $S$ um conjunto independente maximal em $G$. Suponha, por absurdo, que $S$ não é um conjunto dominante. Então, existe vértice $u \in V \setminus S$ que não é vizinho de nenhum dos vértices de $S$. Portanto, $S \cup \{u\}$ é também um conjunto independente e $S \subset \{S \cup \{u\}\}$. Contradição, pois $S$ é maximal.
 \end{proof}
-Então, se encontrarmos um conjunto independente maximal de tamanho $k$ em $G$ teremos um conjunto dominante de mesmo tamanho. No entanto, não conseguimos garantir que iremos encontrar esse conjunto em $G$ e, por isso, vamos definir e usar $G^2$.
+Então, se encontrarmos um conjunto independente maximal de tamanho $k$ em $G$ teremos um conjunto dominante de mesmo tamanho. No entanto, não conseguimos garantir que iremos encontrar esse conjunto em $G$ e, por isso, vamos definir e usar o seu quadrado.
 \begin{definition}
-    Seja $G= (V,E)$ um grafo. $G^2 = (V,E^2)$ é chamado \emph{quadrado} de $G$ e $E^2 = E \cup \{uv: \text{distância de u a v em $G$ é $2$}\}$.
+    Seja $G= (V,E)$ um grafo. Denotamos por $G^2 = (V,E^2)$ o \emph{quadrado} de $G$ em que $E^2 = E \cup \{uv: \text{distância de u a v em $G$ é $2$}\}$.
 \end{definition}
 Dada a definição vamos enunciar e provar um lema que nos ajudará no algoritmo.
 \begin{lemma}\label{lemma:2.10}
@@ -261,13 +282,13 @@ Dada a definição vamos enunciar e provar um lema que nos ajudará no algoritmo
     Seja $G = (V,E)$ um grafo, $G^2$ o seu quadrado e $k$ um inteiro positivo. Suponha que $G^2$ tem um conjunto independente maximal $S \subset V$ tal que $|S| > k$. Seja $D$ um conjunto dominante em $G$, vamos mostrar que $|D| > k$. \\
     Por definição, não existe um caminho de tamanho $2$ ou uma aresta entre dois vértices de $S$ em $G$. Seja $u \in D$, vamos mostrar que $u$ cobre no máximo $1$ vértice de $S$ em $G$. \\
     Se $u \in S$, o único vértice de $S$ coberto por $u$ é ele mesmo, uma vez que não existe aresta entre dois vértices de $S$ em $G$. \\
-    Se $u \not \in S$, $u$ pode cobrir apenas um vértice de $S$, caso cobrisse $2$, digamos $v$ e $w$, então $P = (vu,uw)$ é um caminho de tamanho $2$ com extremos em $v$ e $w$ em $G$. Assim, $vw$ é uma aresta em $G^2$ e $v$ e $w$ não podem pertencer a $S$ ao mesmo tempo. \\
+    Se $u \not \in S$, $u$ pode cobrir apenas um vértice de $S$, caso cobrisse $2$, digamos $v$ e $w$, então $P = (vu,uw)$ é um caminho de tamanho $2$ com extremos em $v$ e $w$ em $G$. Assim, $vw$ é uma aresta em $G^2$ e eles não podem pertencer a $S$ ao mesmo tempo. \\
     Portanto, $|D| \geq |S| > k$.
 \end{proof}
 Agora, temos todas as definições e lemas que serão necessários para nosso algoritmo.
 \begin{algorithm}
     \begin{algorithmic}[1]
-        \Function{gargalo}{$G,d,k$}
+        \Function{GHS}{$G,c,k$}
         \State $i \leftarrow 0$
         \State $M_0 \leftarrow V$
         \While{$|M_i| > k$}
@@ -280,7 +301,7 @@ Agora, temos todas as definições e lemas que serão necessários para nosso al
 \end{algorithm}
 
 \begin{theorem}
-    O algoritmo {\sc gargalo}$(G,d,k)$ é uma $2$-aproximação do problema dos $k$-centros.
+    O algoritmo {\sc GHS}$(G,c,k)$ é uma $2$-aproximação do problema dos $k$-centros.
 \end{theorem}
 \begin{proof}
     Primeiro vamos mostrar que o algoritmo é polinomial. \\
@@ -288,8 +309,10 @@ Agora, temos todas as definições e lemas que serão necessários para nosso al
     Também é fácil mostrar que é possível encontrar um conjunto independente maximal em tempo polinomial. Um algoritmo simples que começa com um conjunto $A = \{u\}$ sendo $u$ um vértice arbitrário e, a cada iteração, é colocado em $A$ um vértice que não é adjacente a nenhum vértice de $A$ até não ser mais possível é suficiente. \red{Faço um lema para explicar melhor?}\\
     Além disso, também conseguimos construir o grafo $G_i^2$ em tempo polinomial. Começaremos $E_i^2$ como uma cópia de $E_i$ e, para cada tripla de vértice $(u,v,k)$ caso já não exista uma aresta $uk \in E_i$, vamos inseri-la em $E_i^2$ se $v,k \in E_i$. Como tempos no máximo $|V|^3$ triplas de vértices e todas as operações que serão feitas são feitas em tempo polinomial, então podemos construir $G_i^2$ em tempo polinomial. \\
     Agora, vamos mostrar que é uma $2$-aproximação. \\
-    Seja max$(H)$ o maior valor de uma aresta em um grafo $H$ com peso nas arestas. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal, então pelo Lema~\ref{lemma:2.8} ele é um $k$-conjunto dominante e como $M_{i'}$ é um subgrafo de $G_{i'}^2$ então max$(M_{i'}) \leq \text{max}(G_{i'}^2) $. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i})$. \\Assim, max$(M_{i'}) \leq $ max$(G_{i'}^2) \leq 2$ max$(G_{i'}) \leq 2$ max$(G_{i^*})= 2 \opt(I)$. 
+    Seja max$(H)$ o maior valor de uma aresta em um grafo $H$ com peso nas arestas. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal de tamanho no máximo $k$, então pelo Lema~\ref{lemma:2.8} ele é um $k$-conjunto dominante e como $M_{i'}$ é um subgrafo de $G_{i'}^2$ então max$(M_{i'}) \leq \text{max}(G_{i'}^2) $. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i})$. \\Assim, max$(M_{i'}) \leq $ max$(G_{i'}^2) \leq 2$ max$(G_{i'}) \leq 2$ max$(G_{i^*})= 2 \opt(I)$. 
 \end{proof}
+
+Este algoritmo é de autoria de Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HSU1979209}, e, por isso, está sendo creditado com suas iniciais em seu nome. 
 \newpage
 \section{Localização de instalações}
 Antes de falarmos sobre algoritmos de aproximação para o problema da localização de instalações, vamos mostrar que, assumindo $P\not=\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema da cobertura por vértices.
@@ -316,82 +339,82 @@ Esse problema é $\NP$-completo, sendo um dos famosos $21$ problemas do Karp~\ci
     Assim, é fácil notar que esse é o tamanho mínimo de uma cobertura por vértices em $G$. Portanto, se o custo total da solução do algoritmo $A$ aplicado a instância $I'$ é menor ou igual a $k$, então a resposta para $I$ é sim. Caso contrário, a resposta é não. \\
     Desse modo, resolvemos o problema da cobertura por vértices em tempo polinomial, o que, assumindo $P\not=\NP$, é um absurdo.
 \end{proof}
-\subsection{Algoritmos baseados no programa linear}
-Nessa seção vamos mostrar dois algoritmos para o problema localização de instalações: o arredondamento do programa linear e um algoritmo que utiliza o método primal-dual. \\
-Para isso, vamos modelar o nosso problema como um programa inteiro. Vamos relaxa-lo e mostrar o seu dual que será usado em ambos os algoritmos. \\
-Nosso programa inteiro terá dois tipos de variáveis: as variáveis $y_i$ para cada $i \in F$ que terá valor 1 se a instalação $i$ foi aberta e 0 caso contrário, e as variáveis $x_{ij}$ para cada $i \in F$ e $j \in D$ que terá valor 1 se o cliente $j$ estiver atribuído a instalação $i$ e 0 caso contrário. Então o programa inteiro para a instância $I(F,D,c,f)$ é:
+\subsection{Algoritmos baseados em programação linear}
+Nessa seção vamos mostrar dois algoritmos para o problema de localização de instalações: o arredondamento em programa linear e um algoritmo que utiliza o método primal-dual. \\
+Para isso, vamos modelar o nosso problema como um programa linear inteiro. Vamos relaxá-lo e mostrar o seu dual que será usado em ambos os algoritmos. \\
+Nosso programa inteiro terá dois tipos de variáveis: uma variável $y_i$ para cada $i \in F$ que terá valor 1 se a instalação $i$ foi aberta e 0 caso contrário, e uma variável $x_{ij}$ para cada $i \in F$ e $j \in D$ que terá valor 1 se o cliente $j$ estiver atribuído a instalação $i$ e 0 caso contrário. Então o programa inteiro para a instância $I(F,D,c,f)$ é:
 \begin{align}
  \text{Minimize} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \\
  \text{sujeito a} \quad & \sum_{i\in F} x_{ij}=1, \quad \forall j \in D \\
  &x_{ij} \leq y_i,\quad \quad \; \; \forall i\in F,j\in D\\
  &x_{ij} \in \{0,1\} ,\quad \forall i\in F,j\in D\\
- &y_i \in \{0,1\}, \quad \; \,\forall i\in F
+ &y_i \in \{0,1\}, \quad \; \,\forall i\in F.
 \end{align}
+\\
+Para a relaxação, apenas impomos que $x_{ij} \geq 0$ e $y_i \geq 0$ no lugar de (4) e (5), respectivamente. Assim, temos o seguinte primal e dual correspondente à nossa relaxação: \\
+    \begin{align}
+        \text{Minimizar} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \tag{P1} \label{P1}\\
+        \text{sujeito a} \quad & \sum_{i\in F} x_{ij}=1,  \forall j \in D \tag{P2} \label{P2}\\
+        &x_{ij} \leq y_i, \, \; \; \forall i\in F,j\in D \tag{P3} \label{P3}\\
+        &x_{ij} \geq 0,\quad \forall i\in F,j\in D\tag{P4}\label{P4}\\
+        &y_i \geq 0, \quad \; \,\forall i\in F \tag{P5} \label{P5}
+       \end{align}
 
-Para a relaxação, apenas impomos que $x_{ij} \geq 0$ e $y_i \geq 0$. Assim, temos que o seguinte primal e dual para a nossa relaxação.
+    \begin{align}
+        \text{Maximizar} \quad & \sum_{j \in D} v_{j} \tag{D1} \label{D1}\\
+        \text{sujeito a} \quad & \sum_{j\in D} w_{ij}\leq f_i, \quad \forall i \in F \tag{D2} \label{D2}\\
+        &v_{j} - w_{ij}\leq c_{ij},  \; \; \forall i\in F,j\in D \tag{D3} \label{D3}\\
+        &w_{ij} \geq 0 ,\quad \forall i\in F,j\in D\tag{D4} \label{D4}\\
+        &v_j \geq 0, \quad \; \,\forall j\in D \tag{D5} \label{D5}.
+       \end{align}
+Sabemos que cada desigualdade do primal tem uma desigualdade correspondente no dual, assim temos que os pares de desigualdades são correspondentes: (\ref{P2},\ref{D5}), (\ref{P3},\ref{D4}), (\ref{P4},\ref{D3}) e (\ref{P5},\ref{D2}).
 
-\begin{minipage}{0.5\textwidth}
-    \[
-    \begin{aligned}
-        \text{Minimizar} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \\
-        \text{sujeito a} \quad & \sum_{i\in F} x_{ij}=1,  \forall j \in D \\
-        &x_{ij} \leq y_i, \, \; \; \forall i\in F,j\in D\\
-        &x_{ij} \geq 0,\quad \forall i\in F,j\in D\\
-        &y_i \geq 0, \quad \; \,\forall i\in F
-       \end{aligned}
-       \]
-\end{minipage}%
-\begin{minipage}{0.5\textwidth}
-    \[
-    \begin{aligned}
-        \text{Maximizar} \quad & \sum_{j \in D} v_{j} \\
-        \text{sujeito a} \quad & \sum_{j\in D} w_{ij}\leq f_i, \quad \forall i \in F \\
-        &v_{j} - w_{ij}\leq c_{ij},  \; \; \forall i\in F,j\in D\\
-        &w_{ij} \geq 0 ,\quad \forall i\in F,j\in D\\
-        &v_j \geq 0, \quad \; \,\forall j\in D
-       \end{aligned}
-       \]
-\end{minipage} \\ \\
-\red{Interpretar o dual.}
+Como o primal é uma relaxação do nosso problema vale que o valor de uma solução ótima dele é no máximo o ótimo do nosso problema.
+
+
 \newpage
-\subsubsection{Arredondamento do programa linear.}
-Vamos assumir aqui que a função custo está no espaço métrico. Como a função custo só está definida de um cliente para uma instalação, então a desigualdade triangular terá uma cara diferente. Sejam $j,l$ clientes e $i,k$ instalações, então
-\[c_{ij} \leq c_{il} + c_{kl} + c_{kj}\]
+\subsubsection{Arredondamento do programa linear}
+Vamos assumir aqui que a função custo satisfaz a desigualdade triangular. Como a função custo só está definida de um cliente para uma instalação, então a desigualdade triangular terá uma cara diferente. para clientes $j,l$ e  instalações $i,k$, então
+\[c_{ij} \leq c_{il} + c_{kl} + c_{kj}.\]
 Vamos então definir algumas coisas que serão necessárias no nosso algoritmo.
 \begin{definition}
-    Seja $(x^*,y^*)$ uma solução do programa linear. Dizemos que uma instalação $i$ está na \emph{vizinhança} de um cliente $j$ se $x^*_{ij} > 0$. Denotamos por $N(j) = \{ i \in F : x^*_{ij} > 0\}$.
+    Seja $(x^*,y^*)$ uma solução do programa linear. Dizemos que uma instalação $i$ está na \emph{vizinhança} de um cliente $j$ se $x^*_{ij} > 0$. Seja $N(j) = \{ i \in F : x^*_{ij} > 0\}$.
 \end{definition}
-Dada essa definição, vamos enunciar um lema que irá nos ajudar a provar uma cota superior para o custo de abertura das instalações do algoritmo.
+Dada essa definição, vamos enunciar um lema que irá nos ajudar a provar uma cota superior para o custo de conexão da solução aproximada escolhida pelo algoritmo.
 \begin{lemma}\label{lemma:3.5}
-    Seja $(x^*,y^*)$ e $(v^*,w^*)$ uma solução do programa linear e do seu dual, respectivamente, e $j$ um cliente qualquer. Para todo $i \in N(j)$, $c_{ij} \leq v^*_j$.
+    Sejam $(x^*,y^*)$ e $(v^*,w^*)$ soluções do programa linear e do seu dual, respectivamente, e $j$ um cliente qualquer. Para todo $i \in N(j)$, $c_{ij} \leq v^*_j$.
 \end{lemma}
 \begin{proof}
-    Como $i \in N(j)$, então $x^*_{ij}>0$. Assim, pelas folgas complementares $v^*_j - w^*_{ij} = c_{ij}$. Como $w^*_{ij} \leq 0$, $c_{ij} \leq v^*_j$. 
+    Como $i \in N(j)$, então $x^*_{ij}>0$. Assim, pelas folgas complementares, a desigualdade do dual correspondente a~\ref{P4} vale por igualdade, então $v^*_j - w^*_{ij} = c_{ij}$. Como $w^*_{ij} \geq 0$, $c_{ij} \leq v^*_j$. 
 \end{proof}
-Com esse lema, sabemos que se em um conjunto $S \in F$ de instalações abertas para todo cliente $j \in D$ existe uma instalação aberta $i$ em $N(j)$, então $c_{ij}\leq v_j^*$ e o custo total de atribuição seria no máximo $\sum_{j\in D}v_j^* \leq \opt$, uma vez que vale a dualidade fraca. Entretanto, não é garantido uma cota superior para o custo de abertura de $S$. Vamos descobrir como encontrar um $S$ com um bom custo de abertura e um bom custo de atribuição. Seja $j_k$ um cliente qualquer. Se abrirmos a instalação $i_k$ mais barata de $N(j_k)$ conseguimos limitar o custo de sua abertura.
-\[
-    f_{i_k} = f_{i_k} \underbrace{\sum_{i \in N(j_k)}x^*_{ij_k}}_{=1} = \sum_{i \in N(j_k)}f_{i_k}x^*_{ij_k} \leq \sum_{i \in N(j_k)}f_{i_k}y^*_{i}
+Com esse lema, sabemos que se em um conjunto $S \subseteq F$ de instalações abertas, para todo cliente $j \in D$, existe uma instalação aberta $i$ em $N(j)$, então $c_{ij}\leq v_j^*$ e o custo total de atribuição seria no máximo $\sum_{j\in D}v_j^* \leq \opt$, uma vez que vale a dualidade forte e que o valor do primal é no máximo $\opt(I)$. Entretanto, não é garantido uma cota superior para o custo de abertura de $S$. Vamos descobrir como encontrar um $S$ com um bom custo de abertura e um bom custo de atribuição. Seja $j_k$ um cliente qualquer. Se abrirmos a instalação $i_k$ mais barata de $N(j_k)$ conseguimos limitar o custo de sua abertura.
+\[\tag{*} \label{relx_fl:*}
+    f_{i_k} = f_{i_k} \sum_{i \in N(j_k)}x^*_{ij_k} = \sum_{i \in N(j_k)}f_{i_k}x^*_{ij_k} \leq \sum_{i \in N(j_k)}f_{i}y^*_{i},
 \]
+onde a primeira desigualdade por \ref{P3} e pela definição de $N(j_k)$ e a segunda desigualdade vale por termos escolhido $i_k$ como a instalação mais barata de $N(j_k)$.
 
-Essa informação será importante para a prova da razão do nosso algoritmo. Agora, faremos uma última definição necessária para o nosso algoritmo.
+Essa informação será importante para a prova da razão de aproximação do nosso algoritmo. Agora, faremos uma última definição necessária para o nosso algoritmo.
 
 \begin{definition}
-    Seja $j\in D$ um cliente. Definimos $N^2(j)$ o conjunto dos clientes $i \in D$ tal que $N(i) \cap N(j) \not = \emptyset$.
+    Seja $j\in D$ um cliente. Seja $N^2(j)$ o conjunto dos clientes $i \in D$ tais que $N(i) \cap N(j) \not = \emptyset$.
 \end{definition}
-Agora, vamos definir o algoritmo. $S$ será o conjunto das instalações a serem abertas e $\sigma : D \rightarrow F $ a função que atribui um cliente a uma instalação aberta, ambos serão montados durante o algoritmo.
+Agora, vamos definir o algoritmo. Nele, $S$ será o conjunto das instalações a serem abertas e $\sigma : D \rightarrow F $ a função que atribui cada cliente a uma instalação aberta. Ambos serão montados durante o algoritmo.
 \begin{algorithm}
     \begin{algorithmic}[1]
-        \Function{LI}{$F,D,c,f$}
-        \State Seja $(x^*,y^*)$ e $(v^*,w^*)$ uma resposta ótima para o programa linear e o seu dual.
-        \State $S \gets \emptyset$ e seja $\sigma$ como descrito anteriormente.
-        \State $C \gets D$ e $k \gets 0$
+        \Function{CS}{$F,D,c,f$}
+        \State Sejam $(x^*,y^*)$ e $(v^*,w^*)$ soluções ótimas para o programa linear e o seu dual
+        \State $S \gets \emptyset$
+        \State $C \gets D$ 
+        \State $k \gets 0$
         \While{$C \not = \emptyset$}
-        \State $k \gets k+1$
         \State Escolha $j_k \in C$ que minimize $v_j^*$
-        \State Escolha $i_k $ a instalação com custo de abertura mais barata em  $N(j_k)$
-        \State $S \gets S \cup i_k$
-        \State Para todo $j \in N^2(j_k)$, $\sigma(j) := i_k$.
+        \State Escolha $i_k \in N(j_k)$ que minimize $f_{i}$
+        \State $S \gets S \cup \{i_k\}$
+        \For{\text{Para todo $j \in N^2(j_k) \cap C$}}
+        \State $\sigma(j) \leftarrow i_k$.
+        \EndFor
         \State $C \gets C \setminus N^2(j_k)$
+        \State $k \gets k+1$
         \EndWhile
         \State Devolva $S$ e $\sigma$.
         \EndFunction
@@ -399,22 +422,24 @@ Agora, vamos definir o algoritmo. $S$ será o conjunto das instalações a serem
 \end{algorithm}
 
 \begin{theorem}
-    O algoritmo {\sc LI} é uma $4$-aproximação para o problema da localização de instalações.
+    O algoritmo {\sc CS} é uma $4$-aproximação para o problema da localização de instalações.
 \end{theorem}
 \begin{proof}
-    Primeiro, vamos mostrar que o algoritmo é polinomial. Sabemos que é possível encontrar uma solução para o problema linear e o seu dual em tempo polinomial. Sabemos que o loop irá rodar no máximo $|D|$ vezes, uma vez que sempre retiramos pelo menos um elemento de $C$. Além disso, temos apenas comparações e operações de conjuntos o que sabemos que é possível fazer em tempo polinomial.
-    Agora, vamos mostrar que é uma $4$-aproximação.\\
-    Perceba que para $k_1$ e $k_2$ de diferentes iterações, $N(j_{k_1})\cap N(j_{k_2}) = \emptyset$, uma vez que se eles tivessem alguma instalação em comum nas suas vizinhanças eles seriam retirados de $C$ na mesma iteração. Seja $F' \subseteq F$, tal que $F' = \bigcup_k N(j_k)$. \\
-    Vimos que $f_{i_k} \leq \sum_{i \in N(j_k)}f_{i_k}y^*_{i}$, então se somarmos para todo $k$, temos
-    \[ \sum_kf_{i_k} \leq \sum_k \sum_{i \in N(j_k)}f_{i_k}y^*_{i} = \sum_{i \in S}f_{i_k}y^*_{i} \leq \sum_{i \in F}f_{i_k}y^*_{i} \leq \opt\]
-    Agora, vamos fixar uma iteração $k$, seja $i = i_k$ e $j = j_k$. Pelo Lema~\ref{lemma:3.5}, sabemos que $c_{ij} \leq v^*_j$. Seja $l \in N^2(j) \setminus j$. Pela desigualdade triangular, seja $h \in N(l) \cap N(j)$, e como $j$ minimiza $v^*_j$, temos
-    \[ c_{il} \leq c_{ij} + c_{hj} + c_{hl} \leq v_j^* + v_j^* + v_l^* \leq 3 v_j^*
+    Primeiro, vamos mostrar que o algoritmo é polinomial. Sabemos que é possível encontrar uma solução para o problema linear e o seu dual em tempo polinomial utilizando o algoritmo dos elipsoides~\cite{Kha79}. Sabemos que o laço da linha 6 irá executar no máximo $|D|$ iterações, uma vez que sempre retiramos pelo menos um elemento de $C$. Além disso, as linhas $6-11$ são claramente polinomiais.
+    Agora, vamos mostrar que o algoritmo é uma $4$-aproximação.\\
+    Perceba que, para $k_1$ e $k_2$ com $k_1 < k_2$, $N(j_{k_1})\cap N(j_{k_2}) = \emptyset$, caso contrário $j_{k_2} \in N^2(j_{k_1})$ e seria retirado de $C$ na iteração $k_1$.\\
+    Seja $F' \subseteq F$, tal que $F' = \bigcup_k N(j_k)$.
+    Por (\ref{relx_fl:*}), vale que $f_{i_k} \leq \sum_{i \in N(j_k)}f_{i_k}y^*_{i}$. Então se somarmos para todo $k$, temos
+    \[ \sum_kf_{i_k} \leq \sum_k \sum_{i \in N(j_k)}f_{i_k}y^*_{i} = \sum_{i \in F'}f_{i_k}y^*_{i} \leq \sum_{i \in F}f_{i}y^*_{i} \leq \opt(I)\]
+    Agora, vamos fixar uma iteração $k$ e sejam $i = i_k$ e $j = j_k$. Denotemos por $C_k$ o conjunto $C$ no início da iteração $k$. Pelo Lema~\ref{lemma:3.5}, sabemos que $c_{ij} \leq v^*_j$ para $j \in C_k$. Seja $\ell \in N^2(j) \cap C_k \setminus \{j\}$ e $h \in N(\ell) \cap N(j)$. Pela desigualdade triangular e como $j$ minimiza $v^*_j$ em $C_k$, temos
+    \[ c_{i\ell} \leq c_{ij} + c_{hj} + c_{h\ell} \leq v_j^* + v_j^* + v_{\ell}^* \leq 3 v_{\ell}^*
         \]
-    Isso vale para todo $l$ atribuído à instalação $i$, então
-    \[\sum_{j\in D} c_{\sigma(j)j} \leq 3 \sum_{j \in D} v^*_j \underbrace{\leq}_{\text{(*)}} 3\opt\]
-    Pela dualidade fraca (*) vale. \\
-    Assim, temos que o custo de abertura das instalações custa no máximo $\opt$ e o custo de atribuição custa no máximo $3\opt$. Portanto, o custo total é no máximo $4\opt$.
+    Isso vale para todo $\ell \in D$, então
+    \[\sum_{j\in D} c_{\sigma(j)j} \leq 3 \sum_{j \in D} v^*_j \leq 3\opt(I),\]
+    onde a segunda desigualdade vale pela dualidade forte e pela relaxação. \\
+    Assim, temos que o custo de abertura das instalações é no máximo $\opt(I)$ e o custo de atribuição é no máximo $3\opt(I)$. Portanto, o custo total da solução $S$ é no máximo $4\opt(I)$.
 \end{proof}
+O algoritmo aqui apresentado é de autoria de Chudak e Shmoys~\cite{Chudak2003}.
 \newpage
 
 \bibliographystyle{plain}
