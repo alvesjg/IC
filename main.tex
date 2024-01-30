@@ -90,7 +90,7 @@ O problema $k$-mediana é muito parecido com o problema de localização de inst
  
 Assim como no localização de instalações, no problema $k$-mediana temos um grafo $(F,D)$-bipartido completo em que $D$ é o conjunto de clientes a serem atendidos e $F$ o conjunto de instalações que podem ser abertas. Para cada cliente $j \in D$ e cada instalação $i \in F$, há um custo $c_{ij}$ para a aresta $ij$ em associar o cliente $j$ à instalação $i$. Temos também um inteiro $k$ que representa a quantidade de instalações que podem ser abertas. Então, queremos encontrar um conjunto $F' \subseteq F$ de tamanho $k$ e uma função que associe cada cliente a uma instalação aberta tal que o custo total de associação seja minimizado.
 
-No problema dos $k$-centros não existe essa diferenciação entre instalações que podem ser abertas e clientes, teremos cidades e escolheremos $k$ delas para construir instalações.
+No problema dos $k$-centros não existe essa diferença entre instalações que podem ser abertas e clientes, teremos cidades e escolheremos $k$ delas para construir instalações.
 
 Então, temos um grafo $G(V,E)$ completo em que $V$ são cidades e temos um custo $c_{e}$ para associar as cidades que são extremos de $e$. Temos também um inteiro $k$ que representa a quantidade de cidades em que uma instalação será aberta. Cada cidade será associada a uma cidade com uma instalação aberta com menor custo de associação entre elas. O objetivo do nosso problema é minimizar o maior custo de associação entre uma cidade qualquer e a cidade a qual ela está associada.
 
@@ -99,15 +99,15 @@ Então, temos um grafo $G(V,E)$ completo em que $V$ são cidades e temos um cust
 Diversos métodos podem ser utilizados para aproximar o problema de localização de instalações. Charikar e Guha desenvolveram um algoritmo com razão de aproximação $2.414$ utilizando o método de busca local~\cite{Charikar&Guha'05}.  Esse problema também pode ser modelado como um problema de programação inteira e, por isso, técnicas envolvendo programação linear podem ser aplicadas a ele.  Por exemplo, há algoritmos que fazem o arredondamento de soluções da relaxação linear do programa inteiro para obter uma solução aproximada do problema.  Alguns destes algoritmos atingem boas razões de aproximação, por exemplo, chegando a 1.677~\cite{Byrka&Aardal'10}. Entretanto, a melhor aproximação encontrada utiliza de vários métodos, incluindo o conhecido método primal-dual, e garante uma razão de aproximação 1.488~\cite{LI'13}. Essa não é muito distante do melhor que se poderia encontrar, uma vez que Guha e Khuller mostraram que não existe algoritmo para esse problema com razão de aproximação melhor que 1.463~\cite{GUHA1999228}, a menos que $P = \NP$.
 
 
-Dentre os três problemas apresentados, o $k$-mediana é o que tem a maior folga entre o melhor resultado de inaproximabilidade e a razão do melhor algoritmo de aproximação conhecido. Jain, Mahdian e Saberi provaram que não existe algoritmo polinomial com razão de aproximação $1+ \frac{2}{e}$ para o $k$-mediana~\cite{JMS'02}, assumindo que $P \not = \NP$, enquanto a melhor aproximação encontrada tem razão $2.675 + \epsilon$~\cite{BPRST'17}.
+Dentre os três problemas apresentados, o $k$-mediana é o que tem a maior folga entre o melhor resultado de inaproximabilidade e a razão do melhor algoritmo de aproximação conhecido. Jain, Mahdian e Saberi provaram que não existe algoritmo polinomial com razão de aproximação $1+ \frac{2}{e}$ para o $k$-mediana~\cite{JMS'02}, assumindo que $P \neq \NP$, enquanto a melhor aproximação encontrada tem razão $2.675 + \epsilon$~\cite{BPRST'17}.
 
 
-Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema dos $k$-centros, assumindo que $P\not=\NP$. Neste caso, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2.
+Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema dos $k$-centros, assumindo que $P\neq\NP$. Neste caso, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2.
 % O primeiro deles, o $k$-centros, é um problema clássico de otimização combinatória. Dadas $n$ cidades com distâncias especificadas entre elas e um número $k$, o problema quer determinar qual o melhor jeito de construir $k$ depósitos dentre um conjunto determinado das cidades tais que a maior distância entre uma cidade e o depósito mais próximo seja a menor possível.
 
 % Nosso problema é modelado como um grafo completo $G(V,E)$, onde $V$ são as cidades e temos uma função distância~$d$ em que $d(e)$ representa a distância das cidades ligadas pela aresta $e$. O objetivo é encontrar um subconjunto $C \subseteq V$ de tamanho $k$ que minimize $\max_{v\in V}d(v,C)$ sendo $d(v,C) = \min_{u\in C}d(vu)$.
 
-% Trabalharemos aqui com a versão métrica do problema em que a função $d$ obedece a desigualdade triangular, ou seja, $d(uv) \leq d(ux) + d(xv)$ para todas as triplas de vértices $u$, $x$, $v$. Veremos que, para qualquer função polinomialmente computável~$\alpha(n)$, não existe $\alpha(n)$-aproximação para a versão não métrica desse problema, assumindo $P\not=\NP$. Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema do $k$-centros, assumindo $P\not=\NP$. Assim, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2. 
+% Trabalharemos aqui com a versão métrica do problema em que a função $d$ obedece a desigualdade triangular, ou seja, $d(uv) \leq d(ux) + d(xv)$ para todas as triplas de vértices $u$, $x$, $v$. Veremos que, para qualquer função polinomialmente computável~$\alpha(n)$, não existe $\alpha(n)$-aproximação para a versão não métrica desse problema, assumindo $P\neq\NP$. Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema do $k$-centros, assumindo $P\neq\NP$. Assim, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2. 
 
 
 % Localização de instalações é um problema clássico de otimização que determina a melhor localização para instalações, como fábricas ou depósitos, com base em demandas geográficas, custos de abertura de instalações e distâncias de transporte. Além disso, eles podem ser modelados para outras aplicações como problemas de posicionamento de caches em um computador ou problemas de projeto de redes.
@@ -128,7 +128,7 @@ Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial
 \section{$k$-Centros}
 
 Seja $I(G,c,k)$ uma instância do problema dos $k$-centros e $C \subseteq V$ uma solução viável para $I$. Vamos definir alguns termos que facilitarão as explicações seguintes. Os vértices de $C$ serão chamados \emph{centros de cluster}. Os vértices de $V$ serão particionados em $k$ conjuntos chamados \emph{clusters} e cada um deles terá exatamente um centro de cluster. Um vértice estará no mesmo cluster que um centro de cluster associado a ele. Cada cluster terá um \emph{raio} que é o maior custo entre o seu centro e um vértice qualquer dele. O nosso problema se resume a encontrar um conjunto $C$ que minimize o maior desses raios. Denotamos por raio$(C)$ o maior raio de um cluster induzido por $C$.\\
-Antes de falarmos sobre algoritmos de aproximação para o problema dos $k$-centros, vamos mostrar que, assumindo $P\not=\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema do $k$-conjunto dominante.
+Antes de falarmos sobre algoritmos de aproximação para o problema dos $k$-centros, vamos mostrar que, assumindo $P\neq\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema do $k$-conjunto dominante.
 
 \begin{definition}
     Seja $G = (V,E)$ um grafo. Um conjunto $D \subseteq V$ é chamado \emph{dominante} se, para todo vértice $u \in V \setminus D$, existe um vértice $v \in D$ tal que $uv \in E$.
@@ -174,7 +174,7 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
     O algoritmo aplicado à instância $I'$ encontra uma solução $C$ de tamanho $k$. Como $c_e = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$.\\
     Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster com aresta de $G$, e assim $C$ é um conjunto dominante em $G$. \\
     Se raio$(C) = \alpha(n) + 1$, então $\opt(I) \geq \frac{\alpha(n)+1}{\alpha(n)}>1$. Assim, não existe solução $C'$ tal que raio$(C')=1$ e não existe $k$-conjunto dominante em $G'$ que utilize apenas arestas de $G$.
-    Portanto, conseguimos resolver o problema do $k$-conjunto dominante em tempo polinomial o que, assumindo que $P \not= \NP$, é um absurdo.
+    Portanto, conseguimos resolver o problema do $k$-conjunto dominante em tempo polinomial o que, assumindo que $P \neq \NP$, é um absurdo.
 \end{proof}
     Fica, então, explícita a impossibilidade de encontrarmos algoritmos de aproximação para a versão geral do problema dos $k$-centros.\\
     Agora que justificamos o estudo de algoritmos de aproximação para esse problema vamos mostrar um limitante inferior para a razão de aproximação desses algoritmos.
@@ -312,14 +312,11 @@ Agora, temos todas as definições e lemas que serão necessários para nosso al
     Seja max$(H)$ o maior valor de uma aresta em um grafo $H$ com peso nas arestas. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal de tamanho no máximo $k$, então pelo Lema~\ref{lemma:2.8} ele é um $k$-conjunto dominante e como $M_{i'}$ é um subgrafo de $G_{i'}^2$ então max$(M_{i'}) \leq \text{max}(G_{i'}^2) $. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i})$. \\Assim, max$(M_{i'}) \leq $ max$(G_{i'}^2) \leq 2$ max$(G_{i'}) \leq 2$ max$(G_{i^*})= 2 \opt(I)$. 
 \end{proof}
 
-Este algoritmo é de autoria de Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HSU1979209}, e, por isso, está sendo creditado com suas iniciais em seu nome. 
+Este algoritmo é de autoria de Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HSBottle}, e, por isso, está sendo creditado com suas iniciais em seu nome. 
 \newpage
 \section{Localização de instalações}
-Antes de falarmos sobre algoritmos de aproximação para o problema da localização de instalações, vamos mostrar que, assumindo $P\not=\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema da cobertura por vértices.
+Antes de falarmos sobre algoritmos de aproximação para o problema da localização de instalações, vamos mostrar que, assumindo $P\neq\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema da cobertura por vértices.
 
-\begin{definition}
-    Seja $G = (V,E)$ um grafo. Um conjunto $S \subseteq V$ é uma \emph{cobertura por vértices} de $G$ se para toda aresta $e \in E$ pelo menos um extremo de $e$ pertence a $S$.
-\end{definition}
 
 
 \begin{problem}(Cobertura por vértices)
@@ -337,7 +334,7 @@ Esse problema é $\NP$-completo, sendo um dos famosos $21$ problemas do Karp~\ci
     O conjunto de possíveis instalações a serem abertas $F$ será o conjunto de vértices $V$. O conjunto de clientes $D$ será o conjunto de arestas $E$. O custo de abertura $f_i$ será 1 para cada instalação $i$. O custo de associação $c_{ij} \text{, para } i \in F \text{ e } j \in D$, será 0 se o vértice referente a $i$ é extremo da aresta referente a $j$ e 2 caso contrário. \\
     A resposta ótima será a menor quantidade de instalações que precisamos abrir até que todos os clientes possam ser associados a instalações em que o seu custo de associação é 0. Se um cliente está associado a uma instalação cujo custo de associação é 2, podemos diminuir o custo total abrindo uma instalação em que o custo de sua associação é 0, uma vez que abrir a instalação custaria 1 e diminuiríamos o custo de associação do cliente de 2 para 0. Sabemos que essa instalação existe, pois para cada cliente existem duas instalações com custo de associação 0. \\
     Assim, é fácil notar que esse é o tamanho mínimo de uma cobertura por vértices em $G$. Portanto, se o custo total da solução do algoritmo $A$ aplicado a instância $I'$ é menor ou igual a $k$, então a resposta para $I$ é sim. Caso contrário, a resposta é não. \\
-    Desse modo, resolvemos o problema da cobertura por vértices em tempo polinomial, o que, assumindo $P\not=\NP$, é um absurdo.
+    Desse modo, resolvemos o problema da cobertura por vértices em tempo polinomial, o que, assumindo $P\neq\NP$, é um absurdo.
 \end{proof}
 \subsection{Algoritmos baseados em programação linear}
 Nessa seção vamos mostrar dois algoritmos para o problema de localização de instalações: o arredondamento em programa linear e um algoritmo que utiliza o método primal-dual. \\
@@ -396,7 +393,7 @@ onde a primeira igualdade vale por \ref{P3} e pela definição de $N(j_k)$ e a d
 Essa informação será importante para a prova da razão de aproximação do nosso algoritmo. Agora, faremos uma última definição necessária para o nosso algoritmo.
 
 \begin{definition}
-    Seja $j\in D$ um cliente. Seja $N^2(j)$ o conjunto dos clientes $i \in D$ tais que $N(i) \cap N(j) \not = \emptyset$.
+    Seja $j\in D$ um cliente. Seja $N^2(j)$ o conjunto dos clientes $i \in D$ tais que $N(i) \cap N(j) \neq \emptyset$.
 \end{definition}
 Agora, vamos definir o algoritmo. Nele, $S$ será o conjunto das instalações a serem abertas e $\sigma : D \rightarrow F $ a função que associa cada cliente a uma instalação aberta. Ambos serão montados durante o algoritmo.
 \begin{algorithm}
@@ -406,7 +403,7 @@ Agora, vamos definir o algoritmo. Nele, $S$ será o conjunto das instalações a
         \State $S \gets \emptyset$
         \State $C \gets D$ 
         \State $k \gets 0$
-        \While{$C \not = \emptyset$}
+        \While{$C \neq \emptyset$}
         \State Escolha $j_k \in C$ que minimize $v_j^*$
         \State Escolha $i_k \in N(j_k)$ que minimize $f_{i}$
         \State $S \gets S \cup \{i_k\}$
@@ -437,11 +434,137 @@ Agora, vamos definir o algoritmo. Nele, $S$ será o conjunto das instalações a
     Isso vale para todo $\ell \in D$, então
     \[\sum_{j\in D} c_{\sigma(j)j} \leq 3 \sum_{j \in D} v^*_j \leq 3\opt(I),\]
     onde a segunda desigualdade vale pela dualidade forte e pela relaxação. \\
-    Assim, temos que o custo de abertura das instalações é no máximo $\opt(I)$ e o custo de associação é no máximo $3\opt(I)$. Portanto, o custo total da solução $S$ é no máximo $4\opt(I)$.
+    Assim, temos que o custo de abertura das instalações é no máximo $\opt(I)$ e o custo de associação é no máximo $3\opt(I)$. Portanto, o custo total da solução $S$ é no máximo $4~\opt(I)$.
 \end{proof}
 O algoritmo aqui apresentado é de autoria de Chudak e Shmoys~\cite{Chudak2003}.
+
+\newpage
+\subsubsection{Método primal-dual}
+
 \newpage
 
+\subsection{Busca local}
+Embora o custo de transporte esteja definido apenas para um cliente e uma instalação, aqui falaremos também sobre custos de transporte entre duas instalações. Podemos definir o custo de transporte entre duas instalações como o menor custo de transporte entre essas duas instalações e um cliente qualquer. \\
+Um algoritmo de busca local começa com uma solução viável para o problema e checa se alguma alteração local melhora o custo da solução atual. Caso essa melhora ocorra, essa alteração é feita. Esse processo se repete até que não exista alteração que melhore o custo e, então, encontramos uma solução que é chamada de localmente ótima. A implementação direta da ideia da busca local na maioria das vezes não garante execução em tempo polinomial e, nesses casos, as alterações só acontecerão se satisfizerem alguma restrição. \\
+Nosso algoritmo contará com três operações: abrir instalações fechadas, fechar instalações abertas ou trocar uma instalação aberta por uma fechada. Nossa solução inicial terá todas as instalações abertas e um cliente sempre estará ligado à instalação aberta mais próxima a ele. Uma operação só será feita se melhorar o custo da solução atual em uma razão de $(1-\delta)$, como essa solução não é necessariamente localmente ótima, iremos chamá-la de solução quase localmente ótima. Ao final, mostraremos que o algoritmo é uma $3(1 + \epsilon)$-aproximação para o problema de localização de instalações e vamos definir o $\delta$ em função do $\epsilon$. \\
+Vamos mostrar duas desigualdades que serão fundamentais para chegar na razão de aproximação desejada. A partir daqui utilizaremos uma solução parcialmente localmente ótima $(S,\sigma)$ com custo das instalações abertas $A$ e custo de transporte total $T$. Também vamos utilizar uma solução ótima $(S^*,\sigma^*)$ com custos de instalações abertas $A^*$ e custo de transporte total $T^*$. Claramente, $\opt(I) = A^* + T^*$. Também definimos $m = |F|$ o número total de instalações.
+\newpage
+\begin{lemma}
+    \label{lema:3.7}
+    Sejam as soluções $(S,\sigma)$ e $(S^*,\sigma^*)$ como definidas acima. Então,
+    \[ T - A^* - T^* \leq m \delta (A+T)\]
+\end{lemma}
+\begin{proof}
+    Seja $i^* \in S^* \setminus S$. Como a solução $(S,\sigma)$ é quase localmente ótima, se abrimos $i^*$ e associar a ele em $\sigma$ os clientes que estão associados a ele em $\sigma^*$ não melhoraremos a solução em menos que $(1-\delta)$. Então,
+    \begin{align*} A + f_{i^*} + T + \sum_{j : \sigma^*(j) = i^*} (c_{i^*j} - c_{\sigma(j)j}) &\geq (1-\delta)(A+T) \\
+    f_{i^*} + \sum_{j : \sigma^*(j) = i^*} (c_{i^*j} - c_{\sigma(j)j}) &\geq -\delta(A+T)
+    \end{align*} 
+    Vamos agora, mostrar que essa desigualdade também é válida para $i^* \in S^* \cap S$. Como os clientes sempre estão ligados à instalação aberta mais próxima a eles, então o custo de trocar os clientes que estão associados a $i^*$ em $\sigma^*$ para $i^*$ em $\sigma$ é não negativo. Assim, 
+    \begin{align*}
+        f_{i^*} + \sum_{j : \sigma^*(j) = i^*} (c_{i^*j} - c_{\sigma(j)j}) &\geq \sum_{j : \sigma^*(j) = i^*} (c_{i^*j} - c_{\sigma(j)j}) \\
+        &\geq 0 \: \: \geq -\delta(A+T) 
+    \end{align*}
+
+    Assim, podemos juntar essa desigualdade para todos as instalações em $S^*$,
+    \begin{align*}
+        \sum_{i^* \in S^*}\Big( f_{i^*} + \sum_{j : \sigma^*(j) = i^*} (c_{i^*j} - c_{\sigma(j)j})\Big) &\geq -m\delta(A+T) \\
+        A^* + \sum_{j \in D} (c_{\sigma^*(j)j} - c_{\sigma(j)j}) & \geq -m\delta(A+T)\\
+        A^* + T^* - T &\geq -m\delta(A+T)\\
+        T - A^* - T^* &\leq m\delta(A+T)
+    \end{align*}
+\end{proof}
+Para a segunda desigualdade, precisaremos de uma função e de um lema que ajudará a limitar o custo da redesignação de clientes. \\
+Vamos definir a função $\phi : S^* \rightarrow S$ como \[\phi(i^*) = \arg\min_{i \in S} c_{i^*i},\] ou seja, a instalação $i$ em $S$ mais próxima a $i^* \in S^*$. Então, teremos o seguinte lema
+\begin{lemma}
+    \label{lemma:3.8}
+    Seja $j \in D$ tal que $\sigma(j) = i$, $\sigma^*(j) = i^*$, $\phi(i^*) = i'$ e $i\neq i'.$ Então, \[c_{i'j} - c_{ij} \leq 2c_{i^*j}.\]
+\end{lemma}
+
+\begin{proof}
+    Pela desigualdade triangular temos que:
+    \[c_{i'j} \leq c_{i'i^*} + c_{i^*j}\]
+    devido a definição de $i'$ temos que $c_{i'i^*} \leq c_{ii^*}$. Assim,
+    \[c_{i'j} \leq c_{ii^*} + c_{i^*j}.\]
+    Novamente, pela desigualdade triangular, temos que $c_{ii^*} \leq c_{ij} + c_{i^*j}$. Então,
+    \begin{align*}
+        &c_{i'j} \leq c_{ij} + 2 c_{i^*j}\\
+        &c_{i'j} - c_{ij} \leq 2 c_{i^*j}
+    \end{align*}
+\end{proof}
+
+Agora, conseguimos provar a segunda desigualdade que será necessária para a razão de aproximação.
+\begin{lemma}
+    \label{lema:3.9}
+    Seja $(S,\sigma)$ e $(S^*,\sigma^*)$ como já definido. Então,
+    \[A - A^* - 2T^* \leq m \delta(A+T)\]
+\end{lemma}
+\begin{proof}
+    Antes de começar a demonstração em si, vamos definir o que é uma instalação segura. Uma instalação $i \in S$ é segura se e somente se não existe $i^* \in S^*$ tal que $\phi(i^*)=i$. \\
+    Seja $i \in S$ uma instalação segura, como $(S,\sigma)$ é uma solução parcialmente localmente ótima, então se fecharmos $i$ e redesignarmos cada cliente j associado a $i$ para $\phi(\sigma^*(j))$ não melhoramos o custo da solução em uma razão melhor que $(1-\delta)$. Então,
+    \begin{align*}
+        A - f_i + T + \sum_{j:\sigma(j) = i} (c_{\phi(\sigma^*(j))j} - c_{\sigma(j)j}) &\geq (1-\delta)(A+T)\\
+        - f_i + \sum_{j:\sigma(j) = i} (c_{\phi(\sigma^*(j))j} - c_{\sigma(j)j}) &\geq -\delta(A+T)
+    \end{align*}
+    Como $i$ é uma instalação segura o Lema~\ref{lemma:3.8} vale para todos os clientes que estão associados a $i$ em $\sigma$, então
+    \begin{align} 
+        \label{segura}
+        - f_i + \sum_{j:\sigma(j) = i} 2c_{\sigma^*(j)j} &\geq -\delta(A+T)
+    \end{align}
+    Seja $i\in S$ uma instalação não segura. Vamos definir o conjunto $R \subseteq S^*$ como o conjunto das instalações que fazem com que $i$ não seja segura, ou seja, $R = \{i^* \in S^* : \phi(i^*) = i\}$. Vamos definir também $i' = \arg\min_{i^* \in R} c_{i^*i}$, a instalação de $R$ mais próxima de $i$. \\
+    Seja $i^* \in R\setminus\{i'\}$, abrir $i^*$ e associar a $i^*$ os clientes que estão associados a $i$ em $\sigma $ e a $i^*$ em $\sigma^*$ não pode melhorar a resposta em uma razão melhor que $(1-\delta)$, assim
+    \begin{align}
+        A + f_i + T + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j) = i^*}(c_{i^*j} - c_{ij}) &\geq (1-\delta)(A+T) \\
+        \label{não segura}
+        f_i + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j) = i^*}(c_{i^*j} - c_{ij}) &\geq -\delta(A+T)
+    \end{align}
+    Agora vamos ver o que acontece se abrimos $i'$, fecharmos $i$ e associarmos os clientes $j$ associados a $i$ em $\sigma$ para $\phi(\sigma^*(j))$ se $\sigma^*(j) \not \in R$ e a $i'$ caso contrário.
+    \begin{align*}
+        - f_i + f_{i'} + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j)\not \in R}(c_{\phi(\sigma^*(j)j)} - c_{ij}) + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) &\geq -\delta(A+T)
+    \end{align*}
+    No somatório dos clientes $j$ em que $\sigma^*(j) \not \in R$ podemos utilizar o Lema~\ref{lemma:3.8},
+    \begin{align*}
+        - f_i + f_{i'} + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j)\not \in R} 2c_{\sigma^*(j)j} + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) &\geq -\delta(A+T)
+    \end{align*}
+    juntando essa desigualdade com \ref{não segura} para todas as instalações em $R\setminus\{i'\}$, temos
+    \begin{align*}
+        -f_i + \sum_{i^* \in R}f_{i^*} + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j)\not \in R} 2c_{\sigma^*(j)j} + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) \\+ \sum_{j:\sigma(j)=i \text{ \& }\sigma^*(j) \in R \setminus\{i'\}}(c_{\sigma^*(j)j} - c_{ij}) \geq -|R|\delta(A+T)
+    \end{align*}
+    Vamos reduzir essa expressão. Seja $j$ tal que $\sigma(j)=i$ e $\sigma^*(j) \in R$. \\
+    Se $\sigma^*(j) = i'$, $j$ só aparece no terceiro somatório e certamente $c_{i'j} - c_{ij} \leq 2 c_{i'j}$. \\
+    Se $\sigma^*(j)\neq i'$, então na soma temos $c_{i'j} + c_{\sigma^*(j)j} - 2 \,c_{ij}$. Pela desigualdade triangular temos que $c_{i'j} \leq c_{i'i} + c_{ij},$ assim
+    \[c_{i'j} + c_{\sigma^*(j)j} - 2 \,c_{ij} \leq c_{\sigma^*(j)j} + c_{i'i} - c_{ij} \]
+    pela definição do $i'$ temos que $c_{i'i} \leq  c_{\sigma^*(j)i}$ e pela desigualdade triangular temos que $c_{\sigma*(j)i} \leq c_{\sigma^*(j)j} + c_{ij}$, então
+    \[ c_{\sigma^*(j)j} + c_{i'i} -  c_{ij} \leq 2 c_{\sigma^*(j)j}\]
+    Então, para qualquer $j$ temos que o custo referente a $j$ na soma é no máximo $2c_{\sigma^*(j)j}$. Assim,
+    \[\sum_{i^* \in R}f_{i^*} - f_i + \sum_{j: \sigma(j)= i } 2c_{\sigma^*(j)j} \geq - |R| \delta(A+T)\]
+    Vamos juntar essa última desigualdade para todas as instalações não seguras e~\ref{segura} para todas as instalações seguras. Vamos chamar de $P$ o conjunto das instalações seguras,
+    \[\sum_{i \in P}\Big( - f_i + \sum_{j:\sigma(j) = i} 2c_{\sigma^*(j)j}\Big) + \sum_{i \not \in P}\Big( \sum_{i^* \in R_i}f_{i^*} - f_i + \sum_{j: \sigma(j)= i } 2c_{\sigma^*(j)j}\Big ) \geq - |R| \delta(A+T)   \]
+    É fácil notar que estamos subtraindo o custo de todas as instalações de $S$ e somando $2c_{\sigma^*(j)j}$ para todo cliente $j\in D$. Notemos também que estamos somando o custo de abertura de todas as instalações de $S^*$, uma vez que toda instalação de $S^*$ pertence a exatamente um conjunto $R_i$. Portanto,
+    
+    \[\sum_{i^* \in S^*}f_{i^*} + 2 \sum_{j \in D} c_{\sigma^*(j)j} - \sum_{i \in S} f_i \geq -m \delta(A+T)\]
+    \[A^* + 2 T^* - A \geq - m\delta(A+T)\]
+    \[A - A^* - 2T^* \leq m\delta(A+T)\]
+\end{proof}
+Agora que temos essas duas desigualdades, conseguimos mostrar o seguinte teorema.
+
+\begin{theorem}
+    O algoritmo de busca local é uma $3(1+\epsilon)$-aproximação para o problema de localização de instalações.
+\end{theorem}
+\begin{proof}
+    Primeiro, vamos mostrar que o algoritmo roda em tempo polinomial. Claramente, todas as operações podem ser feitas em tempo polinomial, precisamos apenas mostrar que o algoritmo sempre executa um número polinomial de operações. \\
+    Seja $M$ o valor da solução inicial. Note que se existir um $k$ tal que $(1-\delta)^kM < 1$, então o algoritmo não fará mais que $k$ operações, uma vez que os custos são inteiros$\red{*}$. Por uma desigualdade conhecida, sabemos que $(1 - \delta)^{\frac{1}{\delta}} \leq \frac{1}{e}$. Quando elevamos tudo por $\ln M$ temos, $(1- \delta)^{\frac{1}{\delta}\ln M} \leq \frac{1}{M}$ e isso nos traz $ (1- \delta)^{\frac{1}{\delta}\ln M}M \leq 1$, como $(1-\delta)$ é estritamente menor que 1, então $\frac{1}{\delta}\ln M + 1$ iterações são suficientes para terminar o programa. Perceba que $\ln M$ é polinomial no tamanho da instância, uma vez que $\ln M$ está apenas a uma constante de $\log M$ e $M$ é no máximo a soma de todos os custos. Como precisamos de $\log$ soma dos custos bits para guardar a instância, então $\log M$ é polinomial no tamanho da instância. \\
+    Agora, vamos mostrar a razão de aproximação. Somando as desigualdades encontradas nos Lemas~\ref{lema:3.7} e \ref{lema:3.9}, temos que 
+    
+        \[A + T - 2A^* - 3T^* \leq 2m\delta(A+T)\] 
+        \[(1 - 2m\delta)(A+T) \leq (2A^* + 3T^*) \leq 3 \opt(I)\]
+        \[A+T \leq \frac{3}{1-2m\delta}\opt(I)\]
+    Queremos que $\frac{1}{1-2m\delta}\leq (1+\epsilon)$.
+    \[1 \leq (1+\epsilon)(1-2m\delta)\]
+    \[1 - 2m\delta \geq \frac{1}{1+\epsilon}\]
+    \[\delta \leq \frac{1}{(2m)} \frac{\epsilon}{(\epsilon+1)}\]
+    Assim, podemos escolher $\delta = \frac{\epsilon}{4m}$ e, portanto, teremos um algoritmo com razão de aproximação $3(1+\epsilon)$ que roda com no máximo $\frac{4m}{\epsilon}\ln M$ operações.
+\end{proof}
+\newpage
 \bibliographystyle{plain}
 \bibliography{aprox.bib}
 
