@@ -564,6 +564,34 @@ Agora que temos essas duas desigualdades, conseguimos mostrar o seguinte teorema
     \[\delta \leq \frac{1}{(2m)} \frac{\epsilon}{(\epsilon+1)}\]
     Assim, podemos escolher $\delta = \frac{\epsilon}{4m}$ e, portanto, teremos um algoritmo com razão de aproximação $3(1+\epsilon)$ que roda com no máximo $\frac{4m}{\epsilon}\ln M$ operações.
 \end{proof}
+Durante a prova da razão do nosso algoritmo utilizamos que $(2A^* + 3T^*) \leq 3\opt(I)$, vamos utilizar essa folga para melhorar o algoritmo. \\
+A partir da instância recebida, vamos criar uma nova instância dividindo o custo de abertura das facilidades por uma constante $\mu \leq 1$. Ao final, vamos encontrar um valor para $\mu$ que irá diminuir a razão de aproximação do algoritmo o máximo possível. \\
+Com essa nova instância do algoritmo, vamos encontrar uma solução viável com custo de abertura de instalações $\bar{A}$ e custo de transporte $\bar{T}$. Considere uma solução ótima dessa nova instância com custos $\bar{A}^*$ e $\bar{T}^*$. Para essas soluções, vale
+\[ \bar{T} - \bar{A}^* - \bar{T}^* \leq m\delta(\bar{A} + \bar{T})\]
+e
+\[ \bar{A} - \bar{A}^* - 2\bar{T}^* \leq m\delta(\bar{A} + \bar{T}).\]
+Se multiplicarmos os custos de abertura das instalações escolhidas por $\mu$ temos o custo de uma solução viável para a instância original, seja $A = \mu\bar{A}$ e $T$ os custos dessa solução. Vale
+\[ T - \bar{A}^* - \bar{T}^* \leq m\delta(\frac{A}{\mu}+ T)\]
+e
+\[ \frac{A}{\mu} - \bar{A}^* - 2\bar{T}^* \leq m\delta(\frac{A}{\mu} + T),\]
+como $\mu \leq 1$ então $m\delta(\frac{A}{\mu}+ T) \leq m\delta\frac{1}{\mu}( A + T)$ e valendo 
+\[T - \bar{A}^* - \bar{T}^* \leq m\delta\frac{1}{\mu}( A + T) \] 
+e 
+\[ \frac{A}{\mu} - \bar{A}^* - 2\bar{T}^* \leq m\delta\frac{1}{\mu}( A + T) .\]
+Para uma solução ótima da instância original com custos $A^*$ e $T^*$ conseguimos construir uma solução viável para a instância nova com custos $\frac{A^*}{\mu}$ e $T^*$, essa instância tem custo pelo menos o ótimo, então vale
+\[T - \frac{A^*}{\mu} - T^* \leq m\delta\frac{1}{\mu}( A + T) \] 
+e 
+\[ \frac{A}{\mu} - \frac{A^*}{\mu} - 2T^* \leq m\delta\frac{1}{\mu}( A + T) .\]
+
+Somando a primeira desigualdade com a segunda multiplicada por $\mu$ temos
+\[A + T - A^* (1 + \frac{1}{\mu}) - T^*(1 + 2\mu) \leq (1 + \frac{1}{\mu})m\delta(A+T)\]
+\[(A+T)(1 - (1+\frac{1}{\mu})m\delta)\leq A^* (1 + \frac{1}{\mu}) + T^*(1 + 2\mu)\]
+Note que $(1+\frac{1}{\mu})$ decresce e $1 + 2\mu$ cresce quando $\mu$ cresce. Então, o menor valor do máximo deles dois será quando ele for igual. Igualando eles, encontraremos $\mu = \frac{1}{\sqrt{2}}$ e ambos serão igual a $1 + \sqrt{2}$. Assim temos
+\[(A+T)(1 - (1+\frac{1}{\mu})m\delta)\leq A^* (1 + \frac{1}{\mu}) + T^*(1 + 2\mu) \leq (1+\sqrt{2})\opt(I)\]
+\[(A+T)\leq \frac{(1+\sqrt{2})}{(1 - (1+\frac{1}{\mu})m\delta)}\opt(I).\]
+Fazendo uma análise parecida com a que fizemos para encontrar a razão $3(1 + \epsilon)$, encontramos que escolhendo $\delta = \frac{\epsilon}{2m(1+\sqrt{2})}$ encontramos 
+\[(A+T) \leq (1 + \sqrt{2} + \epsilon )\opt(I).\]
+Assim, se fizermos a reescala dos custos de abertura das facilidades antes de rodar o algoritmo de busca local temos um novo algoritmo que é uma $(1 + \sqrt{2} + \epsilon )$-aproximação para o nosso problema.
 \newpage
 \bibliographystyle{plain}
 \bibliography{aprox.bib}
