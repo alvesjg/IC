@@ -30,6 +30,7 @@
 \renewcommand{\algorithmicdo}{\textbf{faça}}
 \renewcommand{\algorithmicwhile}{\textbf{Enquanto}}
 \renewcommand{\algorithmicfunction}{\textbf{Algoritmo}}
+\renewcommand{\algorithmicreturn}{\textbf{Devolva}}
 
 \newcommand{\opt}{\ensuremath{\mathrm{opt}}}
 \newcommand{\OPT}{\ensuremath{\mathrm{opt}}}
@@ -384,7 +385,7 @@ Dada essa definição, vamos enunciar um lema que irá nos ajudar a provar uma c
 \begin{proof}
     Como $i \in N(j)$, então $x^*_{ij}>0$. Assim, pelas folgas complementares, a desigualdade do dual correspondente a~\ref{P4} vale por igualdade, então $v^*_j - w^*_{ij} = c_{ij}$. Como $w^*_{ij} \geq 0$, $c_{ij} \leq v^*_j$. 
 \end{proof}
-Com esse lema, sabemos que se em um conjunto $S \subseteq F$ de instalações abertas, para todo cliente $j \in D$, existe uma instalação aberta $i$ em $N(j)$, então $c_{ij}\leq v_j^*$ e o custo total de associação seria no máximo $\sum_{j\in D}v_j^* \leq \opt(I)$, uma vez que vale a dualidade forte e que o valor do primal é no máximo $\opt(I)$. Entretanto, não é garantido uma cota superior para o custo de abertura de $S$. Vamos descobrir como encontrar um $S$ com um bom custo de abertura e um bom custo de associação. Seja $j_k$ um cliente qualquer. Se abrirmos a instalação $i_k$ mais barata de $N(j_k)$ conseguimos limitar o custo de sua abertura.
+Com esse lema, sabemos que se em um conjunto $S \subseteq F$ de instalações abertas, para todo cliente $j \in D$, existe uma instalação aberta $i$ em $N(j)$, então $c_{ij}\leq v_j^*$ e o custo total de associação seria no máximo $\sum_{j\in D}v_j^* \leq \opt(I)$, uma vez que vale a dualidade forte e que o valor da solução do primal é no máximo $\opt(I)$. Entretanto, não é garantido uma cota superior para o custo de abertura de $S$. Vamos descobrir como encontrar um $S$ com um bom custo de abertura e um bom custo de associação. Seja $j_k$ um cliente qualquer. Se abrirmos a instalação $i_k$ mais barata de $N(j_k)$ conseguimos limitar o custo de sua abertura.
 \[\tag{*} \label{relx_fl:*}
     f_{i_k} = f_{i_k} \sum_{i \in N(j_k)}x^*_{ij_k} = \sum_{i \in N(j_k)}f_{i_k}x^*_{ij_k} \leq \sum_{i \in N(j_k)}f_{i}y^*_{i},
 \]
@@ -422,7 +423,7 @@ Agora, vamos definir o algoritmo. Nele, $S$ será o conjunto das instalações a
     O algoritmo {\sc CS} é uma $4$-aproximação para o problema da localização de instalações.
 \end{theorem}
 \begin{proof}
-    Primeiro, vamos mostrar que o algoritmo é polinomial. Sabemos que é possível encontrar uma solução para o problema linear e o seu dual em tempo polinomial utilizando o algoritmo dos elipsoides~\cite{Kha79}. Sabemos que o laço da linha 6 irá executar no máximo $|D|$ iterações, uma vez que sempre retiramos pelo menos um elemento de $C$. Além disso, as linhas $6-11$ são claramente polinomiais.
+    Primeiro, vamos mostrar que o algoritmo é polinomial. Sabemos que é possível encontrar uma solução para o problema linear e o seu dual em tempo polinomial utilizando o método dos elipsoides~\cite{Kha79}. Sabemos que o laço da linha 6 irá executar no máximo $|D|$ iterações, uma vez que sempre retiramos pelo menos um elemento de $C$. Além disso, as linhas $6-11$ são claramente polinomiais.
     Agora, vamos mostrar que o algoritmo é uma $4$-aproximação.\\
     Perceba que, para $k_1$ e $k_2$ com $k_1 < k_2$, $N(j_{k_1})\cap N(j_{k_2}) = \emptyset$, caso contrário $j_{k_2} \in N^2(j_{k_1})$ e seria retirado de $C$ na iteração $k_1$.\\
     Seja $F' \subseteq F$, tal que $F' = \bigcup_k N(j_k)$.
@@ -440,15 +441,86 @@ O algoritmo aqui apresentado é de autoria de Chudak e Shmoys~\cite{Chudak2003}.
 
 \newpage
 \subsubsection{Método primal-dual}
+Assim como no método anterior, a função custo também satisfaz a desigualdade triangular. \\
+Vamos construir uma solução $(\bar{v},\bar{w})$ maximal para o dual, ou seja, uma solução que não podemos aumentar o valor das variáveis $v$ e então construir um conjunto $w^*$ que, junto com $v^*$, seja uma solução viável.\\
+Iremos alterar a definição de vizinhança para que cubra também as instalações.
+\begin{definition}
+    Seja $(v,w)$ uma solução viável do dual. Denotamos por $N(j) = \{i \in F:v_j \geq c_{ij}\}$ a \emph{vizinhança} de um cliente $j$ e $N(i) = \{j \in D:v_j \geq c_{ij}\}$ a \emph{vizinhança} de uma instalação $i$.
+\end{definition}
+Além disso, vamos precisar também de outra definição.
+\begin{definition}
+    Seja $(v,w)$ uma solução viável do dual. Dizemos que um cliente $j \in D$ \emph{contribui} para uma instalação $i$ se $w_{ij} > 0$.
+\end{definition}
 
+Dadas variáveis duais $v$, conseguimos derivar um conjunto $w$ viável, se ele existir, se adotarmos $w_{ij} = \max(0,v_j - c_{ij})$. Assim, se $w_{ij} >0$, então $j \in N(i)$, uma vez que $w_{ij} > 0$ implica $v_j > c_{ij}$ e $v_j = c_{ij} + w_{ij}$. Veremos isso será válido na nossa solução.\\
+Seja $T \subseteq F$ tal que $T = \{i \in F: \sum_{j \in D} w_{ij} = f_i\}$. Em uma solução maximal $(\bar v, \bar w)$ do dual, todo cliente está na vizinhança de uma instalação em $T$. Caso contrário, conseguimos aumentar o valor das variáveis e encontrar uma solução viável com custo melhor para o dual. Seja $i \in T$ temos que,
+\begin{equation} 
+    \label{inst_sol}
+    f_i + \sum_{j \in N(i)} c_{ij} = \sum_{j \in D} \bar w_{ij} + \sum_{j \in N(i)} c_{ij} = \sum_{j \in N(i)} (\bar w_{ij} + c_{ij})
+\end{equation}
+em que a primeira igualdade vale pela definição de $T$ e a segunda vale pela definição de vizinhança. \\
+Como cada cliente está na vizinhança de uma instalação que pertence a $T$, abrir todas as instalações em $T$ seria suficiente, mas estaremos, provavelmente, sendo redundantes. Podemos então escolher um conjunto $T' \subseteq T$ tal que cada cliente esteja na vizinhança de no máximo uma instalação, mas garantindo que um cliente que não esteja na vizinhança de nenhuma instalação de $T'$ esteja próxima a alguma delas. \\
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \Function{JV}{{F,D,c,f}}
+        \State $v \gets 0$
+        \State $w \gets 0$
+        \State $S \gets D$
+        \State $T \gets \emptyset$
+        \While{$S \neq \emptyset$}
+        \State Aumente $v_j$ e $w_{ij}$,  $\forall j \in D, i \in N(j)$, uniformemente até que exista um cliente que passe a pertencer a vizinhança de uma instalação em $T$ ou uma instalação que não estava em $T$ fique com a desigualdade justa.
+        \If{algum $j\in S$ passe a pertencer a vizinhança de alguma instalação em $T$}
+        \State $S \gets S \setminus \{j\}$
+        \EndIf
+        \If{$\sum_{j \in N(i)} w_{ij} = f_i$ para algum $i \not \in T$}
+        \State $T \gets T \cup \{i\}$
+        \State $S \gets S\setminus N(i)$
+        \EndIf
+        \EndWhile
+        $T' \gets \emptyset$
+        \While{$T \neq \emptyset$}
+        \State Escolha $i \in T$
+        \State $T' \gets T' \cup \{i\}$
+        \State $T \gets T \setminus \{h \in F : \exists j \in D \,|\, \text{j contribui a h e a i}\}$
+        \EndWhile
+        \State \Return T'
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+Para provar a razão de aproximação vamos precisar primeiro de um lema.
+\begin{lemma}
+    \label{lemma:3.9}
+    Seja $T'$ solução devolvida pelo algoritmo e $(v,w)$ solução do dual encontrada no algoritmo. Se $j \in D$ não está na vizinhança de nenhuma instalação de $T'$, então existe uma instalação $i$ tal que $c_{ij} \leq 3v_j$
+\end{lemma}
+\begin{proof}
+    Seja $h$ a instalação responsável pela remoção de $j$ de $S$. Claramente, $h$ não pertence a $T'$ uma vez que $j$ pertence a vizinhança de $h$, então existe $i \in T'$ e $k \in D$ tal que $k$ contribui para $i$ e para $h$. Pela desigualdade triangular,
+    \[c_{ij} \leq c_{hj} + c_{hk} + c_{ik}\]
+    como $j \in N(h)$ e $k \in N(h) \cup N(i)$ vale que $c_{hj} \leq v_j$ e $c_{hk} + c_{ik} \leq 2v_k$. Como $k$ contribui para $h$, então $k$ foi tirado de $S$ no momento que $h$ foi inserido em $T$ ou antes. Como $h$ foi responsável pela retirada de $j$ de $S$, então $j$ não foi retirado de $S$ antes de $k$. Como as variáveis crescem de maneira uniforme, então $v_k \leq v_j$.\\
+    Portanto, $c_{ij}\leq 3v_j$. 
+\end{proof}
+
+Agora, podemos mostrar o teorema abaixo.
+\begin{theorem}
+    O algoritmo {\sc JV} é uma $3$-aproximação para o problema da localização de instalações.
+\end{theorem}
+\begin{proof}
+    Claramente o algoritmo roda em tempo polinomial. Vimos que para as instalações em $T$~\ref{inst_sol} vale, juntando para todas as instâncias de $T'$ e, seja $A(i)$ os clientes associados a instalação $i$, temos
+    \[\sum_{i \in T'} (f_i + \sum_{j \in A(i)} c_{ij}) = \sum_{i \in T'} \sum_{j \in A(i)} (w_{ij} + c_{ij}) = \sum_{i \in T'} \sum_{j \in A(i)} v_j\]
+    em que a primeira igualdade vale pela definição de $T$ e a segunda igualdade vale pela construção da nossa solução. \\
+    Seja $Z$ o conjunto dos clientes que não estão na vizinhança de nenhuma instalação de $T'$, podemos utilizar o Lema~\ref{lemma:3.9} para esses clientes. Assim temos que
+    \[\sum_{i \in T'} (f_i + \sum_{j \in A(i)} c_{ij}) + \sum_{j \in Z} c_{\sigma(j)j}\leq \sum_{i \in T'} \sum_{j \in A(i)} v_j + 3 \sum_{j \in Z} v_j \leq 3 \sum_{j \in D} v_j\leq 3\,\opt(I)\]
+    em que a última desigualdade vale pela dualidade fraca.
+\end{proof}
+Esse algoritmo é de autoria de Jain e Vazirani e leva suas iniciais como nome.
 \newpage
 
 \subsection{Busca local}
-Embora o custo de transporte esteja definido apenas para um cliente e uma instalação, aqui falaremos também sobre custos de transporte entre duas instalações. Podemos definir o custo de transporte entre duas instalações como o menor custo de transporte entre essas duas instalações e um cliente qualquer. \\
-Um algoritmo de busca local começa com uma solução viável para o problema e checa se alguma alteração local melhora o custo da solução atual. Caso essa melhora ocorra, essa alteração é feita. Esse processo se repete até que não exista alteração que melhore o custo e, então, encontramos uma solução que é chamada de localmente ótima. A implementação direta da ideia da busca local na maioria das vezes não garante execução em tempo polinomial e, nesses casos, as alterações só acontecerão se satisfizerem alguma restrição. \\
-Nosso algoritmo contará com três operações: abrir instalações fechadas, fechar instalações abertas ou trocar uma instalação aberta por uma fechada. Nossa solução inicial terá todas as instalações abertas e um cliente sempre estará ligado à instalação aberta mais próxima a ele. Uma operação só será feita se melhorar o custo da solução atual em uma razão de $(1-\delta)$, como essa solução não é necessariamente localmente ótima, iremos chamá-la de solução quase localmente ótima. Ao final, mostraremos que o algoritmo é uma $3(1 + \epsilon)$-aproximação para o problema de localização de instalações e vamos definir o $\delta$ em função do $\epsilon$. \\
-Vamos mostrar duas desigualdades que serão fundamentais para chegar na razão de aproximação desejada. A partir daqui utilizaremos uma solução parcialmente localmente ótima $(S,\sigma)$ com custo das instalações abertas $A$ e custo de transporte total $T$. Também vamos utilizar uma solução ótima $(S^*,\sigma^*)$ com custos de instalações abertas $A^*$ e custo de transporte total $T^*$. Claramente, $\opt(I) = A^* + T^*$. Também definimos $m = |F|$ o número total de instalações.
-\newpage
+Embora o custo de transporte esteja definido apenas para um cliente e uma instalação, aqui falaremos também sobre custos de transporte entre duas instalações. Podemos definir o custo de transporte entre duas instalações como o menor custo de transporte entre essas duas instalações e um cliente qualquer. Então a desigualdade triangular valerá da seguinte forma: para todo $i,j,k \in F \cup D$ 
+\[ c_{ij} \leq c_{ik} + c_{kj}.\]\\
+Um algoritmo de busca local começa com uma solução viável para o problema e checa se alguma alteração local melhora o custo da solução atual. Caso essa melhora ocorra, essa alteração é feita. Esse processo se repete até que não exista alteração que melhore o custo e, então, encontramos uma solução que é chamada de \emph{localmente ótima}. A implementação direta da ideia da busca local na maioria das vezes não garante execução em tempo polinomial e, nesses casos, as alterações só acontecerão se satisfizerem alguma restrição. \\
+Nosso algoritmo contará com três operações: abrir instalações fechadas, fechar instalações abertas ou trocar uma instalação aberta por uma fechada. Nossa solução inicial terá todas as instalações abertas e um cliente sempre estará ligado à instalação aberta mais próxima a ele. Uma operação só será feita se melhorar o custo da solução atual em uma razão de $(1-\delta)$, como essa solução não é necessariamente localmente ótima, iremos chamá-la de solução \emph{quase localmente ótima}. Ao final, mostraremos que o algoritmo é uma $3(1 + \epsilon)$-aproximação para o problema de localização de instalações e vamos definir o $\delta$ em função do $\epsilon$. \\
+Vamos mostrar duas desigualdades que serão fundamentais para chegar na razão de aproximação desejada. A partir daqui utilizaremos uma instância $I$, uma solução quase localmente ótima $(S,\sigma)$ com custo das instalações abertas $A$ e custo de transporte total $T$. Também vamos utilizar uma solução ótima $(S^*,\sigma^*)$ com custos de instalações abertas $A^*$ e custo de transporte total $T^*$. Claramente, $\opt(I) = A^* + T^*$. Também definimos $m = |F|$ o número total de instalações.
 \begin{lemma}
     \label{lema:3.7}
     Sejam as soluções $(S,\sigma)$ e $(S^*,\sigma^*)$ como definidas acima. Então,
@@ -566,32 +638,29 @@ Agora que temos essas duas desigualdades, conseguimos mostrar o seguinte teorema
 \end{proof}
 Durante a prova da razão do nosso algoritmo utilizamos que $(2A^* + 3T^*) \leq 3\opt(I)$, vamos utilizar essa folga para melhorar o algoritmo. \\
 A partir da instância recebida, vamos criar uma nova instância dividindo o custo de abertura das facilidades por uma constante $\mu \leq 1$. Ao final, vamos encontrar um valor para $\mu$ que irá diminuir a razão de aproximação do algoritmo o máximo possível. \\
-Com essa nova instância do algoritmo, vamos encontrar uma solução viável com custo de abertura de instalações $\bar{A}$ e custo de transporte $\bar{T}$. Considere uma solução ótima dessa nova instância com custos $\bar{A}^*$ e $\bar{T}^*$. Para essas soluções, vale
-\[ \bar{T} - \bar{A}^* - \bar{T}^* \leq m\delta(\bar{A} + \bar{T})\]
+Com essa nova instância do algoritmo, vamos encontrar uma solução viável com custo de abertura de instalações $\bar{A}$ e custo de transporte $\bar{T}$. Note que existe uma solução para essa nova instância com custos $\frac{A^*}{\mu}$ e $T^*$. Note também que no nosso lema não utilizamos necessariamente que a solução comparada era ótima, então os lemas valem também quando nossa solução é comparada com a solução anterior. Assim, vale que
+\[ \bar{T} - \frac{A^*}{\mu} - T^* \leq m\delta(\bar{A} + \bar{T})\]
 e
-\[ \bar{A} - \bar{A}^* - 2\bar{T}^* \leq m\delta(\bar{A} + \bar{T}).\]
+\[ \bar{A} - \frac{A^*}{\mu} - 2T^* \leq m\delta(\bar{A} + \bar{T}).\]
 Se multiplicarmos os custos de abertura das instalações escolhidas por $\mu$ temos o custo de uma solução viável para a instância original, seja $A = \mu\bar{A}$ e $T$ os custos dessa solução. Vale
-\[ T - \bar{A}^* - \bar{T}^* \leq m\delta(\frac{A}{\mu}+ T)\]
+\[ T - \frac{A^*}{\mu} - T^* \leq m\delta(\frac{A}{\mu}+ T)\]
 e
-\[ \frac{A}{\mu} - \bar{A}^* - 2\bar{T}^* \leq m\delta(\frac{A}{\mu} + T),\]
+\[ \frac{A}{\mu} - \frac{A^*}{\mu} - 2T^* \leq m\delta(\frac{A}{\mu} + T),\]
 como $\mu \leq 1$ então $m\delta(\frac{A}{\mu}+ T) \leq m\delta\frac{1}{\mu}( A + T)$ e valendo 
-\[T - \bar{A}^* - \bar{T}^* \leq m\delta\frac{1}{\mu}( A + T) \] 
-e 
-\[ \frac{A}{\mu} - \bar{A}^* - 2\bar{T}^* \leq m\delta\frac{1}{\mu}( A + T) .\]
-Para uma solução ótima da instância original com custos $A^*$ e $T^*$ conseguimos construir uma solução viável para a instância nova com custos $\frac{A^*}{\mu}$ e $T^*$, essa instância tem custo pelo menos o ótimo, então vale
 \[T - \frac{A^*}{\mu} - T^* \leq m\delta\frac{1}{\mu}( A + T) \] 
 e 
 \[ \frac{A}{\mu} - \frac{A^*}{\mu} - 2T^* \leq m\delta\frac{1}{\mu}( A + T) .\]
-
 Somando a primeira desigualdade com a segunda multiplicada por $\mu$ temos
 \[A + T - A^* (1 + \frac{1}{\mu}) - T^*(1 + 2\mu) \leq (1 + \frac{1}{\mu})m\delta(A+T)\]
 \[(A+T)(1 - (1+\frac{1}{\mu})m\delta)\leq A^* (1 + \frac{1}{\mu}) + T^*(1 + 2\mu)\]
 Note que $(1+\frac{1}{\mu})$ decresce e $1 + 2\mu$ cresce quando $\mu$ cresce. Então, o menor valor do máximo deles dois será quando ele for igual. Igualando eles, encontraremos $\mu = \frac{1}{\sqrt{2}}$ e ambos serão igual a $1 + \sqrt{2}$. Assim temos
 \[(A+T)(1 - (1+\frac{1}{\mu})m\delta)\leq A^* (1 + \frac{1}{\mu}) + T^*(1 + 2\mu) \leq (1+\sqrt{2})\opt(I)\]
-\[(A+T)\leq \frac{(1+\sqrt{2})}{(1 - (1+\frac{1}{\mu})m\delta)}\opt(I).\]
-Fazendo uma análise parecida com a que fizemos para encontrar a razão $3(1 + \epsilon)$, encontramos que escolhendo $\delta = \frac{\epsilon}{2m(1+\sqrt{2})}$ encontramos 
+\[(A+T)\leq \frac{(1+\sqrt{2})}{(1 - (1+\sqrt{2 })m\delta)}\opt(I).\]
+Analogamente ao que foi feito na análise da razão de aproximação $3(1 + \epsilon)$, escolhendo $\delta = \frac{\epsilon}{2m(1+\sqrt{2})}$ encontramos 
 \[(A+T) \leq (1 + \sqrt{2} + \epsilon )\opt(I).\]
 Assim, se fizermos a reescala dos custos de abertura das facilidades antes de rodar o algoritmo de busca local temos um novo algoritmo que é uma $(1 + \sqrt{2} + \epsilon )$-aproximação para o nosso problema.
+
+Charikar e Guha foram responsáveis pro provar a razão de aproximação 3 para esse algoritmo e introduziram a ideia de reescala. A análise feita aqui é de autoria de Gupta e Tangwongsan. 
 \newpage
 \bibliographystyle{plain}
 \bibliography{aprox.bib}
