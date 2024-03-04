@@ -257,22 +257,22 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
 
 \subsection{Método do gargalo}
 Os chamados problemas de gargalo são aqueles definidos em grafos com pesos nas arestas tais que a resposta ótima é o peso de uma aresta. \\
-Para esse algoritmo será necessário saber o que é um conjunto independente de vértices.
+Para o próximo algoritmo será necessário saber o que é um conjunto independente de vértices.
 \begin{definition}
     Seja $G = (V,E)$ um grafo. Um conjunto $S \subseteq V$ é um conjunto \emph{independente} se não existe $e \in E$ que tenha ambos os extremos em $S$.
 \end{definition}
 Seja $I(G,c,k)$ uma instância do problema dos $k$-centros. Vamos supor que as arestas $E = \{e_1,e_2,\ldots,e_{|E|}\}$ de $G$ estejam dispostas de forma que $c_{e_i} \leq c_{e_{i+1}}$ para todo $i \in [|E|-1]$. Como sabemos que é possível ordenar em tempo polinomial, podemos assumir isso. \\
-Seja $E_i = \{e_1,e_2,\ldots,e_i\}$ e $G_i = (V,E_i)$. Seja também $i^*$ o menor $i$ tal que $G_i$ tem um $k$-conjunto dominante. Como $G$ é completo, $i^*$ existe. Claramente $c_{e_{i^*}} = \opt(I)$, porém não conseguimos encontrar $i^*$ eficientemente, uma vez que não é possível saber se um grafo tem um $k$-conjunto dominante em tempo polinomial, a menos que $P = \NP$. Portanto, vamos usar um conjunto independente maximal para aproximar uma resposta.
+Seja $E_i = \{e_1,e_2,\ldots,e_i\}$ e $G_i = (V,E_i)$. Seja também $i^*$ o menor $i$ tal que $G_i$ tem um $k$-conjunto dominante. Como $G$ é completo, $i^*$ existe. Claramente $c_{e_{i^*}} = \opt(I)$, porém não conseguimos encontrar $i^*$ eficientemente, uma vez que não é possível saber se um grafo tem um $k$-conjunto dominante em tempo polinomial, a menos que $P = \NP$. Vamos usar um conjunto independente maximal para aproximar uma resposta.
 
 \begin{lemma}\label{lemma:2.8}
     Seja $G = (V,E)$ um grafo. Um conjunto independente maximal em $G$ é também um conjunto dominante.
 \end{lemma}
 \begin{proof}
-    Seja $G = (V,E)$ e $S$ um conjunto independente maximal em $G$. Suponha, por absurdo, que $S$ não é um conjunto dominante. Então, existe vértice $u \in V \setminus S$ que não é vizinho de nenhum dos vértices de $S$. Portanto, $S \cup \{u\}$ é também um conjunto independente e $S \subset \{S \cup \{u\}\}$. Contradição, pois $S$ é maximal.
+    Seja $G = (V,E)$ e $S$ um conjunto independente maximal em $G$. Suponha, por absurdo, que $S$ não é um conjunto dominante. Então, existe vértice $u \in V \setminus S$ que não é vizinho de nenhum dos vértices de $S$. Portanto, $S \cup \{u\}$ é também um conjunto independente e $S \subset \{S \cup \{u\}\}$, uma contradição, pois $S$ é maximal.
 \end{proof}
-Então, se encontrarmos um conjunto independente maximal de tamanho $k$ em $G$ teremos um conjunto dominante de mesmo tamanho. No entanto, não conseguimos garantir que iremos encontrar esse conjunto em $G$ e, por isso, vamos definir e usar o seu quadrado.
+Então, se encontrarmos um conjunto independente maximal de tamanho $k$ em $G$ teremos um conjunto dominante de mesmo tamanho. No entanto, não conseguimos garantir que iremos encontrar esse conjunto em $G$ e, por isso, vamos definir e usar o chamado quadrado de $G$.
 \begin{definition}
-    Seja $G= (V,E)$ um grafo. Denotamos por $G^2 = (V,E^2)$ o \emph{quadrado} de $G$ em que $E^2 = E \cup \{uv: \text{distância de u a v em $G$ é $2$}\}$.
+    Seja $G= (V,E)$ um grafo. Denotamos por $G^2 = (V,E^2)$ o \emph{quadrado} de $G$ em que $E^2 = E \cup \{uv: \text{u e v têm vizinhos em comum em $G$}\}$.
 \end{definition}
 Dada a definição vamos enunciar e provar um lema que nos ajudará no algoritmo.
 \begin{lemma}\label{lemma:2.10}
@@ -280,10 +280,10 @@ Dada a definição vamos enunciar e provar um lema que nos ajudará no algoritmo
 \end{lemma}
 \begin{proof}
     Vamos mostrar pela contrapositiva.\\
-    Seja $G = (V,E)$ um grafo, $G^2$ o seu quadrado e $k$ um inteiro positivo. Suponha que $G^2$ tem um conjunto independente maximal $S \subset V$ tal que $|S| > k$. Seja $D$ um conjunto dominante em $G$, vamos mostrar que $|D| > k$. \\
-    Por definição, não existe um caminho de tamanho $2$ ou uma aresta entre dois vértices de $S$ em $G$. Seja $u \in D$, vamos mostrar que $u$ cobre no máximo $1$ vértice de $S$ em $G$. \\
+    Suponha que $G^2$ tem um conjunto independente maximal $S \subset V$ tal que $|S| > k$. Seja $D$ um conjunto dominante em $G$. Vamos mostrar que $|D| > k$. \\
+    Por definição, uma aresta entre dois vértices de $S$ em $G^2$. Isso significa que, em $G$, não existe aresta nem vizinho comum entre dois vértices de $S$. Seja $u \in D$. Vamos mostrar que $u$ cobre no máximo um vértice de $S$ em $G$. \\
     Se $u \in S$, o único vértice de $S$ coberto por $u$ é ele mesmo, uma vez que não existe aresta entre dois vértices de $S$ em $G$. \\
-    Se $u \not \in S$, $u$ pode cobrir apenas um vértice de $S$, caso cobrisse $2$, digamos $v$ e $w$, então $P = (vu,uw)$ é um caminho de tamanho $2$ com extremos em $v$ e $w$ em $G$. Assim, $vw$ é uma aresta em $G^2$ e eles não podem pertencer a $S$ ao mesmo tempo. \\
+    Se $u \not \in S$, $u$ pode cobrir apenas um vértice de $S$, pois caso cobrisse dois, digamos $v$ e $w$, então u seria um vizinho comum em $G$ de $v$ e $w$.\\
     Portanto, $|D| \geq |S| > k$.
 \end{proof}
 Agora, temos todas as definições e lemas que serão necessários para nosso algoritmo.
@@ -306,11 +306,11 @@ Agora, temos todas as definições e lemas que serão necessários para nosso al
 \end{theorem}
 \begin{proof}
     Primeiro vamos mostrar que o algoritmo é polinomial. \\
-    Como $G_{i^*}$ tem um $k$-conjunto dominante, então o laço vai iterar no máximo $i^*$ vezes, pois pelo Lema~\ref{lemma:2.10} qualquer conjunto independente maximal encontrado em $G_{i^*}^2$ terá tamanho no máximo $k$.
-    Também é fácil mostrar que é possível encontrar um conjunto independente maximal em tempo polinomial. Um algoritmo simples que começa com um conjunto $A = \{u\}$ sendo $u$ um vértice arbitrário e, a cada iteração, é colocado em $A$ um vértice que não é adjacente a nenhum vértice de $A$ até não ser mais possível é suficiente. \red{Faço um lema para explicar melhor?}\\
-    Além disso, também conseguimos construir o grafo $G_i^2$ em tempo polinomial. Começaremos $E_i^2$ como uma cópia de $E_i$ e, para cada tripla de vértice $(u,v,k)$ caso já não exista uma aresta $uk \in E_i$, vamos inseri-la em $E_i^2$ se $uv,vk \in E_i$. Como temos no máximo $|V|^3$ triplas de vértices e todas as operações que serão feitas são feitas em tempo polinomial, então podemos construir $G_i^2$ em tempo polinomial. \\
-    Agora, vamos mostrar que é uma $2$-aproximação. \\
-    Seja max$(H)$ o maior valor de uma aresta em um grafo $H$ com peso nas arestas. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal de tamanho no máximo $k$, então pelo Lema~\ref{lemma:2.8} ele é um $k$-conjunto dominante e como $M_{i'}$ é um subgrafo de $G_{i'}^2$ então max$(M_{i'}) \leq \text{max}(G_{i'}^2) $. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i})$. \\Assim, max$(M_{i'}) \leq $ max$(G_{i'}^2) \leq 2$ max$(G_{i'}) \leq 2$ max$(G_{i^*})= 2 \opt(I)$. 
+    Como $G_{i^*}$ tem um $k$-conjunto dominante, então o laço vai iterar no máximo $i^* \leq |E|$ vezes, pois pelo Lema~\ref{lemma:2.10} qualquer conjunto independente maximal encontrado em $G_{i^*}^2$ terá tamanho no máximo $k$.
+    Também é fácil mostrar que é possível encontrar um conjunto independente maximal em tempo polinomial. Um algoritmo simples começa com um conjunto $A = \{u\}$ sendo $u$ um vértice arbitrário e, a cada iteração, coloca em $A$ um vértice que não é adjacente a nenhum vértice de $A$ até não ser mais possível.
+    Além disso, também conseguimos construir o grafo $G_i^2$ em tempo polinomial. Começaremos $E_i^2$ como uma cópia de $E_i$ e, para cada tripla de vértice $(u,v,w)$ caso já não exista uma aresta $uw \in E_i$, vamos inseri-la em $E_i^2$ se $v$ for um vizinho comum de $u$ e $w$ em $E_i$. Como temos no máximo $|V|^3$ triplas de vértices e todas as operações que serão feitas tomam tempo polinomial, então podemos construir $G_i^2$ em tempo polinomial. \\
+    Agora, vamos mostrar que o algoritmo é uma $2$-aproximação. \\
+    Para um grafo $H$ com peso nas arestas, definimos max$(H)$ como o maior peso de uma aresta. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal de tamanho no máximo $k$, então pelo Lema~\ref{lemma:2.8} ele é um $k$-conjunto dominante e como o grafo induzido $G_{i'}[M_{i'}]$ é um subgrafo de $G_{i'}^2$ então max$(G_{i'}[M_{i'}]) \leq \text{max}(G_{i'}^2) $. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i'})$. \\Assim, max$(G_{i'}[M_{i'}]) \leq $ max$(G_{i'}^2) \leq 2$ max$(G_{i'}) \leq 2$ max$(G_{i^*})= 2 \opt(I)$. 
 \end{proof}
 
 Este algoritmo é de autoria de Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HSBottle}, e, por isso, está sendo creditado com suas iniciais em seu nome. 
@@ -323,18 +323,18 @@ Antes de falarmos sobre algoritmos de aproximação para o problema da localiza�
 \begin{problem}(Cobertura por vértices)
     Dado um grafo $G$ e um inteiro $k$, decidir se $G$ tem uma cobertura por vértices de tamanho $k$.
 \end{problem}
-Esse problema é $\NP$-completo, sendo um dos famosos $21$ problemas do Karp~\cite{Karp1972}. Usaremos este problema para mostrar que o problema localização de instalações é $\NP$-difícil.
+Esse problema é $\NP$-completo, sendo um dos famosos $21$ problemas do Karp~\cite{Karp1972}. Disso deriva-se o seguinte.
 
 \begin{theorem}
-    O problema localização de instalações é $\NP$-difícil.
+    O problema de localização de instalações é $\NP$-difícil.
 \end{theorem}
 
 \begin{proof}
-    Suponha que exista um algoritmo $A$ que resolva o problema localização de instalações em tempo polinomial. \\
+    Suponha que exista um algoritmo $A$ que resolva o problema de localização de instalações em tempo polinomial. \\
     Seja $I(G,k)$ uma instância do problema da cobertura por vértices em que $G = (V,E)$. Vamos criar uma instância $I'(F,D,c,f)$ do problema de localização de instalações a partir de $I$.\\
     O conjunto de possíveis instalações a serem abertas $F$ será o conjunto de vértices $V$. O conjunto de clientes $D$ será o conjunto de arestas $E$. O custo de abertura $f_i$ será 1 para cada instalação $i$. O custo de associação $c_{ij} \text{, para } i \in F \text{ e } j \in D$, será 0 se o vértice referente a $i$ é extremo da aresta referente a $j$ e 2 caso contrário. \\
-    A resposta ótima será a menor quantidade de instalações que precisamos abrir até que todos os clientes possam ser associados a instalações em que o seu custo de associação é 0. Se um cliente está associado a uma instalação cujo custo de associação é 2, podemos diminuir o custo total abrindo uma instalação em que o custo de sua associação é 0, uma vez que abrir a instalação custaria 1 e diminuiríamos o custo de associação do cliente de 2 para 0. Sabemos que essa instalação existe, pois para cada cliente existem duas instalações com custo de associação 0. \\
-    Assim, é fácil notar que esse é o tamanho mínimo de uma cobertura por vértices em $G$. Portanto, se o custo total da solução do algoritmo $A$ aplicado a instância $I'$ é menor ou igual a $k$, então a resposta para $I$ é sim. Caso contrário, a resposta é não. \\
+    A resposta ótima será a menor quantidade de instalações que precisamos abrir até que todos os clientes possam ser associados a instalações em que o seu custo de associação é 0. Se um cliente(aresta) está associado a uma instalação(vértice) cujo custo de associação é 2, podemos diminuir o custo total abrindo uma instalação em que o custo de sua associação é 0, uma vez que abrir a instalação custaria 1 e diminuiríamos o custo de associação do cliente de 2 para 0. Sabemos que essa instalação existe, pois para cada cliente(aresta) existem duas instalações com custo de associação 0(seus vértices extremos). \\
+    Assim, é fácil notar que essa quantidade de instalações é o tamanho mínimo de uma cobertura por vértices em $G$. Portanto, se o custo total da solução do algoritmo $A$ aplicado à instância $I'$ é menor ou igual a $k$, então a resposta para $I$ é sim. Caso contrário, a resposta é não. \\
     Desse modo, resolvemos o problema da cobertura por vértices em tempo polinomial, o que, assumindo $P\neq\NP$, é um absurdo.
 \end{proof}
 \subsection{Algoritmos baseados em programação linear}
