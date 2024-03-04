@@ -104,26 +104,6 @@ Dentre os três problemas apresentados, o $k$-mediana é o que tem a maior folga
 
 
 Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema dos $k$-centros, assumindo que $P\neq\NP$. Neste caso, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2.
-% O primeiro deles, o $k$-centros, é um problema clássico de otimização combinatória. Dadas $n$ cidades com distâncias especificadas entre elas e um número $k$, o problema quer determinar qual o melhor jeito de construir $k$ depósitos dentre um conjunto determinado das cidades tais que a maior distância entre uma cidade e o depósito mais próximo seja a menor possível.
-
-% Nosso problema é modelado como um grafo completo $G(V,E)$, onde $V$ são as cidades e temos uma função distância~$d$ em que $d(e)$ representa a distância das cidades ligadas pela aresta $e$. O objetivo é encontrar um subconjunto $C \subseteq V$ de tamanho $k$ que minimize $\max_{v\in V}d(v,C)$ sendo $d(v,C) = \min_{u\in C}d(vu)$.
-
-% Trabalharemos aqui com a versão métrica do problema em que a função $d$ obedece a desigualdade triangular, ou seja, $d(uv) \leq d(ux) + d(xv)$ para todas as triplas de vértices $u$, $x$, $v$. Veremos que, para qualquer função polinomialmente computável~$\alpha(n)$, não existe $\alpha(n)$-aproximação para a versão não métrica desse problema, assumindo $P\neq\NP$. Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema do $k$-centros, assumindo $P\neq\NP$. Assim, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2. 
-
-
-% Localização de instalações é um problema clássico de otimização que determina a melhor localização para instalações, como fábricas ou depósitos, com base em demandas geográficas, custos de abertura de instalações e distâncias de transporte. Além disso, eles podem ser modelados para outras aplicações como problemas de posicionamento de caches em um computador ou problemas de projeto de redes.
-
-% Existem várias versões do problema de localização de instalações. O mais simples deles é o de localização de instalações sem capacidades, ou seja, em que as instalações não tem limitações para suprir clientes.
-
-
-
-% Diversos métodos podem ser utilizados para aproximar o problema de localização de instalações. Charikar e Guha desenvolveram um algoritmo com razão de aproximação $2.414$ utilizando o método de busca local~\cite{Charikar&Guha'05}.  Esse problema também pode ser modelado como um problema de programação inteira e, por isso, técnicas envolvendo programação linear podem ser aplicadas a ele.  Por exemplo, há algoritmos que fazem o arredondamento de soluções da relaxação linear do programa inteiro para obter uma solução do problema.  Alguns destes algoritmos atingem boas razões de aproximação, por exemplo, chegando a 1.677~\cite{Byrka&Aardal'10}. Entretanto, a melhor aproximação encontrada utiliza de vários métodos, incluindo o primal-dual, e garante uma razão de aproximação 1.488~\cite{LI'13}. Essa não é muito distante do melhor que se poderia encontrar, uma vez que Guha e Khuller mostraram que não existe algoritmo para esse problema com razão de aproximação melhor que 1.463~\cite{GUHA1999228}, a menos que $P = \NP$.
-
-% O problema $k$-mediana é muito parecido com o problema de localização de instalações. A diferença aqui é que não temos custo para a abertura de instalações e podemos abrir no máximo $k$ delas. Assim, como no $k$-centros também vamos modelar nosso problema como um grafo e vamos também trabalhar com a versão métrica do problema.
-
-% Uma instância do $k$-mediana consiste em um grafo ($F,C$)-bipartido completo, sendo $F$ o conjunto das instalações e $C$ o conjunto das cidades, um número inteiro $k$ positivo que representa a quantidade de instalações que podem ser abertas e um custo $c_{ij}$ de conexão de cada cidade $j$ a cada instalação $i$. Devemos determinar um conjunto $I \subseteq F$ tal que $|I| \leq k$ de instalações a serem abertas e uma função que atribua cada cidade a uma instalação aberta tal que minimize o custo total de conexão.
-
-% Dentre os três problemas apresentados, esse é o que tem a maior folga entre o melhor resultado de inaproximabilidade e a razão do melhor algoritmo de aproximação. Jain, Mahdian e Saberi provaram que não existe algoritmo polinomial com razão de aproximação $1+ \frac{2}{e}$ para o $k$-mediana ~\cite{JMS'02}, enquanto a melhor aproximação encontrada tem razão $2.675 + \epsilon$~\cite{BPRST'17}.
 
 \newpage
 \section{$k$-Centros}
@@ -343,7 +323,7 @@ Para isso, vamos modelar o nosso problema como um programa linear inteiro. Vamos
 Nosso programa inteiro terá dois tipos de variáveis: uma variável $y_i$ para cada $i \in F$ que terá valor 1 se a instalação $i$ foi aberta e 0 caso contrário, e uma variável $x_{ij}$ para cada $i \in F$ e $j \in D$ que terá valor 1 se o cliente $j$ estiver associado a instalação $i$ e 0 caso contrário. Então o programa inteiro para a instância $I(F,D,c,f)$ é:
 \begin{align}
  \text{Minimizar} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \\
- \text{sujeito a} \quad & \sum_{i\in F} x_{ij}=1, \quad \forall j \in D \\
+ \text{sujeito a} \quad & \sum_{i\in F} x_{ij}\geq1, \quad \forall j \in D \\
  &x_{ij} \leq y_i,\quad \quad \; \; \forall i\in F,j\in D\\
  &x_{ij} \in \{0,1\} ,\quad \forall i\in F,j\in D\\
  &y_i \in \{0,1\}, \quad \; \,\forall i\in F.
@@ -352,7 +332,7 @@ Nosso programa inteiro terá dois tipos de variáveis: uma variável $y_i$ para 
 Para a relaxação, apenas impomos que $x_{ij} \geq 0$ e $y_i \geq 0$ no lugar de (4) e (5), respectivamente. Assim, temos o seguinte primal e dual correspondente à nossa relaxação:
     \begin{align}
         \text{Minimizar} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \tag{P1} \label{P1}\\
-        \text{sujeito a} \quad & \sum_{i\in F} x_{ij}=1,  \forall j \in D \tag{P2} \label{P2}\\
+        \text{sujeito a} \quad & \sum_{i\in F} x_{ij}\geq1,  \forall j \in D \tag{P2} \label{P2}\\
         &x_{ij} \leq y_i, \, \; \; \forall i\in F,j\in D \tag{P3} \label{P3}\\
         &x_{ij} \geq 0,\quad \forall i\in F,j\in D\tag{P4}\label{P4}\\
         &y_i \geq 0, \quad \; \,\forall i\in F \tag{P5} \label{P5}
@@ -369,6 +349,10 @@ Sabemos que cada desigualdade do primal tem uma desigualdade correspondente no d
 
 Como o primal é uma relaxação do nosso problema vale que o valor de uma solução ótima dele é no máximo o ótimo do nosso problema.
 
+Vamos aqui interpretar o significado do programa dual. \\ 
+Vamos chamar as variáveis $v$ de orçamento e as variáveis $w$ de contribuição. \\Uma instalação recebe contribuições dos clientes para pagar pela sua abertura. Uma vez que as contribuições são suficientes para a sua abertura, ela não precisa receber mais. Isso está explicito na restrição~$\ref{D2}$.\\
+O orçamento de um cliente será utilizado para pagar sua associação a uma instalação e sua contribuição para abertura dela. Isso está explicito na restrição~\ref{D3}.\\
+Para entender como as variáveis primais e duais se relacionam vamos supor a existência de uma solução ótima inteira para o primal e analisar as folgas complementares. Em uma solução inteira do primal, as variáveis $x$ e $y$ adotam apenas os valores das restrições do programa inteiro.
 
 \newpage
 \subsubsection{Arredondamento do programa linear}
