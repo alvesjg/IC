@@ -376,12 +376,12 @@ Vamos utilizar a seguinte definição ao longo da explicação do método.
 
 Seja $T \subseteq F$ tal que $T = \{i \in F: \sum_{j \in D} w_{ij} = f_i\}$. Em uma solução maximal $(\bar v, \bar w)$ do dual, todo cliente está na vizinhança de uma instalação em $T$. Caso contrário, seja $j$ um cliente que não está na vizinhança de uma instalação em $T$, claramente as desigualdades \eqref{D3} não são justas para $j$ e qualquer instalação de $T$ e conseguimos aumentar $w^*_{ij}$ para qualquer instalação $i$ que não esteja em $T$. Assim, conseguimos aumentar coordenadas de $v$ e de $w$ e encontrar uma solução com valor objetivo maior e isso contradiz o fato da solução $(v^*,w^*)$ ser maximal. \\
 Como cada cliente está na vizinhança de uma instalação que pertence a $T$, abrir todas as instalações em $T$ seria suficiente, mas um cliente poderia ter mais de uma instalação de $T$ na sua vizinhança. Assim, estaríamos contando o orçamento de um cliente na contribuição para a abertura de mais de uma instalação e não podemos fazer isso.\\
-Podemos então escolher um conjunto $T' \subseteq T$ tal que cada cliente esteja na vizinhança de no máximo uma instalação e vamos garantir que um cliente que não esteja na vizinhança de nenhuma instalação de $T'$ esteja próxima a alguma delas. \\
+Podemos então escolher um conjunto $T' \subseteq T$ tal que cada cliente esteja na vizinhança de no máximo uma instalação de $T'$ e vamos garantir que um cliente que não esteja na vizinhança de nenhuma instalação de $T'$ esteja próxima a alguma delas. \\
 Nosso algoritmo contará com as seguintes invariantes.
 \begin{itemize}
-    \item $(v,w)$ é uma solução viável do dual.
-    \item $T$ são as instalações que têm contribuições suficientes para serem abertas, vamos chamá-las de temporariamente abertas.
-    \item $S$ é o conjunto de clientes que não tem nenhum vizinho em $T$.
+    \item $(v,w)$ é uma solução viável do programa dual.
+    \item $T$ são as instalações que têm contribuições suficientes para serem abertas.
+    \item $S$ é o conjunto de clientes que não têm nenhum vizinho em $T$.
 \end{itemize}
 \begin{algorithm}
     \begin{algorithmic}[1]
@@ -391,8 +391,13 @@ Nosso algoritmo contará com as seguintes invariantes.
         \State $S \gets D$
         \State $T \gets \emptyset$
         \While{$S \neq \emptyset$}
-        \State Aumente $v_j$ e $w_{ij}$,  $\forall j \in D, i \in N(j)$, uniformemente até que exista um cliente que passe a pertencer a vizinhança de uma instalação em $T$ ou uma instalação que não estava em $T$ fique com a desigualdade justa.
-        \If{algum $j\in S$ passe a pertencer a vizinhança de alguma instalação em $T$}
+        %\State Aumente $v_j$ e $w_{ij}$,  $\forall j \in D, i \in N(j)$, uniformemente até que exista um cliente que passe a pertencer a vizinhança de uma instalação em $T$ ou uma instalação que não estava em $T$ fique com a desigualdade justa.
+        \State Seja $\theta_1 := \min\{c_{ij}-v_j : j \in D \text{ e } i \neq N(j)\}$
+        \State Seja $\theta_2 := \min\{(f_i - \sum_{j \in N(i)}w_{ij})/|N(i)| : i \in F \text{ tal que } N(i) \neq \emptyset \}$
+        \State Seja $\theta := \min\{\theta_1,\theta_2\}$
+        \State $v_j \gets v_j + \theta$ para todo $j \in D$
+        \State $w_{ij} \gets w_{ij} + \theta$ para todo $j \in D$ e $i \in N(j)$ 
+        \If{$v_j = c_{hj}$ para algum $i \in S$ e $h \in T$}
         \State $S \gets S \setminus \{j\}$
         \EndIf
         \If{$\sum_{j \in N(i)} w_{ij} = f_i$ para algum $i \not \in T$}
@@ -400,17 +405,19 @@ Nosso algoritmo contará com as seguintes invariantes.
         \State $S \gets S\setminus N(i)$
         \EndIf
         \EndWhile
-        $T' \gets \emptyset$
+        \State $T' \gets \emptyset$
         \While{$T \neq \emptyset$}
         \State Escolha $i \in T$
         \State $T' \gets T' \cup \{i\}$
-        \State $T \gets T \setminus \{h \in F : \exists j \in D \,|\, \text{j contribui a h e a i}\}$
+        \State $T \gets T \setminus \{h \in F : \text{existe $j \in D$ com $w_{ij}> 0 $ e $w_{hj} > 0$} \}$
         \EndWhile
         \State \Return T'
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
-
+Claramente as coordenadas das variáveis $v$ e $w$ crescerão de maneira uniforme, pois será somado o mesmo valor para elas. Precisamos então garantir que a nossa solução seja sempre viável. Na linha (7:) do algoritmo garantimos que a desigualdade~\eqref{D3} não seja violada para os clientes e as instâncias que não estão na sua vizinhança. Na linha (8:), garantimos que a desigualdade~\eqref{D2} não seja violada para as instalações. Note que aumentar $v_j$ e $w_{ij}$ uniformemente nunca violará a desigualdade~\eqref{D3} para algum $j \in D$ e $i \in F$. Assim, $(v,w)$ é uma solução viável para o problema dual.\\
+Para cada cliente $j$ e cada instalação $i$, primeiro aumentaremos apenas as variáveis $v_j$ até que $j$ esteja na vizinhança de $i$, note que nesse momento a desigualdade~\eqref{D3} se torna justa, pois nesse momento ainda não aumentamos a variável $w_{ij}$. Uma vez que isso acontece, aumentamos uniformemente $v_j$ e $w_{ij}$, assim a desigualdade~\eqref{D3} continuará justa. Desse modo, para $j \in D$ e $i \in N(j)$ vale que \[\tag{*} \label{D3justa}w_{ij} = v_j - c_{ij}.\] \\
+Note também que ao final do algoritmo $(v,w)$ é uma solução maximal para o problema dual. \\
 Para provar a razão de aproximação vamos precisar primeiro de um lema.
 \begin{lemma}
     \label{lemma:3.9}
@@ -428,9 +435,9 @@ Agora, podemos mostrar o teorema abaixo.
     O algoritmo {\sc JV} é uma $3$-aproximação para o problema da localização de instalações.
 \end{theorem}
 \begin{proof}
-    Claramente o algoritmo roda em tempo polinomial. Vimos que para as instalações em $T$~\ref{inst_sol} vale, juntando para todas as instâncias de $T'$ e, seja $A(i)$ os clientes associados a instalação $i$, temos
+    Claramente o algoritmo roda em tempo polinomial. O seguinte vale para as instalações de $T'$ e os clientes na sua vizinhança
     \[\sum_{i \in T'} (f_i + \sum_{j \in A(i)} c_{ij}) = \sum_{i \in T'} \sum_{j \in A(i)} (w_{ij} + c_{ij}) = \sum_{i \in T'} \sum_{j \in A(i)} v_j\]
-    em que a primeira igualdade vale pela definição de $T$ e a segunda igualdade vale pela construção da nossa solução. \\
+    em que a primeira igualdade vale pela definição de $T$ e a segunda igualdade vale por~\eqref{D3justa}. \\
     Seja $Z$ o conjunto dos clientes que não estão na vizinhança de nenhuma instalação de $T'$, podemos utilizar o Lema~\ref{lemma:3.9} para esses clientes. Assim temos que
     \[\sum_{i \in T'} (f_i + \sum_{j \in A(i)} c_{ij}) + \sum_{j \in Z} c_{\sigma(j)j}\leq \sum_{i \in T'} \sum_{j \in A(i)} v_j + 3 \sum_{j \in Z} v_j \leq 3 \sum_{j \in D} v_j\leq 3\,\opt(I)\]
     em que a última desigualdade vale pela dualidade fraca.
