@@ -409,24 +409,24 @@ Nosso algoritmo contará com as seguintes invariantes.
         \While{$T \neq \emptyset$}
         \State Escolha $i \in T$
         \State $T' \gets T' \cup \{i\}$
-        \State $T \gets T \setminus \{h \in F : \text{existe $j \in D$ com $w_{ij}> 0 $ e $w_{hj} > 0$} \}$
+        \State $T \gets T \setminus \{h \in F : \text{existe $k \in D$ com $w_{ik}> 0 $ e $w_{hk} > 0$} \}$
         \EndWhile
         \State \Return T'
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
-Claramente as coordenadas das variáveis $v$ e $w$ crescerão de maneira uniforme, pois será somado o mesmo valor para elas. Precisamos então garantir que a nossa solução seja sempre viável. Na linha (7:) do algoritmo garantimos que a desigualdade~\eqref{D3} não seja violada para os clientes e as instâncias que não estão na sua vizinhança. Na linha (8:), garantimos que a desigualdade~\eqref{D2} não seja violada para as instalações. Note que aumentar $v_j$ e $w_{ij}$ uniformemente nunca violará a desigualdade~\eqref{D3} para algum $j \in D$ e $i \in F$. Assim, $(v,w)$ é uma solução viável para o problema dual.\\
-Para cada cliente $j$ e cada instalação $i$, primeiro aumentaremos apenas as variáveis $v_j$ até que $j$ esteja na vizinhança de $i$, note que nesse momento a desigualdade~\eqref{D3} se torna justa, pois nesse momento ainda não aumentamos a variável $w_{ij}$. Uma vez que isso acontece, aumentamos uniformemente $v_j$ e $w_{ij}$, assim a desigualdade~\eqref{D3} continuará justa. Desse modo, para $j \in D$ e $i \in N(j)$ vale que \[\tag{*} \label{D3justa}w_{ij} = v_j - c_{ij}.\] \\
-Note também que ao final do algoritmo $(v,w)$ é uma solução maximal para o problema dual. \\
+Claramente as coordenadas das variáveis $v$ e $w$ crescerão de maneira uniforme, pois será somado o mesmo valor para elas. Precisamos então garantir que a nossa solução seja sempre viável. Na linha (7:) do algoritmo garantimos que a desigualdade~\eqref{D3} não seja violada para os clientes e as instâncias que não estão na sua vizinhança. Na linha (8:), garantimos que a desigualdade~\eqref{D2} não seja violada para as instalações. Note que aumentar $v_j$ e $w_{ij}$ no mesmo valor nunca violará a desigualdade~\eqref{D3} para algum $j \in D$ e $i \in F$. Assim, $(v,w)$ é uma solução viável para o problema dual.\\
+Para cada cliente $j$ e cada instalação $i$, primeiro aumentaremos apenas as variáveis $v_j$ até que $j$ esteja na vizinhança de $i$, note que nesse momento a desigualdade~\eqref{D3} se torna justa, pois ainda não aumentamos a variável $w_{ij}$. Uma vez que isso acontece, aumentamos uniformemente $v_j$ e $w_{ij}$, assim a desigualdade~\eqref{D3} continuará justa. Desse modo, para $j \in D$ e $i \in N(j)$ vale que \[\tag{*} \label{D3justa}w_{ij} = v_j - c_{ij}.\] \\
+Note também que ao final do algoritmo $(v,w)$ é uma solução maximal para o problema dual. Isso acontece pois para todo cliente $j$ existe uma instalação $i$ tal que a desigualdade~\eqref{D3} é justa para $i$ e $j$ e, além disso, a desigualdade~\eqref{D2} é justa para $i$. Desse modo, não conseguimos encontrar uma solução viável com valor objetivo apenas aumentando as variáveis, pois $w_{ij}$ não pode ser aumentado e é ele quem está impedindo o aumento de $v_j$. \\
 Para provar a razão de aproximação vamos precisar primeiro de um lema.
 \begin{lemma}
     \label{lemma:3.9}
-    Seja $T'$ solução devolvida pelo algoritmo e $(v,w)$ solução do dual encontrada no algoritmo. Se $j \in D$ não está na vizinhança de nenhuma instalação de $T'$, então existe uma instalação $i$ tal que $c_{ij} \leq 3v_j$
+    Seja $T'$ solução devolvida e $(v,w)$ solução do dual produzida pelo algoritmo. Se $j \in D$ não está na vizinhança de nenhuma instalação de $T'$, então existe uma instalação $i \in T'$ tal que $c_{ij} \leq 3v_j$.
 \end{lemma}
 \begin{proof}
-    Seja $h$ a instalação responsável pela remoção de $j$ de $S$. Claramente, $h$ não pertence a $T'$ uma vez que $j$ pertence a vizinhança de $h$, então existe $i \in T'$ e $k \in D$ tal que $k$ contribui para $i$ e para $h$. Pela desigualdade triangular,
+    Seja $h \in T$ a instalação responsável pela remoção de $j$ de $S$, conforme a linha 12 ou 16 do algoritmo. Claramente, $j$ pertence a vizinhança de $h$. Sabemos que $h$ não pertence a $T'$ uma vez que, por hipótese, $j$ não tem vizinhos em $T'$. Como $h$ foi retirada de $T$, conforme a linha 21 do algoritmo, existe $i \in T'$ e $k \in D$ tal que $k$ contribui para $i$ e para $h$. Pela desigualdade triangular,
     \[c_{ij} \leq c_{hj} + c_{hk} + c_{ik}\]
-    como $j \in N(h)$ e $k \in N(h) \cup N(i)$ vale que $c_{hj} \leq v_j$ e $c_{hk} + c_{ik} \leq 2v_k$. Como $k$ contribui para $h$, então $k$ foi tirado de $S$ no momento que $h$ foi inserido em $T$ ou antes. Como $h$ foi responsável pela retirada de $j$ de $S$, então $j$ não foi retirado de $S$ antes de $k$. Como as variáveis crescem de maneira uniforme, então $v_k \leq v_j$.\\
+    como $j \in N(h)$ e $k \in N(h) \cup N(i)$ vale que $c_{hj} \leq v_j$ e $c_{hk} + c_{ik} \leq 2v_k$. Como $k$ contribui para $h$, então $k$ já estava na vizinhança de $h$ no momento que $h$ foi retirado de $T$. Assim, $k$ saiu de $S$ no mesmo momento ou anterior a $h$ sair de $T$. Como $h$ foi responsável pela retirada de $j$ de $S$, então $j$ não foi retirado de $S$ antes de $k$. Como as variáveis crescem de maneira uniforme, então $v_k \leq v_j$.\\
     Portanto, $c_{ij}\leq 3v_j$. 
 \end{proof}
 
@@ -436,13 +436,15 @@ Agora, podemos mostrar o teorema abaixo.
 \end{theorem}
 \begin{proof}
     Claramente o algoritmo roda em tempo polinomial. O seguinte vale para as instalações de $T'$ e os clientes na sua vizinhança
-    \[\sum_{i \in T'} (f_i + \sum_{j \in A(i)} c_{ij}) = \sum_{i \in T'} \sum_{j \in A(i)} (w_{ij} + c_{ij}) = \sum_{i \in T'} \sum_{j \in A(i)} v_j\]
-    em que a primeira igualdade vale pela definição de $T$ e a segunda igualdade vale por~\eqref{D3justa}. \\
-    Seja $Z$ o conjunto dos clientes que não estão na vizinhança de nenhuma instalação de $T'$, podemos utilizar o Lema~\ref{lemma:3.9} para esses clientes. Assim temos que
+    \[\sum_{i \in T'} (f_i + \sum_{j \in N(i)} c_{ij}) = \sum_{i \in T'} \sum_{j \in N(i)} (w_{ij} + c_{ij}) = \sum_{i \in T'} \sum_{j \in N(i)} v_j\]
+    em que a primeira igualdade vale pela definição de $T$ e a segunda igualdade vale por~\eqref{D3justa}. Note que o somatório não repete clientes, uma vez que cada cliente não está na vizinhança de duas instalações de $T'$.\\
+    Seja $j$ um cliente que não está na vizinhança de nenhuma instalação de $T'$, podemos utilizar o Lema~\ref{lemma:3.9} para esse cliente. Então existe uma instalação de $i \in T'$ tal que $c_{ij} \leq 3v_j$. Como $j$ está associado a instalação de $T'$ mais próximo a ele, vale que $c_{\sigma(j)j} \leq c_{ij}$. Seja $Z$ o conjunto de clientes que não tem vizinhos em $T'$, temos
+    \[\sum_{j \in Z}c_{\sigma(j)j} \leq 3\sum_{j \in Z}v_j.\]
+    Juntando os limitantes encontrados para os clientes que tem vizinhos em $T'$ e os que não tem, encontramos
     \[\sum_{i \in T'} (f_i + \sum_{j \in A(i)} c_{ij}) + \sum_{j \in Z} c_{\sigma(j)j}\leq \sum_{i \in T'} \sum_{j \in A(i)} v_j + 3 \sum_{j \in Z} v_j \leq 3 \sum_{j \in D} v_j\leq 3\,\opt(I)\]
     em que a última desigualdade vale pela dualidade fraca.
 \end{proof}
-Esse algoritmo é de autoria de Jain e Vazirani e leva suas iniciais como nome.
+Esse algoritmo é de autoria de Jain e Vazirani~\cite{JV} e leva suas iniciais como nome.
 \newpage
 
 \subsubsection{Arredondamento do programa linear}
