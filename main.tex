@@ -11,6 +11,7 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
+\usepackage{enumerate}
 \usepackage{tikz}
 \usepackage[noend]{algpseudocode}
 \usepackage{algorithm}
@@ -24,8 +25,8 @@
 \renewcommand{\algorithmicensure}{\textbf{Garante:}}
 \renewcommand{\algorithmicend}{\textbf{Fim}}
 \renewcommand{\algorithmicif}{\textbf{Se}}
-\renewcommand{\algorithmicthen}{\textbf{Então}}
-\renewcommand{\algorithmicelse}{\textbf{Senão}}
+\renewcommand{\algorithmicthen}{\textbf{então}}
+\renewcommand{\algorithmicelse}{\textbf{senão}}
 \renewcommand{\algorithmicfor}{\textbf{Para}}
 \renewcommand{\algorithmicdo}{\textbf{faça}}
 \renewcommand{\algorithmicwhile}{\textbf{Enquanto}}
@@ -176,8 +177,9 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
     A ideia desse algoritmo guloso se concentrará em, a cada iteração, escolher o vértice $u$ tal que $c(u,C)$ seja o maior possível, sendo $C$ o conjunto dos centros de cluster escolhidos até aquele momento.
 
     \begin{algorithm}
-		\begin{algorithmic}[1]
-			\Function{G}{$G,c,k$}
+		\caption{G$(G,c,k)$}
+        \label{k-center:guloso}
+        \begin{algorithmic}[1]
 			\State Escolha arbitrariamente $u \in V$.
             \State $C \gets \{u\}$.
             \While{$|C| \leq k$}
@@ -185,7 +187,6 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
             \State $C \gets C \cup \{v\}$
             \EndWhile 
 			\State Devolva $C$.
-			\EndFunction
 		\end{algorithmic}
 	\end{algorithm}
     
@@ -268,8 +269,9 @@ Dada a definição vamos enunciar e provar um lema que nos ajudará no algoritmo
 \end{proof}
 Agora, temos todas as definições e lemas que serão necessários para nosso algoritmo.
 \begin{algorithm}
+    \caption{GHS$(G,c,k)$}
+    \label{k-center:bottleneck}
     \begin{algorithmic}[1]
-        \Function{GHS}{$G,c,k$}
         \State $i \leftarrow 0$
         \State $M_0 \leftarrow V$
         \While{$|M_i| > k$}
@@ -277,7 +279,6 @@ Agora, temos todas as definições e lemas que serão necessários para nosso al
             \State Seja $M_i$ um conjunto independente maximal em $G_i^2$
         \EndWhile
         \State Devolva $M_i$
-        \EndFunction
     \end{algorithmic}
 \end{algorithm}
 
@@ -322,23 +323,21 @@ Nessa seção vamos mostrar dois algoritmos para o problema de localização de 
 Para isso, vamos modelar o nosso problema como um programa linear inteiro. Vamos relaxá-lo e mostrar o seu dual. \\
 Nosso programa inteiro terá dois tipos de variáveis: uma variável $y_i$ para cada $i \in F$ que terá valor 1 se a instalação $i$ foi aberta e 0 caso contrário, e uma variável $x_{ij}$ para cada $i \in F$ e $j \in D$ que terá valor 1 se o cliente $j$ estiver associado a instalação $i$ e 0 caso contrário. Então o programa inteiro para a instância $I(F,D,c,f)$ é:
 \begin{align}
- \text{Minimizar} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \\
- \text{sujeito a} \quad & \sum_{i\in F} x_{ij}\geq1, \quad \forall j \in D \\
- &x_{ij} \leq y_i,\quad \quad \; \; \forall i\in F,j\in D\\
- &x_{ij} \in \{0,1\} ,\quad \forall i\in F,j\in D\\
- &y_i \in \{0,1\}, \quad \; \,\forall i\in F.
+ \text{Minimizar} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \nonumber \\
+ \text{sujeito a} \quad & \sum_{i\in F} x_{ij}\geq1, \quad \forall j \in D \label{eq:inst}\\
+ &x_{ij} \leq y_i,\quad \quad \; \; \forall i\in F,j\in D \label{eq:fac} \\
+ &x_{ij} \in \{0,1\} ,\quad \forall i\in F,j\in D \label{fl:x}\\
+ &y_i \in \{0,1\}, \quad \; \,\forall i\in F \label{fl:y}.
 \end{align}
-\\
-A restrição (2) garante que todo cliente esteja associado a alguma instalação, a restrição (3) garante que todo cliente esteja associado apenas a instalações abertas.\\ 
-Para a relaxação, apenas impomos que $x_{ij} \geq 0$ e $y_i \geq 0$ no lugar de (4) e (5), respectivamente. Assim, temos o seguinte primal e dual correspondente à nossa relaxação:
+A restrição~\eqref{eq:inst} garante que todo cliente esteja associado a alguma instalação, a restrição~\eqref{eq:fac} garante que todo cliente esteja associado apenas a instalações abertas.\\ 
+Para a relaxação, apenas impomos que $x_{ij} \geq 0$ e $y_i \geq 0$ no lugar de~\eqref{fl:x} e~\eqref{fl:y}, respectivamente. Assim, temos os seguintes programas primal e dual correspondentes a nossa relaxação:
     \begin{align}
         \text{Minimizar} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \tag{P1} \label{P1}\\
         \text{sujeito a} \quad & \sum_{i\in F} x_{ij}\geq1,  \forall j \in D \tag{P2} \label{P2}\\
-        &x_{ij} \leq y_i, \, \; \; \forall i\in F,j\in D \tag{P3} \label{P3}\\
+        &y_i - x_{ij} \geq 0, \, \; \; \forall i\in F,j\in D \tag{P3} \label{P3}\\
         &x_{ij} \geq 0,\quad \forall i\in F,j\in D\tag{P4}\label{P4}\\
         &y_i \geq 0, \quad \; \,\forall i\in F \tag{P5} \label{P5}
        \end{align}
-
     \begin{align}
         \text{Maximizar} \quad & \sum_{j \in D} v_{j} \tag{D1} \label{D1}\\
         \text{sujeito a} \quad & \sum_{j\in D} w_{ij}\leq f_i, \quad \forall i \in F \tag{D2} \label{D2}\\
@@ -346,59 +345,75 @@ Para a relaxação, apenas impomos que $x_{ij} \geq 0$ e $y_i \geq 0$ no lugar d
         &w_{ij} \geq 0 ,\quad \forall i\in F,j\in D\tag{D4} \label{D4}\\
         &v_j \geq 0, \quad \; \,\forall j\in D \tag{D5} \label{D5}.
        \end{align}
-Sabemos que cada desigualdade do primal tem uma desigualdade correspondente no dual, assim temos que os seguintes pares de desigualdades correspondentes: (\ref{P2},\ref{D5}), (\ref{P3},\ref{D4}), (\ref{P4},\ref{D3}) e (\ref{P5},\ref{D2}).
+Sabemos que cada variável de um destes programas está associada a uma restrição do outro programa. 
+Especificamente, a variável $x_{ij}$ está associada à desigualdade~\eqref{D3}, a variável $y_i$ está associado à desigualdade~\eqref{D2}, a variável $w_{ij}$ está associada à desigualdade~\eqref{P3} e a variável $v_j$ está associado a desigualdade~\eqref{P2}.
 
-Como o primal é uma relaxação do nosso problema vale que o valor de uma solução ótima dele é no máximo o ótimo do nosso problema.
+Como o primal é uma relaxação do nosso problema e trata-se de um problema de minimização, vale que o valor de uma solução ótima dele é no máximo valor o ótimo do nosso problema.
 
-Vamos aqui interpretar o programa dual. \\ 
-Vamos chamar as variáveis $v$ de orçamento e as variáveis $w$ de contribuição. Dizemos que um cliente $j$ \emph{contribui} para uma instalação $i$ se $w_{ij} > 0$.\\Uma instalação recebe contribuições dos clientes para pagar pela sua abertura. Uma vez que as contribuições são suficientes para a sua abertura, ela não precisa receber mais contribuições. Isso está explicito na restrição~\eqref{D2}.\\
-O orçamento de um cliente é no máximo o custo de sua associação a uma instalação e sua contribuição para a abertura dela. Isso está explicito na restrição~\eqref{D3}.\\
-Para entender como as variáveis primais e duais se relacionam vamos analisar as condições de folgas complementares. Vamos supor a existência de uma solução ótima inteira $(x^*,y^*)$ para o primal e seja $(v^*,w^*)$ uma solução ótima para o dual. Em uma solução inteira do primal, as variáveis $x$ e $y$ adotam apenas os valores das restrições do programa inteiro. Como ambas são soluções ótimas, valem as folgas complementares. A partir dos pares de desigualdades correspondentes já vistos, as condições de folgas complementares são:
-\begin{enumerate}
-    \item[(i)] $\forall i \in F, j \in D: x^*_{ij} > 0 \implies v^*_j - w^*_{ij} = c_{ij}$
-    \item[(ii)]$\forall i \in F: y^*_i > 0 \implies \sum_{j \in D} w^*_{ij} = f_i$
-    \item[(iii)]$\forall j \in D: v^*_j > 0 \implies \sum_{i \in F}x^*_{ij} = 1$
-    \item[(iv)]$\forall i \in F, j \in D:w^*_{ij}>0 \implies y_i = x_{ij}$  
+Vamos aqui interpretar o programa dual. Chamamos as variáveis $v$ de orçamento e as variáveis $w$ de contribuição. Dizemos que um cliente $j$ \emph{contribui} para uma instalação $i$ se $w_{ij} > 0$. Uma instalação recebe contribuições dos clientes para pagar pela sua abertura. Uma vez que as contribuições são suficientes para a sua abertura, a instalação não precisa receber mais contribuições. Isso está explicito na restrição~\eqref{D2}.
+
+O orçamento de um cliente é no máximo o custo de sua associação a uma instalação e sua contribuição para a abertura dela. Isso está explicito na restrição~\eqref{D3}.
+
+Para entender como as variáveis primais e duais se relacionam, vamos analisar as condições de folgas complementares. Vamos supor a existência de uma solução ótima inteira $(x^*,y^*)$ para o primal e seja $(v^*,w^*)$ uma solução ótima para o dual. Em uma solução inteira do primal, as variáveis $x$ e $y$ satisfazem as restrições do programa inteiro. Como ambas são soluções ótimas, valem as folgas complementares. A partir dos pares variável-restrição correspondentes já vistos, as condições de folgas complementares estabelecem que
+\begin{enumerate}[(i)]
+    \item para todo $i \in F$ e $j \in D$, se $x^*_{ij} > 0$ então $v^*_j - w^*_{ij} = c_{ij}$\label{fg:i};
+    \item para todo $ i \in F$, se $y^*_i > 0$ então $\sum_{j \in D} w^*_{ij} = f_i$\label{fg:ii};
+    \item para todo $i \in F$ e$ j \in D$, se $w^*_{ij}>0$ então $ y_i = x_{ij}$\label{fg:iii};
+    \item para todo $j \in D$ se $v^*_j > 0$  então $\sum_{i \in F}x^*_{ij} = 1$\label{fg:iv}.
 \end{enumerate}
-Pela condição (i), se um cliente $j$ está associado a uma instalação $i$ então o orçamento do cliente $j$ é exatamente o custo dele se associar a $i$ e a sua contribuição para a abertura de $i$. Então podemos interpretar $v_j$ como o custo do cliente pago para a instalação a qual ele estará associado. \\
-Pela condição (ii), cada instalação aberta precisa ter contribuições suficientes para pagar pela sua abertura. Pela condição (iv), temos que um cliente que contribui para uma instalação aberta está associado a ela. Juntando ambas as condições temos que as contribuições recebidas pelas instalações abertas são vindas apenas de clientes associados a elas e são suficientes para pagar pela sua abertura.\\
-Pela condição (iii), um cliente que tem orçamento não nulo está associado a exatamente uma instalação.
+Pela condição~\eqref{fg:i}, se um cliente $j$ está associado a uma instalação $i$ então o orçamento do cliente $j$ é exatamente o custo dele se associar a $i$ mais a sua contribuição para a abertura de~$i$. Então podemos interpretar $v_j$ como o custo do cliente pago para a instalação a qual ele estará associado. 
+Pela condição~\eqref{fg:ii}, cada instalação aberta precisa ter contribuições suficientes para pagar pela sua abertura. Pela condição ~\eqref{fg:iii}, temos que um cliente que contribui para uma instalação aberta está associado a ela. Juntando as condições~\eqref{fg:ii} e \eqref{fg:iii}, temos que as contribuições recebidas pelas instalações abertas são vindas apenas de clientes associados a elas e são suficientes para pagar pela sua abertura. 
+Pela condição~\eqref{fg:iv}, um cliente que tem orçamento não nulo está associado a exatamente uma instalação.
 \newpage
 
 \subsubsection{Método primal-dual}
 Vamos assumir que a função custo satisfaz a desigualdade triangular. Como a função custo só está definida de um cliente para uma instalação, então a desigualdade triangular terá uma cara diferente. Para clientes $j,l$ e  instalações $i,k$, vale que
 \[c_{ij} \leq c_{il} + c_{kl} + c_{kj}.\]
-\\
-Vamos construir uma solução $(\overline{v},\overline{w})$ maximal para o dual. Chamamos uma solução $(v,w)$ para o programa dual de maximal se o aumento de coordenadas de $v$ ou $w$ não é uma solução viável com valor objetivo maior.\\
+
+Chamamos uma solução $(v,w)$ para o programa dual de \emph{maximal} se não existe solução viável $(v',w')$ tal que:
+\begin{enumerate}[(i)]
+    \item $v_j \leq v'_j$ para todo cliente $j$;
+    \item $w_{ij} \leq w'_{ij}$ para todo cliente $j$ e instalação $i$;
+    \item $v_j < v'_j$ para algum cliente $j$,
+\end{enumerate}
+ou seja, não conseguimos encontrar uma solução viável com valor objetivo maior apenas aumentando os valores das variáveis.
+
 Vamos utilizar a seguinte definição ao longo da explicação do método.
 \begin{definition}
     Seja $(v,w)$ uma solução viável do dual. Denotamos por $N(j) = \{i \in F:v_j \geq c_{ij}\}$ a \emph{vizinhança} de um cliente $j$ e $N(i) = \{j \in D:v_j \geq c_{ij}\}$ a \emph{vizinhança} de uma instalação $i$.
 \end{definition}
 
-Seja $T \subseteq F$ tal que $T = \{i \in F: \sum_{j \in D} w_{ij} = f_i\}$. Em uma solução maximal $(\overline v, \overline w)$ do dual, todo cliente está na vizinhança de uma instalação em $T$. Caso contrário, seja $j$ um cliente que não está na vizinhança de uma instalação em $T$, claramente as desigualdades \eqref{D3} não são justas para $j$ e qualquer instalação de $T$ e conseguimos aumentar $\overline{w}_{ij}$ para qualquer instalação $i$ que não esteja em $T$. Assim, conseguimos aumentar coordenadas de $v$ e de $w$ e encontrar uma solução com valor objetivo maior e isso contradiz o fato da solução $(\overline{v},\overline{w})$ ser maximal. \\
-Como cada cliente está na vizinhança de uma instalação que pertence a $T$, abrir todas as instalações em $T$ seria suficiente, mas um cliente poderia ter mais de uma instalação de $T$ na sua vizinhança. Assim, estaríamos contando o orçamento de um cliente na contribuição para a abertura de mais de uma instalação e não podemos fazer isso.\\
-Podemos então escolher um conjunto $T' \subseteq T$ tal que cada cliente esteja na vizinhança de no máximo uma instalação de $T'$ e vamos garantir que um cliente que não esteja na vizinhança de nenhuma instalação de $T'$ esteja próxima a alguma delas. \\
+\begin{theorem}
+    Seja $(\overline v, \overline w)$ solução maximal para o programa dual e $T = \{i \in F: \sum_{j \in D} \overline{w}_{ij} = f_i\}$. Então, todo cliente está na vizinhança de uma instalação em $T$.      
+\end{theorem}
+\begin{proof}
+    Vamos provar por absurdo. Suponha a existência de um cliente $j$ que não está na vizinhança de nenhuma instalação em $T$. Claramente as desigualdades \eqref{D3} não são justas para $j$ e nenhuma instalação em $T$. Assim, conseguimos aumentar $\overline{w}_{ij}$ para uma instalação $i$ qualquer que não esteja em $T$, aumentando simultaneamente o $\overline{v}_j$ sem infringir nenhuma das restrições do dual. Com isso, apenas aumentando os valores das variáveis, conseguimos encontrar uma solução viável do dual com valor objetivo maior e isso contradiz o fato da solução $(\overline{v},\overline{w})$ ser maximal. 
+\end{proof}
+
+Como cada cliente está na vizinhança de uma instalação que pertence a $T$, abrir todas as instalações em $T$ seria suficiente, mas um cliente poderia contribuir para mais que uma instalação de $T$. Assim, possivelmente estaríamos contando o orçamento de um cliente na contribuição para a abertura de mais de uma instalação, o que interferiria na comparação do custo da solução com o valor ótimo.
+Para evitar este problema, podemos escolher um conjunto $T' \subseteq T$ tal que cada cliente esteja na vizinhança de no máximo uma instalação de $T'$ e vamos garantir que um cliente que não esteja na vizinhança de nenhuma instalação de $T'$ esteja próximo a alguma delas.
+
 Nosso algoritmo contará com as seguintes invariantes.
 \begin{itemize}
     \item $(v,w)$ é uma solução viável do programa dual.
     \item $T$ são as instalações que têm contribuições suficientes para serem abertas.
     \item $S$ é o conjunto de clientes que não têm nenhum vizinho em $T$.
 \end{itemize}
-\begin{algorithm}
+\begin{algorithm}[tbh]
+    \caption{JV(${F,D,c,f}$)}
+    \label{fl:primaldual}
     \begin{algorithmic}[1]
-        \Function{JV}{{F,D,c,f}}
-        \State $v \gets 0$
-        \State $w \gets 0$
+        \State $v_j \gets 0$ para todo $j \in D$
+        \State $w_{ij} \gets 0$ para todo $i \in F$ e $j \in D$
         \State $S \gets D$
         \State $T \gets \emptyset$
         \While{$S \neq \emptyset$}
-        %\State Aumente $v_j$ e $w_{ij}$,  $\forall j \in D, i \in N(j)$, uniformemente até que exista um cliente que passe a pertencer a vizinhança de uma instalação em $T$ ou uma instalação que não estava em $T$ fique com a desigualdade justa.
-        \State Seja $\theta_1 := \min\{c_{ij}-v_j : j \in D \text{ e } i \neq N(j)\}$
-        \State Seja $\theta_2 := \min\{(f_i - \sum_{j \in N(i)}w_{ij})/|N(i)| : i \in F \text{ tal que } N(i) \neq \emptyset \}$
-        \State Seja $\theta := \min\{\theta_1,\theta_2\}$
+        \State $\theta_1 \gets \min\{c_{ij}-v_j : j \in D \text{ e } i \not\in N(j)\}$ \label{theta1}
+        \State $\theta_2 \gets \min\{(f_i - \sum_{j \in N(i)}w_{ij})/|N(i)| : i \in F \text{ tal que } N(i) \neq \emptyset \} \label{theta2}$
+        \State $\theta \gets \min\{\theta_1,\theta_2\} \label{theta}$
         \State $v_j \gets v_j + \theta$ para todo $j \in D$
         \State $w_{ij} \gets w_{ij} + \theta$ para todo $j \in D$ e $i \in N(j)$ 
-        \If{$v_j = c_{hj}$ para algum $i \in S$ e $h \in T$}
+        \If{$v_j = c_{hj}$ para algum $j \in S$ e $h \in T$}
         \State $S \gets S \setminus \{j\}$
         \EndIf
         \If{$\sum_{j \in N(i)} w_{ij} = f_i$ para algum $i \not \in T$}
@@ -410,27 +425,30 @@ Nosso algoritmo contará com as seguintes invariantes.
         \While{$T \neq \emptyset$}
         \State Escolha $i \in T$
         \State $T' \gets T' \cup \{i\}$
-        \State $T \gets T \setminus \{h \in F : \text{existe $k \in D$ com $w_{ik}> 0 $ e $w_{hk} > 0$} \}$
+        \State $T \gets T \setminus \{h \in T : \text{existe $k \in D$ com $w_{ik}> 0 $ e $w_{hk} > 0$} \}$
         \EndWhile
-        \State \Return T'
-        \EndFunction
+        \State \Return $T'$
     \end{algorithmic}
 \end{algorithm}
-Claramente as coordenadas das variáveis $v$ e $w$ crescerão de maneira uniforme, pois em cada iteração o mesmo valor será somado a elas. Precisamos então garantir que a nossa solução seja sempre viável. Na linha (7:) do algoritmo garantimos que a desigualdade~\eqref{D3} não seja violada para os clientes e as instâncias que não estão na sua vizinhança. Na linha (8:), garantimos que a desigualdade~\eqref{D2} não seja violada para as instalações. Note que aumentar $v_j$ e $w_{ij}$ no mesmo valor nunca violará a desigualdade~\eqref{D3} para algum $j \in D$ e $i \in F$. Assim, $(v,w)$ é uma solução viável para o problema dual.\\
-Para cada cliente $j$ e cada instalação $i$, primeiro aumentaremos apenas as variáveis $v_j$ até que $j$ esteja na vizinhança de $i$, note que nesse momento a desigualdade~\eqref{D3} se torna justa, pois ainda não aumentamos a variável $w_{ij}$. Uma vez que isso acontece, aumentamos uniformemente $v_j$ e $w_{ij}$, assim a desigualdade~\eqref{D3} continuará justa. Desse modo, para $j \in D$ e $i \in N(j)$ vale que 
-\[\tag{*} \label{Djusta:*}  
+
+Esse algoritmo é de autoria de Jain e Vazirani~\cite{JV} e leva suas iniciais como nome.
+No algoritmo~\ref{fl:primaldual}, claramente as coordenadas das variáveis $v$ e $w$ crescerão de maneira uniforme, pois em cada iteração o mesmo valor $\theta$ será somado a elas. Precisamos então garantir que a nossa solução seja sempre viável. Pela escolha de $\theta_1$ na linha~\ref{theta1} do algoritmo, garantimos que a desigualdade~\eqref{D3} não seja violada para $i$ e $j$ em que $i$ é uma instalação que não está na vizinhança do cliente $j$. Quando a instalação $i$ está na vizinhança de $j$, aumentamos $v_j$ e $w_{ij}$ do mesmo valor $\theta$ e isso nunca violará a desigualdade~\eqref{D3}. 
+Pela escolha de $\theta_2$ na linha~\ref{theta2}, garantimos que a desigualdade~\eqref{D2} não seja violada para nenhuma instalação. 
+Assim, $(v,w)$ é uma solução viável para o problema dual durante todo o algoritmo.
+Para cada cliente $j$ e cada instalação $i$, primeiro aumentaremos apenas as variáveis $v_j$ até que $j$ esteja na vizinhança de $i$. Note que nesse momento a desigualdade~\eqref{D3} se torna justa, pois ainda não aumentamos a variável $w_{ij}$. Uma vez que isso acontece, aumentamos uniformemente $v_j$ e $w_{ij}$, assim a desigualdade~\eqref{D3} continuará justa. Desse modo, para $j \in D$ e $i \in N(j)$, vale que 
+\begin{equation}\label{Djusta:*}  
 w_{ij} = v_j - c_{ij}.
-\] \\
+\end{equation}
 Note também que ao final do algoritmo $(v,w)$ é uma solução maximal para o problema dual. Isso acontece pois para todo cliente $j$ existe uma instalação $i$ tal que a desigualdade~\eqref{D3} é justa para $i$ e $j$ e, além disso, a desigualdade~\eqref{D2} é justa para $i$. Desse modo, não conseguimos encontrar uma solução viável com valor objetivo apenas aumentando as variáveis, pois $w_{ij}$ não pode ser aumentado e é ele quem está impedindo o aumento de $v_j$. \\
 Para provar a razão de aproximação vamos precisar primeiro de um lema.
 \begin{lemma}
     \label{lemma:3.9}
-    Seja $T'$ solução devolvida e $(v,w)$ solução do dual produzida pelo algoritmo. Se $j \in D$ não está na vizinhança de nenhuma instalação de $T'$, então existe uma instalação $i \in T'$ tal que $c_{ij} \leq 3v_j$.
+    Seja $T'$ a solução devolvida e $(v,w)$ solução do dual produzida pelo Algoritmo {\sc JV }. Se $j \in D$ não está na vizinhança de nenhuma instalação de $T'$, então existe uma instalação $i \in T'$ tal que $c_{ij} \leq 3v_j$.
 \end{lemma}
 \begin{proof}
     Seja $h \in T$ a instalação responsável pela remoção de $j$ de $S$, conforme a linha 12 ou 16 do algoritmo. Claramente, $j$ pertence a vizinhança de $h$. Sabemos que $h$ não pertence a $T'$ uma vez que, por hipótese, $j$ não tem vizinhos em $T'$. Como $h$ foi retirada de $T$, conforme a linha 21 do algoritmo, existe $i \in T'$ e $k \in D$ tal que $k$ contribui para $i$ e para $h$. Pela desigualdade triangular,
     \[c_{ij} \leq c_{hj} + c_{hk} + c_{ik}\]
-    como $j \in N(h)$ e $k \in N(h) \cup N(i)$ vale que $c_{hj} \leq v_j$ e $c_{hk} + c_{ik} \leq 2v_k$. Como $k$ contribui para $h$, então $k$ já estava na vizinhança de $h$ no momento que $h$ foi retirado de $T$. Assim, $k$ saiu de $S$ no mesmo momento ou anterior a $h$ sair de $T$. Como $h$ foi responsável pela retirada de $j$ de $S$, então $j$ não foi retirado de $S$ antes de $k$. Como as variáveis crescem de maneira uniforme, então $v_k \leq v_j$.\\
+    como $j \in N(h)$ e $k \in N(h) \cup N(i)$ vale que $c_{hj} \leq v_j$ e $c_{hk} + c_{ik} \leq 2v_k$. Como $k$ contribui para $h$, então $k$ já estava na vizinhança de $h$ no momento que $h$ foi retirado de $T$. Assim, $k$ saiu de $S$ no mesmo momento ou anterior a $h$ sair de $T$. Como $h$ foi responsável pela retirada de $j$ de $S$, então $j$ não foi retirado de $S$ antes de $k$. Como as variáveis crescem de maneira uniforme, então $v_k \leq v_j$. 
     Portanto, $c_{ij}\leq 3v_j$. 
 \end{proof}
 
@@ -439,16 +457,19 @@ Agora, podemos mostrar o teorema abaixo.
     O algoritmo {\sc JV} é uma $3$-aproximação para o problema da localização de instalações.
 \end{theorem}
 \begin{proof}
-    Claramente o algoritmo roda em tempo polinomial. O seguinte vale para as instalações de $T'$ e os clientes na sua vizinhança
-    \[\sum_{i \in T'} (f_i + \sum_{j \in N(i)} c_{ij}) = \sum_{i \in T'} \sum_{j \in N(i)} (w_{ij} + c_{ij}) = \sum_{i \in T'} \sum_{j \in N(i)} v_j\]
-    em que a primeira igualdade vale pela definição de $T$ e a segunda igualdade vale por~\eqref{Djusta:*}. Note que o somatório não repete clientes, uma vez que cada cliente não está na vizinhança de duas instalações de $T'$.\\
-    Seja $j$ um cliente que não está na vizinhança de nenhuma instalação de $T'$, podemos utilizar o Lema~\ref{lemma:3.9} para esse cliente. Então existe uma instalação de $i \in T'$ tal que $c_{ij} \leq 3v_j$. Como $j$ está associado a instalação de $T'$ mais próximo a ele, vale que $c_{\sigma(j)j} \leq c_{ij}$. Seja $Z$ o conjunto de clientes que não tem vizinhos em $T'$, temos
+    Claramente o algoritmo roda em tempo polinomial. 
+
+    Para cada cliente que contribui para uma instalação de $T'$, vamos associá-lo a essa instalação. Como cada cliente contribui para no máximo uma instalação de $T'$, então essa associação é única. Para clientes que estão na vizinhança de instalações de $T'$, mas não contribuem para nenhuma delas, vamos associá-los a qualquer instalação de $T'$ na sua vizinhança.
+    Seja $A(i) \subseteq N(i)$ os clientes vizinhos associados a instalação $i \in T'$. Então o custo de abertura das facilidades em $T'$ mais o custo de associar os clientes vizinhos é
+    \[\sum_{i \in T'} (f_i + \sum_{j \in A(i)} c_{ij}) = \sum_{i \in T'} \sum_{j \in A(i)} (w_{ij} + c_{ij}) = \sum_{i \in T'} \sum_{j \in A(i)} v_j\]
+    em que a primeira igualdade vale pela definição de $T$ e a segunda igualdade vale por~\eqref{Djusta:*} e também pois $w_{ij} > 0$ implica $j \in A(i)$. Claramente o somatório não repete clientes, uma vez que cada cliente está associado a apenas uma instalação.
+
+    Para um cliente $j$ que não está na vizinhança de nenhuma instalação de $T'$, podemos utilizar o Lema~\ref{lemma:3.9}. Então existe uma instalação de $i \in T'$ tal que $c_{ij} \leq 3v_j$. Vamos associar $j$ a $i$. Seja $Z$ o conjunto de clientes que não têm vizinhos em $T'$. Temos
     \[\sum_{j \in Z}c_{\sigma(j)j} \leq 3\sum_{j \in Z}v_j.\]
-    Juntando os limitantes encontrados para os clientes que tem vizinhos em $T'$ e os que não tem, encontramos
-    \[\sum_{i \in T'} (f_i + \sum_{j \in N(i)} c_{ij}) + \sum_{j \in Z} c_{\sigma(j)j}\leq \sum_{i \in T'} \sum_{j \in N(i)} v_j + 3 \sum_{j \in Z} v_j \leq 3 \sum_{j \in D} v_j\leq 3\,\opt(I)\]
+    Juntando os limitantes encontrados para os clientes que têm vizinhos em $T'$ e os que não têm, encontramos
+    \[\sum_{i \in T'} (f_i + \sum_{j \in A(i)} c_{ij}) + \sum_{j \in Z} c_{\sigma(j)j}\leq \sum_{i \in T'} \sum_{j \in A(i)} v_j + 3 \sum_{j \in Z} v_j \leq 3 \sum_{j \in D} v_j\leq 3\,\opt(I)\]
     em que a última desigualdade vale pela dualidade fraca.
 \end{proof}
-Esse algoritmo é de autoria de Jain e Vazirani~\cite{JV} e leva suas iniciais como nome.
 \newpage
 
 \subsubsection{Arredondamento do programa linear}
@@ -477,8 +498,9 @@ Essa informação será importante para a prova da razão de aproximação do no
 \end{definition}
 Agora, vamos definir o algoritmo. Nele, $S$ será o conjunto das instalações a serem abertas e $\sigma : D \rightarrow F $ a função que associa cada cliente a uma instalação aberta. Ambos serão montados durante o algoritmo.
 \begin{algorithm}
+    \caption{CS($F,D,c,f$)}
+    \label{fl:plrounding}
     \begin{algorithmic}[1]
-        \Function{CS}{$F,D,c,f$}
         \State Sejam $(x^*,y^*)$ e $(v^*,w^*)$ soluções ótimas para o programa linear e o seu dual
         \State $S \gets \emptyset$
         \State $C \gets D$ 
@@ -493,11 +515,11 @@ Agora, vamos definir o algoritmo. Nele, $S$ será o conjunto das instalações a
         \State $C \gets C \setminus N^2(j_k)$
         \State $k \gets k+1$
         \EndWhile
-        \State Devolva $S$ e $\sigma$
-        \EndFunction
+        \State \Return $S$ e $\sigma$
     \end{algorithmic}
 \end{algorithm}
 
+O algoritmo aqui apresentado é de autoria de Chudak e Shmoys~\cite{Chudak2003}.
 \begin{theorem}
     O algoritmo {\sc CS} é uma $4$-aproximação para o problema da localização de instalações.
 \end{theorem}
@@ -516,7 +538,6 @@ Agora, vamos definir o algoritmo. Nele, $S$ será o conjunto das instalações a
     onde a segunda desigualdade vale pela dualidade forte e pela relaxação. \\
     Assim, temos que o custo de abertura das instalações é no máximo $\opt(I)$ e o custo de associação é no máximo $3\opt(I)$. Portanto, o custo total da solução $S$ é no máximo $4~\opt(I)$.
 \end{proof}
-O algoritmo aqui apresentado é de autoria de Chudak e Shmoys~\cite{Chudak2003}.
 
 \newpage
 \subsection{Busca local}
@@ -630,7 +651,6 @@ Agora que temos essas duas desigualdades, conseguimos mostrar o seguinte teorema
     Primeiro, vamos mostrar que o algoritmo roda em tempo polinomial. Claramente, todas as operações podem ser feitas em tempo polinomial, precisamos apenas mostrar que o algoritmo sempre executa um número polinomial de operações. \\
     Seja $M$ o valor da solução inicial. Note que se existir um $k$ tal que $(1-\delta)^kM < 1$, então o algoritmo não fará mais que $k$ operações, uma vez que os custos são inteiros$\red{*}$. Por uma desigualdade conhecida, sabemos que $(1 - \delta)^{\frac{1}{\delta}} \leq \frac{1}{e}$. Quando elevamos tudo por $\ln M$ temos, $(1- \delta)^{\frac{1}{\delta}\ln M} \leq \frac{1}{M}$ e isso nos traz $ (1- \delta)^{\frac{1}{\delta}\ln M}M \leq 1$, como $(1-\delta)$ é estritamente menor que 1, então $\frac{1}{\delta}\ln M + 1$ iterações são suficientes para terminar o programa. Perceba que $\ln M$ é polinomial no tamanho da instância, uma vez que $\ln M$ está apenas a uma constante de $\log M$ e $M$ é no máximo a soma de todos os custos. Como precisamos de $\log$ soma dos custos bits para guardar a instância, então $\log M$ é polinomial no tamanho da instância. \\
     Agora, vamos mostrar a razão de aproximação. Somando as desigualdades encontradas nos Lemas~\ref{lema:3.7} e \ref{lema:3.9}, temos que 
-    
         \[A + T - 2A^* - 3T^* \leq 2m\delta(A+T)\] 
         \[(1 - 2m\delta)(A+T) \leq (2A^* + 3T^*) \leq 3 \opt(I)\]
         \[A+T \leq \frac{3}{1-2m\delta}\opt(I)\]
