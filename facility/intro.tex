@@ -12,10 +12,12 @@ Esse problema é $\NP$-completo, sendo um dos famosos $21$ problemas do Karp~\ci
 \end{theorem}
 
 \begin{proof}
-    Suponha que exista um algoritmo $A$ que resolva o problema de localização de instalações em tempo polinomial. \\
-    Seja $I(G,k)$ uma instância do problema da cobertura por vértices em que $G = (V,E)$. Vamos criar uma instância $I'(F,D,c,f)$ do problema de localização de instalações a partir de $I$.\\
-    O conjunto de possíveis instalações a serem abertas $F$ será o conjunto de vértices $V$. O conjunto de clientes $D$ será o conjunto de arestas $E$. O custo de abertura $f_i$ será 1 para cada instalação $i$. O custo de associação $c_{ij} \text{, para } i \in F \text{ e } j \in D$, será 0 se o vértice referente a $i$ é extremo da aresta referente a $j$ e 2 caso contrário. \\
-    A resposta ótima será a menor quantidade de instalações que precisamos abrir até que todos os clientes possam ser associados a instalações em que o seu custo de associação é 0. Se um cliente(aresta) está associado a uma instalação(vértice) cujo custo de associação é 2, podemos diminuir o custo total abrindo uma instalação em que o custo de sua associação é 0, uma vez que abrir a instalação custaria 1 e diminuiríamos o custo de associação do cliente de 2 para 0. Sabemos que essa instalação existe, pois para cada cliente(aresta) existem duas instalações com custo de associação 0(seus vértices extremos). \\
-    Assim, é fácil notar que essa quantidade de instalações é o tamanho mínimo de uma cobertura por vértices em $G$. Portanto, se o custo total da solução do algoritmo $A$ aplicado à instância $I'$ é menor ou igual a $k$, então a resposta para $I$ é sim. Caso contrário, a resposta é não. \\
+    Suponha que exista um algoritmo $A$ que resolva o problema de localização de instalações em tempo polinomial.
+
+    Seja $I(G,k)$ uma instância do problema da cobertura por vértices. Tome $F \coloneqq V(G)$ e $D \coloneqq E(G)$. Considere também $f_i = 1$ para todo $i \in V$ e $c_{ij} = 0$ se $i \in V(G)$ é extremo de $j \in E(G)$ e 2 caso contrário. Assim, construímos uma instância $I'(F,D,c,f)$ do problema de localização de instalações a partir de uma instância do problema da cobertura por vértices. 
+
+    Note que a resposta ótima de $I'$ será a menor quantidade de instalações que precisamos abrir até que todos os clientes possam ser associados a instalações em que o seu custo de associação é 0. Se um cliente(aresta) está associado a uma instalação(vértice) cujo custo de associação é 2, podemos diminuir o custo total abrindo uma instalação em que o custo de sua associação é 0, uma vez que abrir a instalação custaria 1 e diminuiríamos o custo de associação do cliente de 2 para 0. Sabemos que essa instalação existe, pois para cada cliente(aresta) existem duas instalações com custo de associação 0(seus vértices extremos).
+    Assim, é fácil notar que essa quantidade de instalações é o tamanho mínimo de uma cobertura por vértices em $G$. Portanto, se o custo total da solução do algoritmo $A$ aplicado à instância $I'$ é menor ou igual a $k$, então a resposta para $I$ é sim. Caso contrário, a resposta é não.
+
     Desse modo, resolvemos o problema da cobertura por vértices em tempo polinomial, o que, assumindo $P\neq\NP$, é um absurdo.
 \end{proof}
