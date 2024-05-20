@@ -1,0 +1,56 @@
+Vamos rever definições já vistas anteriormente. 
+Seja $I(F,D,c,f)$ uma instância do problema de localização de instalações e $(x^*,y^*)$ uma solução da relaxação do programa inteiro do referente a $I$. 
+Denote os vizinhos de um cliente $j$ como $N(j) \coloneqq\{i \in F : x^*_{ij} > 0\}$. 
+Denote também os vizinhos dos vizinhos de um cliente $j$ como $N^2(j) \coloneqq \{ k \in D : \text{ existe algum } i \in N(j) \text{ tal que } x^*_{ik} > 0\}$.
+Além disso, defina $C^*_j \coloneqq \sum_{i \in F} c_{ij}x^*_{ij}$ 
+
+\begin{algorithm}[tbh]
+\caption{CS($F,D,c,f$)}
+\begin{algorithmic}[1]
+        \State Sejam $(x^*,y^*)$ e $(v^*,y^*)$ soluções ótimas para o primal e o dual da relaxação do programa inteiro de $I(F,D,c,f)$.
+        \State $C_0 \coloneqq D$
+        \State $k \coloneqq 0$
+        \While{$C_k \neq \emptyset$}
+        \State $j_k \coloneqq \arg \min_{j \in C_k} v^*_j + C_j^*$
+        \State Escolha $i_k \in N(j_k)$ de acordo com a distribuição de probabilidade $x^*_{ij_k}$
+        \State Associe a instalação $i_k$ a cada cliente em $N^2(j_k) \cap C_k$
+        \State $C_{k+1} \coloneqq C_k \setminus N^2(j_k)$
+        \State $k \coloneqq k +1$
+        \EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+\begin{theorem} O algoritmo {\sc CS} é uma 3-aproximação para o problema da localização de instalações.
+\end{theorem}
+
+\begin{proof}
+É evidente que o algoritmo toma tempo polinomial.
+
+Note que, para um mesmo par de soluções ótimas do primal e do dual, a escolha de $j_k$ para uma iteração $k$ qualquer é determinística e, portanto, $N^2(j_k) \cap C_k$ é sempre igual para uma iteração $k$. Assim, o valor esperado da nossa solução é a soma, para cada $k$, do valor esperado de $f_{i_k}$ mais o custo esperado de transporte para cada cliente associado a $k$. 
+
+Seja $k$ uma iteração qualquer. Seja $X_k$ uma variável aleatória que represente o custo de abertura da instalação escolhida na iteração $k$, então
+\[ \mathbb{E}[X_k] = \sum_{i \in j_k} f_i x^*_{ij_k} \leq \sum_{i \in N(j_k)} f_i y^*_i\]
+onde a desigualdade vale pela restrição~\ref{P3}. Seja $Y_k^j$ a variável aleatória que represente o custo de transporte do cliente $j \in N^2(j_k) \cap C_k$. Assim, o valor esperado para o custo de abertura de $j_k$ é 
+\[\mathbb{E}[Y_k^{j_k}] = \sum_{i \in N(j)} c_{ij_k} x^*_{ij_k} = C^*_{j_k}. \]
+Seja $\ell$ um cliente em $N^2(j_k) \cap C_k$ e $h \in N(j_k)$ tal que $x^*_{h\ell} > 0$, note que $h$ existe pela definição de $N^2(j_k)$. Pela desigualdade triangular vale que $c_{i\ell} \leq c_{ij_k} + c_{hj_k} + c_{hj}$ e, portanto,
+\begin{subequations} 
+        \begin{align*}
+        \mathbb{E}[Y_k^\ell] = \sum_{i \in N(j_k)} c_{i\ell}x^*_{ij_k} &\leq \sum_{i \in N(j_k)} (c_{ij_j} + c_{hj} + c_{h\ell})x^*_{ij_k} = c_{hj} + c_{h\ell} + C^*_{j_k}\\
+        &\leq v^*_\ell + v^*_{j_k} + C^*_{j_k} \leq 2v^*_{\ell} + C^*_\ell 
+        \end{align*}
+\end{subequations}
+onde a segunda desigualdade vale pelo Lema~\ref{lemma:3.5} e a terceira vale pela escolha de $j_k$.
+
+Então fica evidente que o valor esperado da nossa solução é 
+\begin{subequations}
+        \begin{align*}
+                \sum_k {\big (}\mathbb{E}[X_k] + \sum_{j \in N^2(j_k)\cap C_k}\mathbb{E}[Y_k^j] {\big )} &\leq \sum_k {\big (} \sum_{i \in N(j_k)}f_iy^*_i + \sum_{j \in N^2(j_k) \cap C_k} (2v^*_j + C^*_j) {\big )}  \\
+                & = \sum_k \sum_{i \in N(j_k)}f_iy^*_i + \sum_k \sum_{j \in N^2(j_k)\cap C_k}(2v^*_j + C^*_j)\\
+                &\leq\sum_{i \in F} f_iy^*_i + \sum_{j \in D }(2v^*_j + C^*_j)\\
+                &= \sum_{i \in F} f_iy^*_i + \sum_{i \in F, j \in D} c_{ij}x^*_{ij} + 2\sum_{j \in D}v_j \\
+                &\leq 3 \opt(I)
+        \end{align*}
+\end{subequations}
+onde a segunda igualdade vale pois para $k_1 < k_2$, vale que $N(j_{k_1}) \cap N(j_{k_2}) = \emptyset$, caso contrário $j_{k_2}$ estaria em $N^2(j_{k_1})$ e, portanto, não estaria em $C_{k_2}$.
+\end{proof}
+

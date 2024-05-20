@@ -1,0 +1,51 @@
+\usepackage[margin=3cm]{geometry}
+\usepackage{titlesec} % pacote para formatar títulos de seções
+\usepackage{tocloft} % pacote para formatar o sumário
+\usepackage{hyperref} % pacote para adicionar links no sumário
+\usepackage[portuguese]{babel}
+\usepackage{setspace}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{mdframed}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{enumerate}
+\usepackage{tikz}
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm}
+%% Floating package
+\usepackage{floatflt,epsfig,epsf}
+\renewcommand{\baselinestretch}{1.5}
+% Renomeia os rótulos para as estruturas de controle
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\listalgorithmname}{Lista de Algoritmos}
+\renewcommand{\algorithmicrequire}{\textbf{Requer:}}
+\renewcommand{\algorithmicensure}{\textbf{Garante:}}
+\renewcommand{\algorithmicend}{\textbf{Fim}}
+\renewcommand{\algorithmicif}{\textbf{Se}}
+\renewcommand{\algorithmicthen}{\textbf{então}}
+\renewcommand{\algorithmicelse}{\textbf{senão}}
+\renewcommand{\algorithmicfor}{\textbf{Para}}
+\renewcommand{\algorithmicdo}{\textbf{faça}}
+\renewcommand{\algorithmicwhile}{\textbf{Enquanto}}
+\renewcommand{\algorithmicfunction}{\textbf{Algoritmo}}
+\renewcommand{\algorithmicreturn}{\textbf{Devolva}}
+
+\newcommand{\opt}{\ensuremath{\mathrm{opt}}}
+\newcommand{\OPT}{\ensuremath{\mathrm{opt}}}
+\newcommand{\Opt}{\ensuremath{\mathrm{opt}}}
+\newcommand{\val}{\ensuremath{\mathrm{val}}}
+
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{corollary}{Corolário}[theorem]
+\newtheorem{lemma}[theorem]{Lema} 
+
+\newtheorem{definition}[theorem]{Definição}
+\newtheorem{problem}[theorem]{Problema}
+\newcommand{\scs}{\mbox{{\sc scs}}}
+\newcommand{\NP}{\mathit{NP}}
+\newcommand{\red}[1]{{\color{red}{#1}}}
+\sloppy
+\newcommand{\eps}{\epsilon}

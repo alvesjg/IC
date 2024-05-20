@@ -1,0 +1,175 @@
+Embora o custo de transporte esteja definido apenas para um cliente e uma instalação, aqui falaremos também sobre custos de transporte entre duas instalações. Podemos definir o custo de transporte entre duas instalações como o menor custo de transporte entre essas duas instalações e um cliente qualquer. Então a desigualdade triangular valerá da seguinte forma: para todo $i,j,k \in F \cup D$ 
+\[ c_{ij} \leq c_{ik} + c_{kj}.\]
+
+Um algoritmo de busca local começa com uma solução viável para o problema e checa se alguma alteração local melhora o custo da solução atual. Caso essa melhora ocorra, essa alteração é feita. Esse processo se repete até que não exista alteração que melhore o custo e, então, encontramos uma solução que é chamada de \emph{localmente ótima}. A implementação direta da ideia da busca local na maioria das vezes não garante execução em tempo polinomial e, nesses casos, as alterações só acontecerão se satisfizerem alguma restrição. 
+
+Nosso algoritmo contará com três operações: abrir instalações fechadas, fechar instalações abertas ou trocar uma instalação aberta por uma fechada. Nossa solução inicial terá todas as instalações abertas e um cliente sempre estará ligado à instalação aberta mais próxima a ele. Uma operação só será feita se melhorar o custo da solução atual em uma razão de $1-\delta$, para um $\delta>0$. Como essa solução não é necessariamente localmente ótima, iremos chamá-la de solução \emph{quase localmente ótima}. Ao final, mostraremos que, dado um $\eps > 0$, o algoritmo é uma $3(1 + \epsilon)$-aproximação para o problema de localização de instalações, onde o $\delta$ será escolhido em função do $\epsilon$.
+
+Vamos mostrar duas desigualdades que serão fundamentais para chegar na razão de aproximação desejada. A partir daqui utilizaremos uma instância $I$, uma solução quase localmente ótima $(S,\sigma)$ com custo das instalações abertas $A$ e custo de transporte total $T$. Também vamos utilizar uma solução ótima $(S^*,\sigma^*)$ com custo das instalações abertas $A^*$ e custo de transporte total $T^*$. Claramente, $\opt(I) = A^* + T^*$. Também definimos o número total de instalações como $m$.
+\begin{lemma}
+    \label{lema:3.7}
+    Sejam $(S,\sigma)$ e $(S^*,\sigma^*)$ as soluções como definidas acima. Então,
+    \[ T - A^* - T^* \leq m \delta (A+T).\]
+\end{lemma}
+\begin{proof}
+    E se $S^* \subseteq S$? 
+    Seja $i^* \in S^* \setminus S$, caso exista. Como a solução $(S,\sigma)$ é quase localmente ótima, se abrimos $i^*$ e associamos a ele em $\sigma$ os clientes que estão associados a ele em $\sigma^*$ não diminuímos o custo da solução de uma fração menor que $1-\delta$. Então,
+    \begin{align*} 
+      A + f_{i^*} + T + \sum_{j : \sigma^*(j) = i^*} (c_{i^*j} - c_{\sigma(j)j}) &\geq (1-\delta)(A+T)
+    \end{align*} 
+que equivale a 
+    \begin{align*} 
+    f_{i^*} + \sum_{j : \sigma^*(j) = i^*} (c_{i^*j} - c_{\sigma(j)j}) &\geq -\delta(A+T).
+    \end{align*} 
+    Vamos agora mostrar que essa desigualdade também é válida para $i^* \in S^* \cap S$, caso exista. Como os clientes sempre estão ligados a uma instalação aberta mais próxima a eles, então ao trocar os clientes que estão associados a $i^*$ em $\sigma^*$ para $i^*$ em $\sigma$ o custo de transporte não pode diminuir. Assim, 
+    \[
+        f_{i^*} + \sum_{j : \sigma^*(j) = i^*} (c_{i^*j} - c_{\sigma(j)j}) 
+           \ \geq \ \sum_{j : \sigma^*(j) = i^*} (c_{i^*j} - c_{\sigma(j)j})
+           \ \geq \ 0 \ \geq \ -\delta(A+T).
+    \]
+
+    Note que esses dois casos cobrem todas as instalações presentes em $S^*$. Assim, somando as desigualdades para todas essas instalações sabemos que o seguinte vale:
+    \begin{subequations}\begin{align*} 
+        m\delta(A+T) &\geq  - \sum_{i^* \in S^*}\Big( f_{i^*} + \sum_{j : \sigma^*(j) = i^*} (c_{i^*j} - c_{\sigma(j)j})\Big) \\
+        & = -(A^* + \sum_{j \in D} (c_{\sigma^*(j)j}) - \sum_{j \in D}(c_{\sigma(j)j})) \\
+        & = - (A^* + T^* - T) = T - A^* - T^*.
+    \end{align*}
+    \end{subequations}
+\end{proof}
+Para a segunda desigualdade, precisaremos de uma função e de um lema que ajudará a limitar o custo da redesignação de clientes. 
+Vamos definir a função $\phi : S^* \rightarrow S$ como \[\phi(i^*) = \arg\min_{i \in S} c_{i^*i},\] ou seja, a instalação $i$ em $S$ mais próxima a $i^*$ em $S^*$. Então, teremos o seguinte lema
+\begin{lemma}
+    \label{lemma:3.8}
+    Seja $j$ um cliente tal que $\sigma(j) = i$, $\sigma^*(j) = i^*$, $\phi(i^*) = i'$ e $i\neq i'.$ Então, \[c_{i'j} - c_{ij} \leq 2c_{i^*j}.\]
+\end{lemma}
+
+\begin{proof}
+    Pela desigualdade triangular temos que
+    \[c_{i'j} \leq c_{i'i^*} + c_{i^*j},\] além disso, devido a definição de $i'$, temos que $c_{i'i^*} \leq c_{ii^*}$. Assim,
+    \[c_{i'j} \leq c_{ii^*} + c_{i^*j}.\]
+    Novamente, pela desigualdade triangular, vale que $c_{ii^*} \leq c_{ij} + c_{i^*j}$. Então,
+    \[
+        c_{i'j} \leq c_{ij} + 2 c_{i^*j} 
+    \] equivalentemente \[
+        c_{i'j} - c_{ij} \leq 2 c_{i^*j}. \]
+\end{proof}
+
+Agora, conseguimos provar a segunda desigualdade que será necessária para a razão de aproximação.
+\begin{lemma}
+    \label{lema:3.9}
+    Seja $(S,\sigma)$ e $(S^*,\sigma^*)$ soluções como já definidas. Então,
+    \[A - A^* - 2T^* \leq m \delta(A+T)\]
+\end{lemma}
+\begin{proof}
+    Antes de começar a demonstração em si, vamos definir o que é uma instalação segura. Uma instalação $i \in S$ é \emph{segura} se não existe $i^* \in S^*$ tal que $\phi(i^*)=i$.
+
+    Seja $i \in S$ uma instalação segura. Como $(S,\sigma)$ é uma solução parcialmente localmente ótima, então se fecharmos $i$ e associarmos cada cliente j associado a $i$ para $\phi(\sigma^*(j))$ não melhoraremos o custo da solução em uma razão menor que $1-\delta$. Então,
+    \[
+        A - f_i + T + \sum_{j:\sigma(j) = i} (c_{\phi(\sigma^*(j))j} - c_{\sigma(j)j}) \geq (1-\delta)(A+T)\]
+        o que equivale a 
+        \[
+        - f_i + \sum_{j:\sigma(j) = i} (c_{\phi(\sigma^*(j))j} - c_{\sigma(j)j}) \geq -\delta(A+T).
+        \]
+    Como $i$ é uma instalação segura o Lema~\ref{lemma:3.8} vale para todos os clientes que estão associados a $i$ em $\sigma$, então
+    \begin{align} 
+        \label{segura}
+        - f_i + \sum_{j:\sigma(j) = i} 2c_{\sigma^*(j)j} &\geq -\delta(A+T).
+    \end{align}
+
+    Seja $i\in S$ uma instalação não segura. Vamos definir o conjunto $R \subseteq S^*$ como o conjunto das instalações que fazem com que $i$ não seja segura, ou seja, $R = \{i^* \in S^* : \phi(i^*) = i\}$. Vamos definir também $i' = \arg\min_{i^* \in R} c_{i^*i}$, ou seja, a instalação de $R$ mais próxima à instalação $i$.
+    Seja $i^* \in R\setminus\{i'\}$, caso esse conjunto não seja vazio. Abrir $i^*$ e associar a $i^*$ os clientes que estão associados a $i$ em $\sigma $ e a $i^*$ em $\sigma^*$ não pode melhorar a resposta em uma razão melhor que $(1-\delta)$, assim
+    \[
+        A + f_i + T + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j) = i^*}(c_{i^*j} - c_{ij})\geq (1-\delta)(A+T)\]
+    o que equivale a 
+        \begin{equation}
+        \label{não segura}
+        f_i + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j) = i^*}(c_{i^*j} - c_{ij}) \geq -\delta(A+T).        
+    \end{equation}    
+
+    Agora vamos ver o que acontece se abrimos $i'$, fecharmos $i$ e associarmos os clientes $j$ associados a $i$ em $\sigma$ para $\phi(\sigma^*(j))$ se $\sigma^*(j) \not \in R$ e a $i'$ caso contrário.
+    \begin{align*}
+        - f_i + f_{i'} + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j)\not \in R}(c_{\phi(\sigma^*(j)j)} - c_{ij}) + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) &\geq -\delta(A+T)
+    \end{align*}
+    No somatório dos clientes $j$ em que $\sigma^*(j) \not \in R$ podemos utilizar o Lema~\ref{lemma:3.8},
+    \begin{align*}
+        - f_i + f_{i'} + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j)\not \in R} 2c_{\sigma^*(j)j} + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) &\geq -\delta(A+T)
+    \end{align*}
+    juntando essa desigualdade com \ref{não segura} para todas as instalações em $R\setminus\{i'\}$, temos
+    \begin{align*}
+        -f_i + \sum_{i^* \in R}f_{i^*} + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j)\not \in R} 2c_{\sigma^*(j)j} + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) \\+ \sum_{j:\sigma(j)=i \text{ \& }\sigma^*(j) \in R \setminus\{i'\}}(c_{\sigma^*(j)j} - c_{ij}) \geq -|R|\delta(A+T).
+    \end{align*}
+    Vamos reduzir essa expressão. Seja $j$ tal que $\sigma(j)=i$ e $\sigma^*(j) \in R$. \\
+    Se $\sigma^*(j) = i'$, então $j$ só aparece no terceiro somatório e certamente $c_{i'j} - c_{ij} \leq 2 c_{i'j}$. \\
+    Se $\sigma^*(j)\neq i'$, então na soma temos $c_{i'j} + c_{\sigma^*(j)j} - 2 \,c_{ij}$. Assim, temos que
+    \[
+            c_{i'j} + c_{\sigma^*(j)j} - 2 \,c_{ij} \leq 
+            c_{\sigma^*(j)j} + c_{i'i} - c_{ij} \leq
+            c_{\sigma^*(j)j} + c_{\sigma^*(j)i} - c_{ij} \leq
+            2 c_{\sigma^*(j)j}
+    \]
+    onde a primeira desigualdade vale pois $c_{i'j} \leq c_{i'i} + c_{ij}$, a segunda desigualdade vale pela escolha de $i'$ e a terceira desigualdade vale pois $c_{\sigma^*(j)i} \leq c_{\sigma^*(j)j} + c_{ij}$.
+
+    % Pela desigualdade triangular temos que $c_{i'j} \leq c_{i'i} + c_{ij},$ assim
+    % \[c_{i'j} + c_{\sigma^*(j)j} - 2 \,c_{ij} \leq c_{\sigma^*(j)j} + c_{i'i} - c_{ij} \]
+    % pela definição do $i'$ temos que $c_{i'i} \leq  c_{\sigma^*(j)i}$ e pela desigualdade triangular temos que $c_{\sigma^*(j)i} \leq c_{\sigma^*(j)j} + c_{ij}$, então
+    % \[ c_{\sigma^*(j)j} + c_{i'i} -  c_{ij} \leq 2 c_{\sigma^*(j)j}\]
+    Então, para qualquer $j$ temos que o custo referente a $j$ na soma é no máximo $2c_{\sigma^*(j)j}$. Assim,
+    \[\sum_{i^* \in R}f_{i^*} - f_i + \sum_{j: \sigma(j)= i } 2c_{\sigma^*(j)j} \geq - |R| \delta(A+T)\]
+    Vamos juntar essa última desigualdade para todas as instalações não seguras e~\ref{segura} para todas as instalações seguras. Vamos chamar de $P$ o conjunto das instalações seguras,
+    \[\sum_{i \in P}\Big( - f_i + \sum_{j:\sigma(j) = i} 2c_{\sigma^*(j)j}\Big) + \sum_{i \not \in P}\Big( \sum_{i^* \in R_i}f_{i^*} - f_i + \sum_{j: \sigma(j)= i } 2c_{\sigma^*(j)j}\Big ) \geq - |R| \delta(A+T)   \]
+    É fácil notar que estamos subtraindo o custo de todas as instalações de $S$ e somando $2c_{\sigma^*(j)j}$ para todo cliente $j\in D$. Notemos também que estamos somando o custo de abertura de todas as instalações de $S^*$, uma vez que toda instalação de $S^*$ pertence a exatamente um conjunto $R_i$. Portanto,
+    \begin{subequations}
+        \begin{align*}
+            m\delta(A+T) &\geq - (\sum_{i^* \in S^*}f_{i^*} + 2 \sum_{j \in D} c_{\sigma^*(j)j} - \sum_{i \in S} f_i)\\
+            & = - ( A^* + 2 T^* - A ) = A - A^* - 2T^* .
+        \end{align*}
+    \end{subequations}
+\end{proof}
+Agora que temos essas duas desigualdades, conseguimos mostrar o seguinte teorema.
+
+\begin{theorem}
+    O algoritmo de busca local é uma $3(1+\epsilon)$-aproximação para o problema de localização de instalações.
+\end{theorem}
+\begin{proof}
+    Primeiro, vamos mostrar que o algoritmo roda em tempo polinomial. Claramente, todas as operações podem ser feitas em tempo polinomial, precisamos apenas mostrar que o algoritmo sempre executa um número polinomial de operações.
+    Seja $M$ o valor da solução inicial. Note que se existir um inteiro $k$ tal que $(1-\delta)^kM < 1$, então o algoritmo não fará mais que $k$ operações, uma vez que os custos são inteiros$\red{*}$. Por uma desigualdade conhecida, sabemos que $(1 - \delta)^{\frac{1}{\delta}} \leq \frac{1}{e}$. Quando elevamos tudo por $\ln M$ temos $(1- \delta)^{\frac{1}{\delta}\ln M} \leq \frac{1}{M}$ e isso nos traz $ (1- \delta)^{\frac{1}{\delta}\ln M}M \leq 1$, como $(1-\delta)$ é estritamente menor que 1, então $\frac{1}{\delta}\ln M + 1$ iterações são suficientes para terminar o programa. Perceba que $\ln M$ é polinomial no tamanho da instância, uma vez que $\ln M$ está apenas a uma constante de $\log M$ e $M$ é no máximo a soma de todos os custos. Como precisamos de $\log$ soma dos custos bits para guardar a instância, então $\log M$ é polinomial no tamanho da instância.
+
+    Agora, vamos mostrar a razão de aproximação. Somando as desigualdades encontradas nos Lemas~\ref{lema:3.7} e \ref{lema:3.9}, temos que 
+        \[A + T - 2A^* - 3T^* \leq 2m\delta(A+T)\] 
+        e, assim, podemos concluir que
+        \[A+T \leq \frac{2A^* + 3T^*}{1-2m\delta} \leq \frac{3}{1-2m\delta} \ \opt(I).\]
+    Para chegar onde queremos precisamos garantir que \[\frac{1}{1-2m\delta}\leq (1+\epsilon)\]
+    o que é equivalente a 
+    %\[1 \leq (1+\epsilon)(1-2m\delta)\]
+    %\[1 - 2m\delta \geq \frac{1}{1+\epsilon}\]
+    \[\delta \leq \frac{1}{(2m)} \frac{\epsilon}{(\epsilon+1)}\]
+    caso $ 1 - 2m\delta >0$.
+    Assim, podemos escolher $\delta = \frac{\epsilon}{4m}$ e, portanto, teremos um algoritmo com razão de aproximação $3(1+\epsilon)$ que roda com no máximo $\frac{4m}{\epsilon}\ln M$ operações.
+\end{proof}
+Durante a prova da razão do nosso algoritmo utilizamos que $(2A^* + 3T^*) \leq 3\opt(I)$, vamos utilizar essa folga para melhorar o algoritmo. 
+A partir da instância recebida, vamos criar uma nova instância dividindo o custo de abertura das facilidades por uma constante $\mu \leq 1$. Ao final, vamos encontrar um valor para $\mu$ que irá diminuir a razão de aproximação do algoritmo o máximo possível. \\
+Com essa nova instância do algoritmo, vamos encontrar uma solução viável com custo de abertura de instalações $\overline{A}$ e custo de transporte $\overline{T}$. Note que existe uma solução para essa nova instância com custos $\frac{A^*}{\mu}$ e $T^*$. Note também que em todos os nossos lemas não utilizamos  que a solução comparada era ótima, então os lemas valem também quando nossa solução é comparada com a solução anterior. Assim, vale que
+\[ \overline{T} - \frac{A^*}{\mu} - T^* \leq m\delta(\overline{A} + \overline{T})\]
+e
+\[ \overline{A} - \frac{A^*}{\mu} - 2T^* \leq m\delta(\overline{A} + \overline{T}).\]
+Se multiplicarmos os custos de abertura das instalações escolhidas por $\mu$ temos o custo de uma solução viável para a instância original, seja $A = \mu\overline{A}$ e $T$ os custos dessa solução. Vale
+\[ T - \frac{A^*}{\mu} - T^* \leq m\delta(\frac{A}{\mu}+ T)\]
+e
+\[ \frac{A}{\mu} - \frac{A^*}{\mu} - 2T^* \leq m\delta(\frac{A}{\mu} + T),\]
+como $\mu \leq 1$ então $m\delta(\frac{A}{\mu}+ T) \leq m\delta\frac{1}{\mu}( A + T)$ e valendo 
+\[T - \frac{A^*}{\mu} - T^* \leq m\delta\frac{1}{\mu}( A + T) \] 
+e 
+\[ \frac{A}{\mu} - \frac{A^*}{\mu} - 2T^* \leq m\delta\frac{1}{\mu}( A + T) .\]
+Somando a primeira desigualdade com a segunda multiplicada por $\mu$ temos
+\[A + T - A^* (1 + \frac{1}{\mu}) - T^*(1 + 2\mu) \leq (1 + \frac{1}{\mu})m\delta(A+T)\]
+o que é equivalente a 
+\[(A+T)(1 - (1+\frac{1}{\mu})m\delta)\leq A^* (1 + \frac{1}{\mu}) + T^*(1 + 2\mu).\]
+Note que $(1+\frac{1}{\mu})$ decresce e $1 + 2\mu$ cresce quando $\mu$ cresce. Então, o menor valor do máximo deles dois será quando eles forem iguais. Igualando eles, encontraremos $\mu = \frac{1}{\sqrt{2}}$ e ambos serão iguais a $1 + \sqrt{2}$. Assim temos
+\[(A+T)(1 - (1+\frac{1}{\mu})m\delta)\leq A^* (1 + \frac{1}{\mu}) + T^*(1 + 2\mu) \leq (1+\sqrt{2})\opt(I)\]
+e, assim, 
+\[(A+T)\leq \frac{(1+\sqrt{2})}{(1 - (1+\sqrt{2 })m\delta)}\opt(I).\]
+Analogamente ao que foi feito na análise da razão de aproximação $3(1 + \epsilon)$, escolhendo $\delta = \frac{\epsilon}{2m(1+\sqrt{2})}$ encontramos 
+\[(A+T) \leq (1 + \sqrt{2} + \epsilon )\opt(I).\]
+Assim, se fizermos a reescala dos custos de abertura das facilidades antes de rodar o algoritmo de busca local temos um novo algoritmo que é uma $(1 + \sqrt{2} + \epsilon )$-aproximação para o nosso problema.
+
+A análise feita aqui é de autoria de Gupta e Tangwongsan~\cite{DBLP:journals/corr/abs-0809-2554}.

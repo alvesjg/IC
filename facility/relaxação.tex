@@ -1,0 +1,45 @@
+Nessa seção vamos mostrar dois algoritmos para o problema de localização de instalações: o arredondamento em programa linear e um algoritmo que utiliza o método primal-dual. \\
+Para isso, vamos modelar o nosso problema como um programa linear inteiro. Vamos relaxá-lo e mostrar o seu dual. \\
+Nosso programa inteiro terá dois tipos de variáveis: uma variável $y_i$ para cada $i \in F$ que terá valor 1 se a instalação $i$ foi aberta e 0 caso contrário, e uma variável $x_{ij}$ para cada $i \in F$ e $j \in D$ que terá valor 1 se o cliente $j$ estiver associado a instalação $i$ e 0 caso contrário. Então o programa inteiro para a instância $I(F,D,c,f)$ é:
+\begin{align}
+ \text{Minimizar} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \nonumber \\
+ \text{sujeito a} \quad & \sum_{i\in F} x_{ij}\geq1, \quad \forall j \in D \label{eq:inst}\\
+ &x_{ij} \leq y_i,\quad \quad \; \; \forall i\in F,j\in D \label{eq:fac} \\
+ &x_{ij} \in \{0,1\} ,\quad \forall i\in F,j\in D \label{fl:x}\\
+ &y_i \in \{0,1\}, \quad \; \,\forall i\in F \label{fl:y}.
+\end{align}
+A restrição~\eqref{eq:inst} garante que todo cliente esteja associado a alguma instalação, a restrição~\eqref{eq:fac} garante que todo cliente esteja associado apenas a instalações abertas.\\ 
+Para a relaxação, apenas impomos que $x_{ij} \geq 0$ e $y_i \geq 0$ no lugar de~\eqref{fl:x} e~\eqref{fl:y}, respectivamente. Assim, temos os seguintes programas primal e dual correspondentes a nossa relaxação:
+    \begin{align}
+        \text{Minimizar} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \tag{P1} \label{P1}\\
+        \text{sujeito a} \quad & \sum_{i\in F} x_{ij}\geq1,  \forall j \in D \tag{P2} \label{P2}\\
+        &y_i - x_{ij} \geq 0, \, \; \; \forall i\in F,j\in D \tag{P3} \label{P3}\\
+        &x_{ij} \geq 0,\quad \forall i\in F,j\in D\tag{P4}\label{P4}\\
+        &y_i \geq 0, \quad \; \,\forall i\in F \tag{P5} \label{P5}
+       \end{align}
+    \begin{align}
+        \text{Maximizar} \quad & \sum_{j \in D} v_{j} \tag{D1} \label{D1}\\
+        \text{sujeito a} \quad & \sum_{j\in D} w_{ij}\leq f_i, \quad \forall i \in F \tag{D2} \label{D2}\\
+        &v_{j} - w_{ij}\leq c_{ij},  \; \; \forall i\in F,j\in D \tag{D3} \label{D3}\\
+        &w_{ij} \geq 0 ,\quad \forall i\in F,j\in D\tag{D4} \label{D4}\\
+        &v_j \geq 0, \quad \; \,\forall j\in D \tag{D5} \label{D5}.
+       \end{align}
+Sabemos que cada variável de um destes programas está associada a uma restrição do outro programa. 
+Especificamente, a variável $x_{ij}$ está associada à desigualdade~\eqref{D3}, a variável $y_i$ está associado à desigualdade~\eqref{D2}, a variável $w_{ij}$ está associada à desigualdade~\eqref{P3} e a variável $v_j$ está associado a desigualdade~\eqref{P2}.
+
+Como o primal é uma relaxação do nosso problema e trata-se de um problema de minimização, vale que o valor de uma solução ótima dele é no máximo valor o ótimo do nosso problema.
+
+Vamos aqui interpretar o programa dual. Chamamos as variáveis $v$ de orçamento e as variáveis $w$ de contribuição. Dizemos que um cliente $j$ \emph{contribui} para uma instalação $i$ se $w_{ij} > 0$. Uma instalação recebe contribuições dos clientes para pagar pela sua abertura. Uma vez que as contribuições são suficientes para a sua abertura, a instalação não precisa receber mais contribuições. Isso está explicito na restrição~\eqref{D2}.
+
+O orçamento de um cliente é no máximo o custo de sua associação a uma instalação e sua contribuição para a abertura dela. Isso está explicito na restrição~\eqref{D3}.
+
+Para entender como as variáveis primais e duais se relacionam, vamos analisar as condições de folgas complementares. Vamos supor a existência de uma solução ótima inteira $(x^*,y^*)$ para o primal e seja $(v^*,w^*)$ uma solução ótima para o dual. Em uma solução inteira do primal, as variáveis $x$ e $y$ satisfazem as restrições do programa inteiro. Como ambas são soluções ótimas, valem as folgas complementares. A partir dos pares variável-restrição correspondentes já vistos, as condições de folgas complementares estabelecem que
+\begin{enumerate}[(i)]
+    \item para todo $i \in F$ e $j \in D$, se $x^*_{ij} > 0$ então $v^*_j - w^*_{ij} = c_{ij}$\label{fg:i};
+    \item para todo $ i \in F$, se $y^*_i > 0$ então $\sum_{j \in D} w^*_{ij} = f_i$\label{fg:ii};
+    \item para todo $i \in F$ e$ j \in D$, se $w^*_{ij}>0$ então $ y_i = x_{ij}$\label{fg:iii};
+    \item para todo $j \in D$ se $v^*_j > 0$  então $\sum_{i \in F}x^*_{ij} = 1$\label{fg:iv}.
+\end{enumerate}
+Pela condição~\eqref{fg:i}, se um cliente $j$ está associado a uma instalação $i$ então o orçamento do cliente $j$ é exatamente o custo dele se associar a $i$ mais a sua contribuição para a abertura de~$i$. Então podemos interpretar $v_j$ como o custo do cliente pago para a instalação a qual ele estará associado. 
+Pela condição~\eqref{fg:ii}, cada instalação aberta precisa ter contribuições suficientes para pagar pela sua abertura. Pela condição ~\eqref{fg:iii}, temos que um cliente que contribui para uma instalação aberta está associado a ela. Juntando as condições~\eqref{fg:ii} e \eqref{fg:iii}, temos que as contribuições recebidas pelas instalações abertas são vindas apenas de clientes associados a elas e são suficientes para pagar pela sua abertura. 
+Pela condição~\eqref{fg:iv}, um cliente que tem orçamento não nulo está associado a exatamente uma instalação.

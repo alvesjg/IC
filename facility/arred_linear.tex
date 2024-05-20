@@ -1,0 +1,65 @@
+Assim como no método anterior, a função custo também satisfaz a desigualdade triangular. \\
+Vamos então definir algumas coisas que serão necessárias no nosso algoritmo.
+\begin{definition}
+    Seja $(x^*,y^*)$ uma solução do programa linear. Dizemos que uma instalação $i$ está na \emph{vizinhança} de um cliente $j$ se $x^*_{ij} > 0$. Seja $N(j) = \{ i \in F : x^*_{ij} > 0\}$.
+\end{definition}
+Dada essa definição, vamos enunciar um lema que irá nos ajudar a provar uma cota superior para o custo de associação da solução aproximada escolhida pelo algoritmo.
+\begin{lemma}\label{lemma:3.5}
+    Sejam $(x^*,y^*)$ e $(v^*,w^*)$ soluções do programa linear e do seu dual, respectivamente, e $j$ um cliente qualquer. Para todo $i \in N(j)$, $c_{ij} \leq v^*_j$.
+\end{lemma}
+\begin{proof}
+    Como $i \in N(j)$, então $x^*_{ij}>0$. Assim, pelas folgas complementares, a desigualdade do dual correspondente a~\eqref{P4} vale por igualdade, então $v^*_j - w^*_{ij} = c_{ij}$. Como $w^*_{ij} \geq 0$, $c_{ij} \leq v^*_j$. 
+\end{proof}
+Com esse lema, sabemos que se em um conjunto $S \subseteq F$ de instalações abertas, para todo cliente $j \in D$, existe uma instalação aberta $i$ em $N(j)$, então $c_{ij}\leq v_j^*$ e o custo total de associação seria no máximo $\sum_{j\in D}v_j^* \leq \opt(I)$, uma vez que vale a dualidade forte e que o valor da solução do primal é no máximo $\opt(I)$. Entretanto, não é garantido uma cota superior para o custo de abertura de $S$. Vamos descobrir como encontrar um $S$ com um bom custo de abertura e um bom custo de associação. Seja $j_k$ um cliente qualquer. Se abrirmos a instalação $i_k$ mais barata de $N(j_k)$ conseguimos limitar o custo de sua abertura.
+\[\tag{*} \label{relx_fl:*}
+    f_{i_k} = f_{i_k} \sum_{i \in N(j_k)}x^*_{ij_k} = \sum_{i \in N(j_k)}f_{i_k}x^*_{ij_k} \leq \sum_{i \in N(j_k)}f_{i}y^*_{i},
+\]
+onde a primeira igualdade vale por \eqref{P3} e pela definição de $N(j_k)$ e a desigualdade vale por termos escolhido $i_k$ como a instalação mais barata de $N(j_k)$.
+
+Essa informação será importante para a prova da razão de aproximação do nosso algoritmo. Agora, faremos uma última definição necessária para o nosso algoritmo.
+
+\begin{definition}
+    Seja $j\in D$ um cliente. Seja $N^2(j)$ o conjunto dos clientes $i \in D$ tais que $N(i) \cap N(j) \neq \emptyset$.
+\end{definition}
+Agora, vamos definir o algoritmo. Nele, $S$ será o conjunto das instalações a serem abertas e $\sigma : D \rightarrow F $ a função que associa cada cliente a uma instalação aberta. Ambos serão montados durante o algoritmo.
+\begin{algorithm}
+    \caption{CS($F,D,c,f$)}
+    \label{fl:plrounding}
+    \begin{algorithmic}[1]
+        \State Sejam $(x^*,y^*)$ e $(v^*,w^*)$ soluções ótimas para o programa linear e o seu dual
+        \State $S \gets \emptyset$
+        \State $C \gets D$ 
+        \State $k \gets 0$
+        \While{$C \neq \emptyset$}
+        \State Escolha $j_k \in C$ que minimize $v_j^*$
+        \State Escolha $i_k \in N(j_k)$ que minimize $f_{i}$
+        \State $S \gets S \cup \{i_k\}$
+        \For{\text{todo $j \in N^2(j_k) \cap C$}}
+        \State $\sigma(j) \leftarrow i_k$
+        \EndFor
+        \State $C \gets C \setminus N^2(j_k)$
+        \State $k \gets k+1$
+        \EndWhile
+        \State \Return $S$ e $\sigma$
+    \end{algorithmic}
+\end{algorithm}
+
+O algoritmo aqui apresentado é de autoria de Chudak e Shmoys~\cite{Chudak2003}.
+\begin{theorem}
+    O algoritmo {\sc CS} é uma $4$-aproximação para o problema da localização de instalações.
+\end{theorem}
+\begin{proof}
+    Primeiro, vamos mostrar que o algoritmo é polinomial. Sabemos que é possível encontrar uma solução para o problema linear e o seu dual em tempo polinomial utilizando o método dos elipsoides~\cite{Kha79}. Sabemos que o laço da linha 6 irá executar no máximo $|D|$ iterações, uma vez que sempre retiramos pelo menos um elemento de $C$. Além disso, as linhas $6-11$ são claramente polinomiais.
+    Agora, vamos mostrar que o algoritmo é uma $4$-aproximação.\\
+    Perceba que, para $k_1$ e $k_2$ com $k_1 < k_2$, $N(j_{k_1})\cap N(j_{k_2}) = \emptyset$, caso contrário $j_{k_2} \in N^2(j_{k_1})$ e seria retirado de $C$ na iteração $k_1$.\\
+    Seja $F' \subseteq F$, tal que $F' = \bigcup_k N(j_k)$.
+    Por \eqref{relx_fl:*}, vale que $f_{i_k} \leq \sum_{i \in N(j_k)}f_{i_k}y^*_{i}$. Então se somarmos para todo $k$, temos
+    \[ \sum_kf_{i_k} \leq \sum_k \sum_{i \in N(j_k)}f_{i}y^*_{i} = \sum_{i \in F'}f_{i}y^*_{i} \leq \sum_{i \in F}f_{i}y^*_{i} \leq \opt(I)\]
+    Agora, vamos fixar uma iteração $k$ e sejam $i = i_k$ e $j = j_k$. Denotemos por $C_k$ o conjunto $C$ no início da iteração $k$. Pelo Lema~\ref{lemma:3.5}, sabemos que $c_{ij} \leq v^*_j$. Seja $\ell \in N^2(j) \cap C_k \setminus \{j\}$ e $h \in N(\ell) \cap N(j)$. Pela desigualdade triangular e como $j$ minimiza $v^*_j$ em $C_k$, temos
+    \[ c_{i\ell} \leq c_{ij} + c_{hj} + c_{h\ell} \leq v_j^* + v_j^* + v_{\ell}^* \leq 3 v_{\ell}^*
+        \]
+    Isso vale para todo $\ell \in D$, então
+    \[\sum_{j\in D} c_{\sigma(j)j} \leq 3 \sum_{j \in D} v^*_j \leq 3\opt(I),\]
+    onde a segunda desigualdade vale pela dualidade forte e pela relaxação. \\
+    Assim, temos que o custo de abertura das instalações é no máximo $\opt(I)$ e o custo de associação é no máximo $3\opt(I)$. Portanto, o custo total da solução $S$ é no máximo $4~\opt(I)$.
+\end{proof}
