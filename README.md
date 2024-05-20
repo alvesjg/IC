@@ -16,7 +16,7 @@ Para compilar o projeto, basta utilizar o seguinte comando no diretório do prog
 make
 ```
 
-Caso deseje limpar os arquivos resultados da compilação, utilize o comando:
+Caso queira limpar os arquivos resultados da compilação, incluindo o pdf, utilize o comando:
 
 ```
 make clean
