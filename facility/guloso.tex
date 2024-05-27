@@ -1,10 +1,10 @@
-O algoritmo guloso para o problema da localização de instalações consiste em, a cada iteração, escolher uma instalação fechada e um conjunto de clientes ainda não associados que minimize o custo por cliente associado. 
+O algoritmo guloso para o problema da localização de instalações consiste em, a cada iteração, abrir uma instalação fechada e associar-lá a um conjunto de clientes ainda não associados, garantindo um baixo aumento no custo total. 
 Isso se repete até que todos os clientes estejam associados a uma instalação aberta. Então, seja $X$ o conjunto de facilidades abertas até o momento e $S$ o conjunto de clientes ainda não associados a uma instalação em $X$. Queremos escolher $i \in F \setminus X$ e $Y \subseteq S$ que minimize
 \[ \frac{f_i + \sum_{j \in Y} c_{ij}}{|Y|}.
     \] 
 
-Note que, desse modo, um cliente não pode ser associado a instalações abertas anteriormente e também não pode mudar a instalação a qual está associado. 
-Para permitir que o primeiro aconteça, podemos atualizar o custo de abertura de uma instalação para 0 quando ela for aberta ao invés de a considerarmos fechada. Além disso, podemos permitir que clientes troquem de instalação quando essa troca melhore o seu custo de associação. Desse modo, conseguimos melhorar ainda mais o custo da solução desse algoritmo.
+Note que, desse modo, um cliente não pode ser associado a instalações abertas anteriormente e, depois de associado, não pode mudar a instalação a qual está associado. 
+Para permitir que o primeiro aconteça, podemos atualizar o custo de abertura de uma instalação para 0 quando ela for aberta ao invés de a considerarmos fechada. Além disso, podemos permitir que clientes troquem de instalação caso essa troca melhore o seu custo de associação. Desse modo, conseguimos melhorar ainda mais o custo da solução desse algoritmo. Defina $c(j,X) \coloneq \min_{i \in X} c_{ij}$ e $(a)_+ \coloneq \max\{0,a\}$. Assim, teremos o seguinte algoritmo guloso para o problema da localização de instalações.
 \begin{algorithm}
     \caption{Guloso\_JMMSV($F,D,c,f$)}
     \begin{algorithmic}[1]
@@ -19,5 +19,35 @@ Para permitir que o primeiro aconteça, podemos atualizar o custo de abertura de
         \State $k \gets k+1$
         \EndWhile
         \State \Return $S_k$
+    \end{algorithmic}
+\end{algorithm}
+
+O algoritmo é de autoria de Jain, Mahdian, Markakis, Saberi e Vazirani e leva suas inicias em seu nome~\cite{jain2002greedy}.
+
+Para a análise do algoritmo guloso, iremos apresentar um algoritmo que utiliza o método de \emph{dual fitting} mostrar que eles são equivalentes e mostrar uma razão de aproximação para ele.
+
+Relembre o programa inteiro e as relaxações associadas ao nosso problema~\ref{D}. No algoritmo de \emph{dual fitting} vamos devolver um conjunto de instalações $X$ e produzir uma solução inviável $\alpha$ para o dual. Vamos mostrar que a solução em que $X$ está aberto e todos os clientes estão ligados a instalação mais próxima em $X$ tem custo no máximo $\sum_{j \in D} \alpha_j$ e que se dividirmos $\alpha$ por 2, conseguimos montar uma solução viável $(\alpha/2,(\alpha/2 - c_{ij})_+)$ para o dual. Assim, temos que o algoritmo será uma 2-aproximação. Denote $N(i) \coloneqq \{j \in D: \alpha_j \geq c_{ij}\}$.
+
+\begin{algorithm}
+    \caption{DualFitting\_JMMSV$(F,D,c,f)$}
+    \begin{algorithmic}[1]
+    \State $\alpha \gets 0$
+    \State $C \gets D$
+    \State $X \gets \emptyset$
+    \State $f' \gets 2f$
+    \While{$C \neq \emptyset$}
+    \State $\theta_1 \gets \min\{c_{ij} - \alpha_j:j \in S,i\in X\}$
+    \State $\theta_2 \gets \min\{(f'_i - \sum_{j \in S}(\alpha_j - c_{ij})_+ - \sum_{j \not \in S}(c(j,X) - c_{ij})_+)/|N(i)|: i \in F \setminus X\}$
+    \State $\theta \gets \min\{\theta_1,\theta_2\}$
+    \State $\alpha_j \gets \alpha_j + \theta,$ para todo $j \in S$
+    \If{$\alpha_j = c_{ij}$ para algum $j \in S$ e $i \in X$}
+    \State $S \gets S \setminus \{j\}$
+    \EndIf
+    \If{$\sum_{j \in S} (\alpha_j - c{ij})_+ + \sum_{j \not \in S}(c(j,X) - c_{ij}) = f'_i$ para algum $i \in F \setminus X$}
+    \State $X \gets X \cup \{i\}$
+    \State $C \gets C\setminus N(i)$
+    \EndIf
+    \EndWhile
+    \State \Return $X$
     \end{algorithmic}
 \end{algorithm}
