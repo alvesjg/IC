@@ -1,0 +1,23 @@
+O algoritmo guloso para o problema da localização de instalações consiste em, a cada iteração, escolher uma instalação fechada e um conjunto de clientes ainda não associados que minimize o custo por cliente associado. 
+Isso se repete até que todos os clientes estejam associados a uma instalação aberta. Então, seja $X$ o conjunto de facilidades abertas até o momento e $S$ o conjunto de clientes ainda não associados a uma instalação em $X$. Queremos escolher $i \in F \setminus X$ e $Y \subseteq S$ que minimize
+\[ \frac{f_i + \sum_{j \in Y} c_{ij}}{|Y|}.
+    \] 
+
+Note que, desse modo, um cliente não pode ser associado a instalações abertas anteriormente e também não pode mudar a instalação a qual está associado. 
+Para permitir que o primeiro aconteça, podemos atualizar o custo de abertura de uma instalação para 0 quando ela for aberta ao invés de a considerarmos fechada. Além disso, podemos permitir que clientes troquem de instalação quando essa troca melhore o seu custo de associação. Desse modo, conseguimos melhorar ainda mais o custo da solução desse algoritmo.
+\begin{algorithm}
+    \caption{Guloso\_JMMSV($F,D,c,f$)}
+    \begin{algorithmic}[1]
+        \State $k \gets 0$
+        \State $S_k \gets D$
+        \State $X_k \gets \emptyset$
+        \While{$S_k \neq \emptyset$}
+        \State Escolha $i \in F$ e $Y \subseteq D\setminus S$ que minimize $(f_i - \sum_{j \not \in S}(c(j,X) - c_{ij})_+ + \sum_{j \in Y}c_{ij})/|Y|$
+        \State $f_i \gets 0$
+        \State $S_{k+1} \gets S_k \setminus Y$
+        \State $X_{k+1} \gets X_k \cup \{i\}$
+        \State $k \gets k+1$
+        \EndWhile
+        \State \Return $S_k$
+    \end{algorithmic}
+\end{algorithm}
