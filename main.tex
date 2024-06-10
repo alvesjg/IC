@@ -15,7 +15,7 @@
 \vspace{5mm} 
 
 \begin{abstract}
-Este é o texto escrito durante a iniciação científica do aluno de graduação João Guilherme Alves Santos sob supervisão da Profa.\ Dra.\ Cristina Gomes Fernandes.
+Este é o texto escrito durante a iniciação científica do aluno de graduação João Guilherme Alves Santos, financiado pelo projeto FAPESP 2023/16197-0, sob supervisão da Profa.\ Dra.\ Cristina Gomes Fernandes.
 \end{abstract}
 
 \end{center}
@@ -34,19 +34,15 @@ Nesse contexto, algoritmos de aproximação surgiram. A ideia é abrir mão de e
 Clustering refere-se a uma classe de problemas de otimização cujo objetivo é agrupar objetos de maneira que objetos no mesmo cluster apresentem mais semelhanças quando comparados a objetos em clusters diferentes. Tais semelhanças serão definidas pelo problema em questão. Neste projeto, iremos estudar, sob o ponto de vista de algoritmos de aproximação, três problemas de clustering $\NP$-difíceis: localização de instalações, $k$-mediana e $k$-centros. 
 
 Localização de instalações é um problema que visa determinar a melhor localização para instalações, como fábricas ou depósitos, com base no custo de abertura das instalações e custos de transporte. Além disso, pode ser modelado para outras aplicações como problemas de posicionamento de caches em um computador ou problemas de projeto de redes.
-
 Existem várias versões do problema de localização de instalações, a mais simples delas é a versão sem capacidades em que as instalações não têm limitações para suprir os clientes.
 
 No problema de localização de instalações sem capacidades, temos um grafo $(F,D)$-bipartido completo em que $D$ é o conjunto de clientes a serem atendidos e $F$ o conjunto de instalações que podem ser abertas. Para cada cliente $j \in D$ e cada instalação $i \in F$, há um custo $c_{ij}$ para a aresta $ij$ em associar o cliente $j$ à instalação $i$. Além disso, existe um custo de abertura $f_i$ para cada instalação $i \in F$. O objetivo do problema é escolher um conjunto $F' \subseteq F$ e uma função que associe cada cliente a uma instalação aberta tal que o custo total de abertura das instalações em~$F'$ somado ao custo de associação de cada cliente $j \in D$ à instalação em que ele está associado seja minimizado. Em outras palavras, queremos encontrar $F' \subseteq F$ e uma função $\sigma$ que minimize $\sum_{i\in F'} f_i + \sum_{j \in D} c_{\sigma(j)j}$. 
 
-O problema $k$-mediana é muito parecido com o problema de localização de instalações. A diferença aqui é que não temos custo para a abertura de instalações, mas podemos abrir no máximo $k$ delas.
- 
+O problema $k$-mediana é muito parecido com o problema de localização de instalações. A diferença aqui é que não temos custo para a abertura de instalações, mas podemos abrir no máximo $k$ delas. 
 Assim como no localização de instalações, no problema $k$-mediana temos um grafo $(F,D)$-bipartido completo em que $D$ é o conjunto de clientes a serem atendidos e $F$ o conjunto de instalações que podem ser abertas. Para cada cliente $j \in D$ e cada instalação $i \in F$, há um custo $c_{ij}$ para a aresta $ij$ em associar o cliente $j$ à instalação $i$. Temos também um inteiro $k$ que representa a quantidade de instalações que podem ser abertas. Então, queremos encontrar um conjunto $F' \subseteq F$ de tamanho $k$ e uma função que associe cada cliente a uma instalação aberta tal que o custo total de associação seja minimizado.
 
 No problema dos $k$-centros não existe essa diferença entre instalações que podem ser abertas e clientes, teremos cidades e escolheremos $k$ delas para construir instalações.
-
 Então, temos um grafo $G(V,E)$ completo em que $V$ são cidades e temos um custo $c_{e}$ para associar as cidades que são extremos de $e$. Temos também um inteiro $k$ que representa a quantidade de cidades em que uma instalação será aberta. Cada cidade será associada a uma cidade com uma instalação aberta com menor custo de associação entre elas. O objetivo do nosso problema é minimizar o maior custo de associação entre uma cidade qualquer e a cidade a qual ela está associada.
-
 
 Diversos métodos podem ser utilizados para aproximar o problema de localização de instalações. Charikar e Guha desenvolveram um algoritmo com razão de aproximação $2.414$ utilizando o método de busca local~\cite{Charikar&Guha'05}.  Esse problema também pode ser modelado como um problema de programação inteira e, por isso, técnicas envolvendo programação linear podem ser aplicadas a ele.  Por exemplo, há algoritmos que fazem o arredondamento de soluções da relaxação linear do programa inteiro para obter uma solução aproximada do problema.  Alguns destes algoritmos atingem boas razões de aproximação, por exemplo, chegando a 1.677~\cite{Byrka&Aardal'10}. Entretanto, a melhor aproximação encontrada utiliza de vários métodos, incluindo o conhecido método primal-dual, e garante uma razão de aproximação 1.488~\cite{LI'13}. Essa não é muito distante do melhor que se poderia encontrar, uma vez que Guha e Khuller mostraram que não existe algoritmo para esse problema com razão de aproximação melhor que 1.463~\cite{GUHA1999228}, a menos que $P = \NP$.
 
@@ -56,18 +52,18 @@ Dentre os três problemas apresentados, o $k$-mediana é o que tem a maior folga
 
 Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial com razão de aproximação menor que 2 para o problema dos $k$-centros, assumindo que $P\neq\NP$. Neste caso, temos algoritmos que apresentam o melhor desempenho possível: utilizando o método do gargalo, Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HochShmoys'85} desenvolveram um algoritmo polinomial com razão de aproximação igual a 2.
 
-\newpage
+% \newpage
 \section{$k$-Centros}
     \input{k-centros/intro.tex}
-\newpage
+% \newpage
 
 \subsection{Algoritmo guloso}
     \input{k-centros/guloso.tex}
-\newpage
+% \newpage
 
 \subsection{Método do gargalo}
     \input{k-centros/gargalo.tex}
-\newpage
+% \newpage
 
 \section{Localização de instalações}
     \input{facility/intro.tex}
@@ -83,13 +79,13 @@ Hsu e Nemhauser~\cite{HSU1979209} mostraram que não existe algoritmo polinomial
 
 \subsubsection{Arredondamento probabilístico}
     \input{facility/arred_prob.tex}
-\newpage
+% \newpage
 
-\subsection{Busca local\ref{revisao}}
+\subsection{Busca local}
     \input{facility/buscalocal.tex}
-\newpage
+% \newpage
 
-\subsection{Algoritmo guloso\ref{revisao}}
+\subsection{Algoritmo guloso}
     \input{facility/guloso.tex}
 \newpage
 \bibliographystyle{plain}

@@ -58,7 +58,7 @@ Agora, conseguimos provar a segunda desigualdade que será necessária para a ra
 \begin{lemma}
     \label{lema:3.9}
     Seja $(S,\sigma)$ e $(S^*,\sigma^*)$ soluções como já definidas. Então,
-    \[A - A^* - 2T^* \leq m \delta(A+T)\]
+    \[A - A^* - 2T^* \leq m \delta(A+T).\]
 \end{lemma}
 \begin{proof}
     Antes de começar a demonstração em si, vamos definir o que é uma instalação segura. Uma instalação $i \in S$ é \emph{segura} se não existe $i^* \in S^*$ tal que $\phi(i^*)=i$.
@@ -86,9 +86,9 @@ Agora, conseguimos provar a segunda desigualdade que será necessária para a ra
         f_i + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j) = i^*}(c_{i^*j} - c_{ij}) \geq -\delta(A+T).        
     \end{equation}    
 
-    Agora vamos ver o que acontece se abrimos $i'$, fecharmos $i$ e associarmos os clientes $j$ associados a $i$ em $\sigma$ para $\phi(\sigma^*(j))$ se $\sigma^*(j) \not \in R$ e a $i'$ caso contrário.
+    Agora vamos ver o que acontece se abrimos $i'$, fecharmos $i$ e associarmos os clientes $j$ associados a $i$ em $\sigma$ para $\phi(\sigma^*(j))$ se $\sigma^*(j) \not \in R$ e a $i'$ caso contrário
     \begin{align*}
-        - f_i + f_{i'} + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j)\not \in R}(c_{\phi(\sigma^*(j)j)} - c_{ij}) + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) &\geq -\delta(A+T)
+        - f_i + f_{i'} + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j)\not \in R}(c_{\phi(\sigma^*(j)j)} - c_{ij}) + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) &\geq -\delta(A+T).
     \end{align*}
     No somatório dos clientes $j$ em que $\sigma^*(j) \not \in R$ podemos utilizar o Lema~\ref{lemma:3.8},
     \begin{align*}
@@ -98,8 +98,8 @@ Agora, conseguimos provar a segunda desigualdade que será necessária para a ra
     \begin{align*}
         -f_i + \sum_{i^* \in R}f_{i^*} + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j)\not \in R} 2c_{\sigma^*(j)j} + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) \\+ \sum_{j:\sigma(j)=i \text{ \& }\sigma^*(j) \in R \setminus\{i'\}}(c_{\sigma^*(j)j} - c_{ij}) \geq -|R|\delta(A+T).
     \end{align*}
-    Vamos reduzir essa expressão. Seja $j$ tal que $\sigma(j)=i$ e $\sigma^*(j) \in R$. \\
-    Se $\sigma^*(j) = i'$, então $j$ só aparece no terceiro somatório e certamente $c_{i'j} - c_{ij} \leq 2 c_{i'j}$. \\
+    Vamos reduzir essa expressão. Seja $j$ tal que $\sigma(j)=i$ e $\sigma^*(j) \in R$. 
+    Se $\sigma^*(j) = i'$, então $j$ só aparece no terceiro somatório e certamente $c_{i'j} - c_{ij} \leq 2 c_{i'j}$. 
     Se $\sigma^*(j)\neq i'$, então na soma temos $c_{i'j} + c_{\sigma^*(j)j} - 2 \,c_{ij}$. Assim, temos que
     \[
             c_{i'j} + c_{\sigma^*(j)j} - 2 \,c_{ij} \leq 
@@ -114,9 +114,9 @@ Agora, conseguimos provar a segunda desigualdade que será necessária para a ra
     % pela definição do $i'$ temos que $c_{i'i} \leq  c_{\sigma^*(j)i}$ e pela desigualdade triangular temos que $c_{\sigma^*(j)i} \leq c_{\sigma^*(j)j} + c_{ij}$, então
     % \[ c_{\sigma^*(j)j} + c_{i'i} -  c_{ij} \leq 2 c_{\sigma^*(j)j}\]
     Então, para qualquer $j$ temos que o custo referente a $j$ na soma é no máximo $2c_{\sigma^*(j)j}$. Assim,
-    \[\sum_{i^* \in R}f_{i^*} - f_i + \sum_{j: \sigma(j)= i } 2c_{\sigma^*(j)j} \geq - |R| \delta(A+T)\]
-    Vamos juntar essa última desigualdade para todas as instalações não seguras e~\ref{segura} para todas as instalações seguras. Vamos chamar de $P$ o conjunto das instalações seguras,
-    \[\sum_{i \in P}\Big( - f_i + \sum_{j:\sigma(j) = i} 2c_{\sigma^*(j)j}\Big) + \sum_{i \not \in P}\Big( \sum_{i^* \in R_i}f_{i^*} - f_i + \sum_{j: \sigma(j)= i } 2c_{\sigma^*(j)j}\Big ) \geq - |R| \delta(A+T)   \]
+    \[\sum_{i^* \in R}f_{i^*} - f_i + \sum_{j: \sigma(j)= i } 2c_{\sigma^*(j)j} \geq - |R| \delta(A+T).\]
+    Vamos juntar essa última desigualdade para todas as instalações não seguras e~\eqref{segura} para todas as instalações seguras. Chamando de $P$ o conjunto das instalações seguras, temos que
+    \[\sum_{i \in P}\Big( - f_i + \sum_{j:\sigma(j) = i} 2c_{\sigma^*(j)j}\Big) + \sum_{i \not \in P}\Big( \sum_{i^* \in R_i}f_{i^*} - f_i + \sum_{j: \sigma(j)= i } 2c_{\sigma^*(j)j}\Big ) \geq - |R| \delta(A+T). \]
     É fácil notar que estamos subtraindo o custo de todas as instalações de $S$ e somando $2c_{\sigma^*(j)j}$ para todo cliente $j\in D$. Notemos também que estamos somando o custo de abertura de todas as instalações de $S^*$, uma vez que toda instalação de $S^*$ pertence a exatamente um conjunto $R_i$. Portanto,
     \begin{subequations}
         \begin{align*}
@@ -146,13 +146,14 @@ Agora que temos essas duas desigualdades, conseguimos mostrar o seguinte teorema
     caso $ 1 - 2m\delta >0$.
     Assim, podemos escolher $\delta = \frac{\epsilon}{4m}$ e, portanto, teremos um algoritmo com razão de aproximação $3(1+\epsilon)$ que roda com no máximo $\frac{4m}{\epsilon}\ln M$ operações.
 \end{proof}
-Durante a prova da razão do nosso algoritmo utilizamos que $(2A^* + 3T^*) \leq 3\opt(I)$, vamos utilizar essa folga para melhorar o algoritmo. 
-A partir da instância recebida, vamos criar uma nova instância dividindo o custo de abertura das facilidades por uma constante $\mu \leq 1$. Ao final, vamos encontrar um valor para $\mu$ que irá diminuir a razão de aproximação do algoritmo o máximo possível. \\
-Com essa nova instância do algoritmo, vamos encontrar uma solução viável com custo de abertura de instalações $\overline{A}$ e custo de transporte $\overline{T}$. Note que existe uma solução para essa nova instância com custos $\frac{A^*}{\mu}$ e $T^*$. Note também que em todos os nossos lemas não utilizamos  que a solução comparada era ótima, então os lemas valem também quando nossa solução é comparada com a solução anterior. Assim, vale que
-\[ \overline{T} - \frac{A^*}{\mu} - T^* \leq m\delta(\overline{A} + \overline{T})\]
+Durante a prova da razão do algoritmo, utilizamos que $(2A^* + 3T^*) \leq 3\opt(I)$. Vamos utilizar essa folga para melhorar o algoritmo. 
+A partir da instância recebida, vamos criar uma nova instância dividindo o custo de abertura das facilidades por uma constante $\mu \leq 1$. Ao final, vamos encontrar um valor para $\mu$ que irá diminuir a razão de aproximação do algoritmo o máximo possível. 
+
+Com essa nova instância do algoritmo, vamos encontrar uma solução viável com custo de abertura de instalações $\bar{A}$ e custo de transporte $\overline{T}$. Note que existe uma solução para essa nova instância com custos $\frac{A^*}{\mu}$ e $T^*$. Note também que em todos os nossos lemas não utilizamos  que a solução comparada era ótima, então os lemas valem também quando nossa solução é comparada com a solução anterior. Assim, vale que
+\[ \overline{T} - \frac{A^*}{\mu} - T^* \leq m\delta(\bar{A} + \overline{T})\]
 e
-\[ \overline{A} - \frac{A^*}{\mu} - 2T^* \leq m\delta(\overline{A} + \overline{T}).\]
-Se multiplicarmos os custos de abertura das instalações escolhidas por $\mu$ temos o custo de uma solução viável para a instância original, seja $A = \mu\overline{A}$ e $T$ os custos dessa solução. Vale
+\[ \bar{A} - \frac{A^*}{\mu} - 2T^* \leq m\delta(\bar{A} + \overline{T}).\]
+Se multiplicarmos os custos de abertura das instalações escolhidas por $\mu$ temos o custo de uma solução viável para a instância original, seja $A = \mu\bar{A}$ e $T$ os custos dessa solução. Vale
 \[ T - \frac{A^*}{\mu} - T^* \leq m\delta(\frac{A}{\mu}+ T)\]
 e
 \[ \frac{A}{\mu} - \frac{A^*}{\mu} - 2T^* \leq m\delta(\frac{A}{\mu} + T),\]

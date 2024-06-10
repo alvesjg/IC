@@ -82,7 +82,6 @@ Seja $A \subseteq D$ um conjunto qualquer de clientes. Ordene $A = \set{1,\ldots
 \begin{proof}
 Sabemos que as ofertas recebidas por $i$ sempre serão no máximo $f_i'$. Assim, é suficiente mostrar que o lado esquerdo da desigualdade é no máximo a soma das ofertas recebidas por $i$ em algum momento. Seja $k$ a iteração em que $j$ se conecta a uma instalação pela primeira vez. Pelo Lema~\ref{upbound_bid}, vale que a oferta recebi por $i$ na iteração $k$ por cada cliente $\ell$ tal que $\alpha_\ell \leq \alpha_j$ é no máximo $\alpha_j - c_{ij} - 2c_{i\ell}$. Para um cliente $\ell$ tal que $\alpha_\ell \geq \alpha_j$, sabemos que no início da iteração $k$ ele ainda não está associado a uma instalação e, 
 portanto, oferta a $i$ exatamente $(\alpha_j - c_{i\ell})_+$  que é pelo menos $\alpha_j - c_{i\ell}$. Portanto, $\sum_{\ell=1}^{j-1}(\alpha_j - c_{ij} - 2c_{i\ell}) + \sum_{\ell= j}^{|A|}(\alpha_j - c_{i\ell}) \leq f'_i$.
-
 \end{proof}
 
 
@@ -161,7 +160,7 @@ pela condição da segunda condicional vale que $\sum_{j \in C_{k-1}} (\alpha_j 
 \begin{subequations}
 \begin{align*}
 \sum_{j \in D \setminus C_k} \alpha_j &= 2\sum_{h \in X_k} f_h + \sum_{j \in B} c(j,X_{k-1}) + \sum_{j \in A} c_{ij} + \sum_{j \in C_{k-1} \cap N(i)} c_{ij}\\
-&= \sum_{j \in D \setminus C_k} c(j,X_k)  + 2 \sum_{h \in X_k} f_h  
+&= \sum_{j \in D \setminus C_k} c(j,X_k)  + 2 \sum_{h \in X_k} f_h. 
 \end{align*}
 \end{subequations}
 
@@ -182,7 +181,6 @@ Seja $X$ o subconjunto de instalações devolvido pelo algoritmo.  O custo da so
 &= \sum_{j \in D} \alpha_j = 2\sum_{j \in D} \frac{\alpha_j}{2} \leq 2 \opt(I)  
 \end{align*}
 \end{subequations}
-
 em que a primeira igualdade vale pelo Lema~\ref{greedy:5} e a última desigualdade vale pois, $\sum_{j \in D} \alpha_j/2 $ é o valor objetivo da solução viável do dual construída como no Lema~\ref{greedy:4} e, portanto, vale a dualidade fraca.
 \end{proof}
 
@@ -209,12 +207,11 @@ Note que, por construção, todos os clientes de  $C_{k-1}^2 \cap N(i)$ tem o me
 \[
     |C_{k-1}^2 \cap N(i)| \alpha_j = \sum_{j \in C_{k-1}^2 \cap N(i)} \alpha_j = 2f_i - \sum_{j \not \in C_{k-1}^2} (c(j,X)- c_{ij})_+  + \sum_{j \in  C_{k-1}^2 \cap N(i)} c_{ij}
 \]
-e , portanto,
-
+logo, 
 \[
-    \alpha_j = \frac{ 2f_i - \sum_{j \not \in C_{k-1}^2} (c(j,X)- c_{ij})_+  + \sum_{j \in  C_{k-1}^2 \cap N(i)} c_{ij}}{|C_{k-1}^2 \cap N(i)|}
+    \alpha_j = \frac{ 2f_i - \sum_{j \not \in C_{k-1}^2} (c(j,X)- c_{ij})_+  + \sum_{j \in  C_{k-1}^2 \cap N(i)} c_{ij}}{|C_{k-1}^2 \cap N(i)|}.
 \]
-como a variável $\alpha$ cresce uniformemente e como $(C_{k-1}^1,X_{k-1}^1) = (C_{k-1}^2,X_{k-1}^2)$, é fácil notar que o conjunto $(i,C_{k-1}^2 \cap N(i))$ minimiza a função de escolha do algoritmo guloso e, portanto, $(C_{k}^1,X_{k}^1) = (C_{k}^2,X_{k}^2)$. Então, na iteração $k-1$, o algoritmo de dual fitting escolhe apenas retirar um elemento de $C_{k-1}^2$. Seja $j$ o elemento que foi retirado e $i \in X_{k-1}^2$ a instalação tal que $\alpha_j = c_{ij}$. Como $i \in X_{k-1}^2$ e $X_{k-1}^1 = X_{k-1}^2$, então na iteração $k-1$ do algoritmo guloso, vale que $f_i = 0$. Note que a função de escolha do guloso aplicada ao par $(i,\set{j})$ tem valor $c_{ij}$, uma vez que a instalação $i$ já estava aberta no início da iteração $k-1$ e, portanto, não haverá melhora no custo de conexão dos clientes que já estavam ligados a alguma instalação aberta. Novamente, como a variável $\alpha$ cresce uniformemente e como $(C_{k-1}^1,X_{k-1}^1) = (C_{k-1}^2,X_{k-1}^2)$, é fácil notar que o conjunto $(i,\set{j})$ minimiza a função de escolha do algoritmo guloso e, portanto, $(C_{k}^1,X_{k}^1) = (C_{k}^2,X_{k}^2)$.
+Como a variável $\alpha$ cresce uniformemente e como $(C_{k-1}^1,X_{k-1}^1) = (C_{k-1}^2,X_{k-1}^2)$, é fácil notar que o conjunto $(i,C_{k-1}^2 \cap N(i))$ minimiza a função de escolha do algoritmo guloso e, portanto, $(C_{k}^1,X_{k}^1) = (C_{k}^2,X_{k}^2)$. Então, na iteração $k-1$, o algoritmo de dual fitting escolhe apenas retirar um elemento de $C_{k-1}^2$. Seja $j$ o elemento que foi retirado e $i \in X_{k-1}^2$ a instalação tal que $\alpha_j = c_{ij}$. Como $i \in X_{k-1}^2$ e $X_{k-1}^1 = X_{k-1}^2$, então na iteração $k-1$ do algoritmo guloso, vale que $f_i = 0$. Note que a função de escolha do guloso aplicada ao par $(i,\set{j})$ tem valor $c_{ij}$, uma vez que a instalação $i$ já estava aberta no início da iteração $k-1$ e, portanto, não haverá melhora no custo de conexão dos clientes que já estavam ligados a alguma instalação aberta. Novamente, como a variável $\alpha$ cresce uniformemente e como $(C_{k-1}^1,X_{k-1}^1) = (C_{k-1}^2,X_{k-1}^2)$, é fácil notar que o conjunto $(i,\set{j})$ minimiza a função de escolha do algoritmo guloso e, portanto, $(C_{k}^1,X_{k}^1) = (C_{k}^2,X_{k}^2)$.
 
 Todos os casos nos levam a contradição, então a afirmação é verdadeira.   
 \end{proof}

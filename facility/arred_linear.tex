@@ -11,7 +11,7 @@ Dada essa definição, vamos enunciar um lema que irá nos ajudar a provar uma c
 \begin{proof}
     Como $i \in N(j)$, então $x^*_{ij}>0$. Assim, pelas folgas complementares, a desigualdade do dual correspondente a~\eqref{P4} vale por igualdade, então $v^*_j - w^*_{ij} = c_{ij}$. Como $w^*_{ij} \geq 0$, $c_{ij} \leq v^*_j$. 
 \end{proof}
-Com esse lema, sabemos que se em um conjunto $S \subseteq F$ de instalações abertas, para todo cliente $j \in D$, existe uma instalação aberta $i$ em $N(j)$, então $c_{ij}\leq v_j^*$ e o custo total de associação seria no máximo $\sum_{j\in D}v_j^* \leq \opt(I)$. Entretanto, não é garantido uma cota superior para o custo de abertura de $S$. Vamos descobrir como encontrar um $S$ com um bom custo de abertura e um bom custo de associação. Seja $j_k$ um cliente qualquer. Se abrirmos a instalação $i_k$ mais barata de $N(j_k)$ conseguimos limitar o custo de sua abertura.
+Com esse lema, sabemos que se em um conjunto $S \subseteq F$ de instalações abertas, para todo cliente $j \in D$, existe uma instalação aberta $i$ em $N(j)$, então $c_{ij}\leq v_j^*$ e o custo total de associação seria no máximo $\sum_{j\in D}v_j^* \leq \opt(I)$. Entretanto, não é garantido uma cota superior para o custo de abertura de $S$. Vamos descobrir como encontrar um $S$ com um bom custo de abertura e um bom custo de associação. Seja $j_k$ um cliente qualquer. Se abrirmos a instalação $i_k$ mais barata de $N(j_k)$ conseguimos limitar o custo de sua abertura por
 \[\tag{*} \label{relx_fl:*}
     f_{i_k} = f_{i_k} \sum_{i \in N(j_k)}x^*_{ij_k} = \sum_{i \in N(j_k)}f_{i_k}x^*_{ij_k} \leq \sum_{i \in N(j_k)}f_{i}y^*_{i},
 \]
@@ -51,9 +51,7 @@ O algoritmo aqui apresentado é de autoria de Chudak e Shmoys~\cite{Chudak2003}.
     Primeiro, vamos mostrar que o algoritmo é polinomial. Sabemos que é possível encontrar uma solução para o problema linear e o seu dual em tempo polinomial utilizando o método dos elipsoides~\cite{Kha79}. Sabemos que o laço da linha 5 irá executar no máximo $|D|$ iterações, uma vez que sempre retiramos pelo menos um elemento de $C$. Além disso, as linhas $6-12$ são claramente polinomiais.
 
     Agora, vamos mostrar que o algoritmo é uma $4$-aproximação.
-
-    Perceba que, para $k_1$ e $k_2$ com $k_1 < k_2$, $N(j_{k_1})\cap N(j_{k_2}) = \emptyset$, caso contrário $j_{k_2} \in N^2(j_{k_1})$ e não estaria em $C_{k_2}$.
-
+    Perceba que, para $k_1$ e $k_2$ com $k_1 < k_2$, $N(j_{k_1})\cap N(j_{k_2}) = \emptyset$, caso contrário $j_{k_2} \in N^2(j_{k_1})$ e não estaria em~$C_{k_2}$.
     Seja $F' \subseteq F$, tal que $F' = \bigcup_k N(j_k)$.
     Por \eqref{relx_fl:*}, vale que $f_{i_k} \leq \sum_{i \in N(j_k)}f_{i_k}y^*_{i}$. Então se somarmos para todo $k$, temos
     \[ \sum_kf_{i_k} \leq \sum_k \sum_{i \in N(j_k)}f_{i}y^*_{i} = \sum_{i \in F'}f_{i}y^*_{i} \leq \sum_{i \in F}f_{i}y^*_{i} \leq \opt(I).\]

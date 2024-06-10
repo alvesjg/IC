@@ -4,7 +4,7 @@ Para o próximo algoritmo será necessário saber o que é um conjunto independe
 \begin{definition}
     Seja $G = (V,E)$ um grafo. Um conjunto $S \subseteq V$ é um conjunto \emph{independente} se não existe $e \in E$ que tenha ambos os extremos em $S$.
 \end{definition}
-Seja $I(G,c,k)$ uma instância do problema dos $k$-centros. Vamos supor que as arestas $E \eqqcolon \{e_1,e_2,\ldots,e_{|E|}\}$ de $G$ estejam dispostas de forma que $c_{e_i} \leq c_{e_{i+1}}$ para todo $i \in [|E|-1]$. Como sabemos que é possível ordenar em tempo polinomial, podemos assumir isso.
+Seja $I(G,c,k)$ uma instância do problema dos $k$-centros. Podemos supor que $E = \{e_1,e_2,\ldots,e_{|E|}\}$ com $c_{e_i} \leq c_{e_{i+1}}$ para todo $i \in [|E|-1]$, considerando que é possível ordenar em tempo polinomial.
 Seja $E_i \coloneqq \{e_1,e_2,\ldots,e_i\}$ e $G_i \coloneqq (V,E_i)$. Seja também $i^*$ o menor $i$ tal que $G_i$ tem um $k$-conjunto dominante. Como $G$ é completo, $i^*$ existe. Claramente $c_{e_{i^*}} = \opt(I)$, porém não conseguimos encontrar $i^*$ eficientemente, uma vez que não é possível saber se um grafo tem um $k$-conjunto dominante em tempo polinomial, a menos que $P = \NP$. Vamos usar um conjunto independente maximal para aproximar uma resposta.
 
 \begin{lemma}\label{lemma:2.8}
@@ -22,14 +22,12 @@ Dada a definição vamos enunciar e provar um lema que nos ajudará no algoritmo
     Seja $G$ um grafo, $G^2$ o seu quadrado e $k$ um inteiro positivo. Se $G$ contém um $k$-conjunto dominante então todo conjunto independente maximal em $G^2$ tem tamanho no máximo~$k$.
 \end{lemma}
 \begin{proof}
-    Vamos mostrar pela contrapositiva.
-
+    A demonstração é pela contrapositiva.
     Suponha que $G^2$ tem um conjunto independente maximal $S \subseteq V$ tal que $|S| > k$. Seja $D$ um conjunto dominante em $G$. Vamos mostrar que $|D| > k$.
 
-    Por definição, uma aresta entre dois vértices de $S$ em $G^2$ é um caminho de tamanho 2 em $G$. Isso significa que, em $G$, não existe aresta nem vizinho comum entre dois vértices de $S$. Seja $u \in D$. Vamos mostrar que $u$ cobre no máximo um vértice de $S$ em $G$. 
+    Por definição, uma aresta entre dois vértices de $S$ em $G^2$ é um caminho de tamanho~2 em $G$. Isso significa que, em $G$, não existe aresta nem vizinho comum entre dois vértices de $S$. Seja $u \in D$. Vamos mostrar que $u$ cobre no máximo um vértice de $S$ em~$G$. 
     Se $u \in S$, o único vértice de $S$ coberto por $u$ é ele mesmo, uma vez que não existe aresta entre dois vértices de $S$ em $G$. 
-    Se $u \not \in S$, $u$ pode cobrir apenas um vértice de $S$, pois caso cobrisse dois, digamos $v$ e $w$, então u seria um vizinho comum em $G$ de $v$ e $w$ e, portanto, $vw$ seria uma aresta em $G^2$.
-
+    Se $u \not \in S$, $u$ pode cobrir apenas um vértice de $S$, pois caso cobrisse dois, digamos $v$ e $w$, então $u$ seria um vizinho comum em $G$ de $v$ e $w$ e, portanto, $vw$ seria uma aresta em $G^2$.
     Portanto, $|D| \geq |S| > k$.
 \end{proof}
 Agora, temos todas as definições e lemas que serão necessários para o algoritmo.
