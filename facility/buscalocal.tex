@@ -1,4 +1,5 @@
-Embora o custo de transporte esteja definido apenas para um cliente e uma instalação, aqui falaremos também sobre custos de transporte entre duas instalações. Podemos definir o custo de transporte entre duas instalações como o menor custo de transporte entre essas duas instalações e um cliente qualquer. Então a desigualdade triangular valerá da seguinte forma: para todo $i,j,k \in F \cup D$ 
+Aqui falaremos sobre custos de transporte entre duas instalações, embora o custo de transporte esteja definido apenas para um cliente e uma instalação.
+Podemos definir o custo de transporte entre duas instalações como o menor custo de transporte entre essas duas instalações e um cliente qualquer. Então a desigualdade triangular valerá da seguinte forma: para todo $i,j,k \in F \cup D$ 
 \[ c_{ij} \leq c_{ik} + c_{kj}.\]
 
 Um algoritmo de busca local começa com uma solução viável para o problema e checa se alguma alteração local melhora o custo da solução atual. Caso essa melhora ocorra, essa alteração é feita. Esse processo se repete até que não exista alteração que melhore o custo e, então, encontramos uma solução que é chamada de \emph{localmente ótima}. A implementação direta da ideia da busca local na maioria das vezes não garante execução em tempo polinomial e, nesses casos, as alterações só acontecerão se satisfizerem alguma restrição. 
@@ -94,9 +95,9 @@ Agora, conseguimos provar a segunda desigualdade que será necessária para a ra
     \begin{align*}
         - f_i + f_{i'} + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j)\not \in R} 2c_{\sigma^*(j)j} + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) &\geq -\delta(A+T)
     \end{align*}
-    juntando essa desigualdade com \ref{não segura} para todas as instalações em $R\setminus\{i'\}$, temos
+    juntando essa desigualdade com~\eqref{não segura} para todas as instalações em $R\setminus\{i'\}$, temos
     \begin{align*}
-        -f_i + \sum_{i^* \in R}f_{i^*} + \sum_{j: \sigma(j) = i \text{ \& } \sigma^*(j)\not \in R} 2c_{\sigma^*(j)j} + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) \\+ \sum_{j:\sigma(j)=i \text{ \& }\sigma^*(j) \in R \setminus\{i'\}}(c_{\sigma^*(j)j} - c_{ij}) \geq -|R|\delta(A+T).
+        -f_i + \sum_{i^* \in R}f_{i^*} + \sum_{j: \sigma(j) = i \text{ \& } \sigma9.4^*(j)\not \in R} 2c_{\sigma^*(j)j} + \sum_{j: \sigma(j)=i \text{ \& }\sigma^*(j) \in R}(c_{i'j} - c_{ij}) \\+ \sum_{j:\sigma(j)=i \text{ \& }\sigma^*(j) \in R \setminus\{i'\}}(c_{\sigma^*(j)j} - c_{ij}) \geq -|R|\delta(A+T).
     \end{align*}
     Vamos reduzir essa expressão. Seja $j$ tal que $\sigma(j)=i$ e $\sigma^*(j) \in R$. 
     Se $\sigma^*(j) = i'$, então $j$ só aparece no terceiro somatório e certamente $c_{i'j} - c_{ij} \leq 2 c_{i'j}$. 
@@ -173,4 +174,4 @@ Analogamente ao que foi feito na análise da razão de aproximação $3(1 + \eps
 \[(A+T) \leq (1 + \sqrt{2} + \epsilon )\opt(I).\]
 Assim, se fizermos a reescala dos custos de abertura das facilidades antes de rodar o algoritmo de busca local temos um novo algoritmo que é uma $(1 + \sqrt{2} + \epsilon )$-aproximação para o nosso problema.
 
-A análise feita aqui é de autoria de Gupta e Tangwongsan~\cite{DBLP:journals/corr/abs-0809-2554}.
+Charikar e Guha~\cite{Charikar&Guha'05} primeiro provaram a razão de aproximação de $3 + \eps$ e introduziram a ideia de reescala. Devido a simplificação, utilizamos a análise feita por Gupta e Tangwongsan~\cite{DBLP:journals/corr/abs-0809-2554}.
