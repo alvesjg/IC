@@ -1,0 +1,68 @@
+Vamos mostrar que se existe uma $\alpha$-aproximação para o problema de localização de instalações com $\alpha < 1.463$ então existe um algoritmo que é uma $(c \ln n)$-aproximação para o problema da cobertura de conjuntos sem peso com $c<1$. 
+Feige~\cite{Feige98} mostrou que se tal algoritmo existe, então existe um algoritmo determinístico que leva tempo $O(n^{O(\log\log n)})$ para todo problema $NP$-completo.
+
+Vamos fazer um algoritmo de aproximação para o problema da cobertura de conjuntos utilizando várias chamadas ao algoritmo que é uma $\alpha$-aproximação para o problema de localização de instalações. 
+Seja $(E,\{S_1,\ldots,D_m\})$ uma instância do problema de cobertura de conjuntos, criaremos uma sequência de instâncias para o problema de localização de instalações. 
+A primeira delas terá o conjunto de instalações $F \coloneqq [m]$ e o conjunto de clientes $D \coloneqq E$. 
+A ideia é que escolheremos um subconjunto $F' \subseteq F$ de instalações que serão abertas e existirá um subconjunto $D' \subseteq D$ tal que para todo $j \in D'$ existe $i \in F'$ tal que $j \in S_i$. 
+Então, para construir a próxima instância usaremos o conjunto de instalações $F \setminus F'$ e o conjunto de clientes $D \setminus D'$, que representam os subconjuntos de $E$ que ainda podem ser escolhidos e os elementos de $E$ que ainda não foram cobertos, respectivamente. 
+O custo de conexão dos clientes será igual para todas as instâncias. Para uma instalação $i$ e um cliente $j$ definimos $c_{ij}\coloneqq 1$ se $j \in S_i$ e $3$ caso contrário.
+O custo de abertura das instalações será uniforme em uma mesma instância, definimos $f_i \coloneqq \gamma |D|/k^*$ para todo $i\in F$ em que $\gamma$ é uma constante que definiremos posteriormente, $D$ é o conjunto de elementos que ainda não foram cobertos e $k^*$ é o tamanho mínimo de uma cobertura de conjuntos para essa instância. Como é difícil saber o tamanho de uma cobertura de conjuntos ótima, vamos rodar essa rotina para todo $k \in [m]$, ou seja, todos os candidatos para o  tamanho de uma cobertura de conjuntos ótima para essa instância.
+
+\begin{algorithm}
+    \caption{}
+    \begin{algorithmic}[1]
+        \State $c_{ij} \gets 1$ se $j \in S_i$ e 3 caso contrário, para todo $i \in [m]$ e $j \in E$.
+        \For{$k \gets 1$ até $m$}
+            \State $I_k \gets \emptyset$
+            \State $D \gets E$; $F \gets [m]$
+            \While{$D\neq \emptyset$}
+                \State $f_i \gets \gamma |D|/k$ para todo $i \in F$
+                \State $F' \gets$ {\sc $\alpha$-aprox-loc-inst}$(F,D,f,c)$
+                \State $I_k \gets I_k \cup F'$
+                \State $D' \gets \{j \in D: c(j,F') = 1 \}$
+                \State $F \gets F \setminus F'$; $D\gets D\setminus D'$
+            \EndWhile
+        \EndFor
+    \State \Return $I_k$ que minimize $|I_k|$.
+    \end{algorithmic}
+\end{algorithm}
+
+
+\begin{theorem}
+Se existe uma $\alpha$-aproximação para o problema da localização de instalações com $\alpha < 1.463$, então o {\bf Algoritmo 8} é uma $(c \ln n)$-aproximação para o problema de cobertura de conjuntos com $c<1$ quando $n$ é suficiente grande.
+\end{theorem}
+
+\begin{proof}
+Seja $k^*$ o tamanho de uma cobertura de conjuntos ótima para a instância. Suponha que estamos na iteração $k^*$ do laço {\bf Para} e na iteração $\ell$ do laço {\bf Enquanto}.
+Seja $D_\ell$ e $F_\ell$ os conjuntos $D$ e $F$ no começo dessa iteração. Denote $n_\ell \coloneqq |D_\ell|$ e $f^\ell \coloneqq \gamma n_\ell /k^*$. Note que existe uma solução para essa instância do problema de localização de instalações com custo no máximo $f^\ell k^* + n_\ell$ em que abrimos todas as instalações que representam subconjuntos que estão em uma mesma resposta ótima da cobertura de conjuntos e associamos os clientes restantes às instalações com custo de conexão 1.
+Seja $F_\ell'$ o subconjunto das instalações devolvido pela chamada do algoritmo na Linha~7 e $D_\ell'$ o subconjunto de clientes encontrado na Linha~9. Seja $\beta_\ell \coloneqq k^*/|F_\ell'|$ e $p_\ell \coloneqq n_\ell / |D_\ell'|$. É fácil notar que o custo da solução $F'$ é
+\[ n_\ell f^\ell+ p_\ell n_\ell + 3 (1-p_\ell) n_\ell = n_\ell(\beta_\ell \gamma + 3 - 2p_\ell) \leq \alpha ( f^\ell k^* + n_\ell) = \alpha n_\ell (\gamma + 1)\]
+e, portanto, 
+\begin{equation} 
+    \label{inaprox:beta}
+\frac{\beta_\ell + 3 - 2p_\ell}{\gamma + 1} \leq \alpha.
+\end{equation}
+
+Seja $c$ uma constante entre 0 e 1 que vamos escolher depois. Suponha que $p_\ell \leq 1 - e^{-\frac{\beta_\ell}{c}}$ para todo $\ell$. Defina 
+\[f(\beta_\ell) \coloneqq \frac{\beta_\ell \gamma + 1 + 2e^{\frac{\beta_\ell}{c}}}{\gamma + 1}.\]
+Note que $f(\beta_\ell) \leq \frac{\beta_\ell + 3 - 2p_\ell}{1 + \gamma} \leq \alpha$.
+
+O valor de $\beta_\ell$ que minimiza $f$ é $c\ln(\frac{2}{\gamma c})$, uma vez que $f'(c\ln(\frac{2}{\gamma c})) = 0$ e $~f''(\beta_\ell)~>~0$ para qualquer que seja o valor de $\beta_\ell$. Assim, temos que 
+\[f(c\ln\left(\frac{2}{\gamma c}\right)) = \frac{1}{1+\gamma} \left( \gamma c + \ln\left(\frac{2}{\gamma c}\right) + \gamma c + 1 \right).\]
+Os valores de $c$ e $\gamma$ que maximizam essa função é $\gamma = 0.463$ e $c$ próximo de 1 e teremos $1.463 \leq f(1.463) \leq \alpha < 1.463$ o que é um absurdo.
+
+Agora, vamos mostrar que se $p_\ell > 1 - e^{ - \frac{\beta_\ell}{c}}$ para todo $\ell$, então o algoritmo devolve uma $(c'\ln n)$-aproximação para o problema da cobertura de conjuntos com $c' < 1$. Vamos chamar de $r$ a quantidade de iterações que o laço {\bf Para} realiza. É evidente que $|I_{k^*}| = k^*\sum_{\ell = 1}^r \beta_\ell$, então a razão de aproximação desse algoritmo é no máximo $\sum_{\ell = 1}^r \beta_\ell$. Como vale que $p_\ell > 1 - e^{ - \frac{\beta_\ell}{c}}$, então temos que $\beta_\ell < c \ln\left( \frac{1}{1-p_\ell}\right)$. Note que $n_{\ell + 1} = n_\ell(1-p_\ell)$ e $n_r \geq 1$. Assim, vale que $n_1 \prod_{\ell =1}^{r-1} (1 - p_\ell) = n_r \geq 1$ e, consequentemente, $\ln\left(\prod_{\ell =1 }^{r-1} \frac{1}{1-p_\ell}\right) \leq \ln n_1$. Assim,
+\[
+\sum_{\ell= 1}^r \beta_\ell = \sum_{\ell =1}^{r-1} \beta_\ell + \beta_r < c\sum_{\ell = 1}^{r-1} \ln \left( \frac{1}{1-p\ell}\right) + \beta_r \leq c \ln n_1 + \beta_r
+\]
+como $r$ é a última iteração, vale que $p_r= 1$, então pela equação~\eqref{inaprox:beta} temos que $\beta_r \leq \alpha(1 + \frac{1}{\gamma}) < 4\alpha$ uma vez que escolhemos $\gamma = 0.463$. Portanto,
+\[
+\sum_{\ell =1}^r \beta_\ell < c \ln n_1 + \beta_r < c\ln n_1 + 4\alpha \leq c' \ln n_1
+\]
+em que a última desigualdade vale para algum $c' \in (c,1)$, uma vez que $4\alpha$ é constante e $n$ é suficientemente grande.
+
+Assim, temos uma aproximação para o problema de cobertura de conjuntos com razão de aproximação estritamente menor que $\ln n$.
+\end{proof}
+
+Juntando esse resultado com o resultado do Feige temos que a existência de uma $\alpha$-aproximação para o problema de localização de instalações com $\alpha < 1.463$ implica a existência de um algoritmo determinístico que leva tempo $O(n^{O(\log \log n)})$ para todos os problemas $\NP$-completo.
