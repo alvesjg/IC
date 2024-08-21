@@ -1,0 +1,29 @@
+Os algoritmos que irão aparecer nas próximas seções utilizam do programa inteiro do problema $k$-mediana, da sua relaxação em programa linear e do seu dual. Então, vamos aqui apresentar todas essas três formulações. O programa inteiro para o problema $k$-mediana é, dado um conjunto $F$, um conjunto $D$, uma função custo $c : F\times D \rightarrow \mathbb{R}$ e um inteiro $k$,
+\begin{align}
+\text{Minimizar} \quad & \sum_{i \in F, j \in D} c_{ij}x_{ij} \\
+\text{sujeito a} \quad & \sum_{i \in F} x_{ij} \geq 1, &&\forall j \in D, \\
+                       & y_i - x_{ij} \geq 0, &&\forall i \in F, j \in D, \\
+                       & \sum_{i \in F} y_i \leq k, \\
+                       & x_{ij} \in \{0,1\}, && \forall i \in F,j \in D, \\
+                       & y_i \in \{0,1\}, &&\forall i \in F. 
+\end{align}
+Para a relaxação desse programa, apenas permitiremos que as variáveis em $x$ e em $y$ adotem quaisquer valores não negativos. Portanto, a relaxação do programa inteiro do $k$-mediana resulta no programa
+\begin{align}
+    \text{Minimizar} \quad & \sum_{i \in F, j \in D} c_{ij}x_{ij} \\
+    \text{sujeito a} \quad & \sum_{i \in F} x_{ij} \geq 1, &&\forall j \in D, \\
+                           & y_i - x_{ij} \geq 0, &&\forall i \in F, j \in D, \\
+                           & \sum_{i \in F} y_i \leq k, \\
+                           & x_{ij} \geq 0, && \forall i \in F,j \in D, \\
+                           & y_i \geq 0, &&\forall i \in F. 
+\end{align}
+Desse modo, conseguimos construir o seu dual
+\begin{align}
+    \text{Minimizar} \quad & \sum_{j \in D} (v_j) - zk \\
+    \text{sujeito a} \quad & v_j - w_{ij} \leq c_{ij}, &&\forall i \in F, j\in D, \\
+                           & \sum_{j\in D} w_{ij} \leq z, &&\forall i \in F, \\
+                           & v_j \geq 0, &&\forall j\in D, \\
+                           & w_{ij} \geq 0, && \forall i \in F,j \in D, \\
+                           & z \geq 0. 
+\end{align}
+
+Note que existe uma grande semelhança entre as formulações referentes ao problema das $k$-medianas e as formulações refentes ao problema localização de instalações que se encontram na Seção~\ref{facility:PL}. Desse modo, as variáveis desses dois problemas têm interpretações semelhantes.
