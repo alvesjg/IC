@@ -1,4 +1,5 @@
-Assim como no método anterior, a função custo também satisfaz a desigualdade triangular.
+Nessa seção vamos apresentar o algoritmo que faz arredondamento determinístico de uma solução relaxada do programa inteiro que modela o problema localização de instalações. Esse algoritmo foi estudado na seção 4.5 do livro WS2011 e foi desenvolvido pelo Chudak e Shmoys~\cite{Chudak2003}.
+
 
 Vamos então definir algumas coisas que serão necessárias no nosso algoritmo.
 \begin{definition}
@@ -24,7 +25,7 @@ Essa informação será importante para a prova da razão de aproximação do no
 \end{definition}
 Agora, vamos definir o algoritmo. Nele, $S$ será o conjunto das instalações a serem abertas e $\sigma : D \rightarrow F $ a função que associa cada cliente a uma instalação aberta. Ambos serão montados durante o algoritmo.
 \begin{algorithm}
-    \caption{CS($F,D,c,f$)}
+    \caption{\sc ArredDet-CS($F,D,c,f$)}
     \label{fl:plrounding}
     \begin{algorithmic}[1]
         \State Sejam $(x^*,y^*)$ e $(v^*,y^*)$ soluções ótimas para o primal e o dual da relaxação do programa inteiro de $I(F,D,c,f)$.
@@ -43,9 +44,8 @@ Agora, vamos definir o algoritmo. Nele, $S$ será o conjunto das instalações a
     \end{algorithmic}
 \end{algorithm}
 
-O algoritmo aqui apresentado é de autoria de Chudak e Shmoys~\cite{Chudak2003}.
 \begin{theorem}
-    O algoritmo {\sc CS} é uma $4$-aproximação para o problema da localização de instalações.
+    O algoritmo {\sc ArredDet-CS} é uma $4$-aproximação para o problema da localização de instalações.
 \end{theorem}
 \begin{proof}
     Primeiro, vamos mostrar que o algoritmo é polinomial. Sabemos que é possível encontrar uma solução para o problema linear e o seu dual em tempo polinomial utilizando o método dos elipsoides~\cite{Kha79}. Sabemos que o laço da linha 5 irá executar no máximo $|D|$ iterações, uma vez que sempre retiramos pelo menos um elemento de $C$. Além disso, as linhas $6-12$ são claramente polinomiais.

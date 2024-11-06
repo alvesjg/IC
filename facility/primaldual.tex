@@ -1,3 +1,5 @@
+Nessa seção vamos apresentar o algoritmo primal-dual para o problema de localização de instalações. Esse algoritmo foi estudado na seção 7.6 do livro WS2011 e foi desenvolvido pelo Jain e pelo Vazirani~\cite{JV}.
+
 Vamos assumir que a função custo satisfaz a desigualdade triangular. Como a função custo só está definida de um cliente para uma instalação, então a desigualdade triangular terá uma cara diferente. Para clientes $j,l$ e  instalações $i,k$, vale que
 \[c_{ij} \leq c_{il} + c_{kl} + c_{kj}.\]
 
@@ -15,7 +17,7 @@ Vamos utilizar a seguinte definição ao longo da explicação do método.
 \end{definition}
 
 \begin{theorem}
-    Seja $(\overline v, \overline w)$ solução maximal para o programa dual e $T = \{i \in F: \sum_{j \in D} \overline{w}_{ij} = f_i\}$. Então, todo cliente está na vizinhança de uma instalação em $T$.      
+    Seja $(\overline v, \overline w)$ solução maximal para o programa dual e $T \coloneqq \{i \in F: \sum_{j \in D} \overline{w}_{ij} = f_i\}$. Então, todo cliente está na vizinhança de uma instalação em $T$.      
 \end{theorem}
 \begin{proof}
     Vamos provar por absurdo. Suponha a existência de um cliente $j$ que não está na vizinhança de nenhuma instalação em $T$. Claramente, as desigualdades~\eqref{D3} não são justas para $j$ e nenhuma instalação em $T$. Assim, conseguimos aumentar $\overline{w}_{ij}$ para uma instalação $i$ qualquer que não esteja em $T$, aumentando simultaneamente o $\overline{v}_j$ sem infringir nenhuma das restrições do dual. Com isso, apenas aumentando os valores das variáveis, conseguimos encontrar uma solução viável do dual com valor objetivo maior e isso contradiz o fato da solução $(\overline{v},\overline{w})$ ser maximal. 
@@ -31,7 +33,7 @@ Nosso algoritmo contará com as seguintes invariantes.
     \item $S$ é o conjunto de clientes que não têm nenhum vizinho em $T$.
 \end{itemize}
 \begin{algorithm}[tbh]
-    \caption{JV(${F,D,c,f}$)}
+    \caption{\sc PrimalDual-JV(${F,D,c,f}$)}
     \label{fl:primaldual}
     \begin{algorithmic}[1]
         \State $v_j \gets 0$ para todo $j \in D$
@@ -62,8 +64,7 @@ Nosso algoritmo contará com as seguintes invariantes.
     \end{algorithmic}
 \end{algorithm}
 
-O algoritmo~\ref{fl:primaldual} é de autoria de Jain e Vazirani~\cite{JV} e leva suas iniciais como nome.
-No algoritmo~\ref{fl:primaldual}, claramente as coordenadas das variáveis $v$ e $w$ crescerão de maneira uniforme, pois em cada iteração o mesmo valor $\theta$ será somado a elas. Precisamos então garantir que a nossa solução seja sempre viável. Pela escolha de $\theta_1$ na linha~\ref{theta1} do algoritmo, garantimos que a desigualdade~\eqref{D3} não seja violada para $i$ e $j$ em que $i$ é uma instalação que não está na vizinhança do cliente $j$. Quando a instalação $i$ está na vizinhança de $j$, aumentamos $v_j$ e $w_{ij}$ do mesmo valor $\theta$ e isso nunca violará a desigualdade~\eqref{D3}. 
+No algoritmo {\sc PrimalDual-JV}, claramente as coordenadas das variáveis $v$ e $w$ crescerão de maneira uniforme, pois em cada iteração o mesmo valor $\theta$ será somado a elas. Precisamos então garantir que a nossa solução seja sempre viável. Pela escolha de $\theta_1$ na linha~\ref{theta1} do algoritmo, garantimos que a desigualdade~\eqref{D3} não seja violada para $i$ e $j$ em que $i$ é uma instalação que não está na vizinhança do cliente $j$. Quando a instalação $i$ está na vizinhança de $j$, aumentamos $v_j$ e $w_{ij}$ do mesmo valor $\theta$ e isso nunca violará a desigualdade~\eqref{D3}. 
 Pela escolha de $\theta_2$ na linha~\ref{theta2}, garantimos que a desigualdade~\eqref{D2} não seja violada para nenhuma instalação. 
 Assim, $(v,w)$ é uma solução viável para o problema dual durante todo o algoritmo.
 Para cada cliente $j$ e cada instalação $i$, primeiro aumentaremos apenas as variáveis $v_j$ até que $j$ esteja na vizinhança de $i$. Note que nesse momento a desigualdade~\eqref{D3} se torna justa, pois ainda não aumentamos a variável $w_{ij}$. Uma vez que isso acontece, aumentamos uniformemente $v_j$ e $w_{ij}$, assim a desigualdade~\eqref{D3} continuará justa. Desse modo, para $j \in D$ e $i \in N(j)$, vale que 
@@ -75,7 +76,7 @@ Note também que ao final do algoritmo $(v,w)$ é uma solução maximal para o p
 Para provar a razão de aproximação vamos precisar primeiro de um lema.
 \begin{lemma}
     \label{lemma:3.9}
-    Seja $T'$ a solução devolvida e $(v,w)$ solução do dual produzida pelo Algoritmo {\sc JV }. Se $j \in D$ não está na vizinhança de nenhuma instalação de $T'$, então existe uma instalação $i \in T'$ tal que $c_{ij} \leq 3v_j$.
+    Seja $T'$ a solução devolvida e $(v,w)$ solução do dual produzida pelo Algoritmo {\sc PrimalDual-JV }. Se $j \in D$ não está na vizinhança de nenhuma instalação de $T'$, então existe uma instalação $i \in T'$ tal que $c_{ij} \leq 3v_j$.
 \end{lemma}
 \begin{proof}
     Seja $h \in T$ a instalação responsável pela remoção de $j$ de $S$, conforme a linha 12 ou 16 do algoritmo. Claramente, $j$ pertence a vizinhança de $h$. Sabemos que $h$ não pertence a $T'$ uma vez que, por hipótese, $j$ não tem vizinhos em $T'$. Como $h$ foi retirada de $T$, conforme a linha 21 do algoritmo, existe $i \in T'$ e $k \in D$ tal que $k$ contribui para $i$ e para $h$. Pela desigualdade triangular,
@@ -86,7 +87,7 @@ Para provar a razão de aproximação vamos precisar primeiro de um lema.
 
 Agora, podemos mostrar o teorema abaixo.
 \begin{theorem}
-    O algoritmo {\sc JV} é uma $3$-aproximação para o problema da localização de instalações.
+    O algoritmo {\sc PrimalDual-JV} é uma $3$-aproximação para o problema da localização de instalações.
 \end{theorem}
 \begin{proof}
     Claramente o algoritmo roda em tempo polinomial. 

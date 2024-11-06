@@ -1,3 +1,5 @@
+Nessa seção vamos apresentar o algoritmo que faz arredondamento probabilístico de uma solução relaxada do programa inteiro que modela o problema localização de instalações. Esse algoritmo foi estudado na seção 5.8 do livro WS2011 e foi desenvolvido pelo Chudak e Shmoys~\cite{Chudak2003}.
+
 Vamos rever definições já vistas anteriormente. 
 Seja $I(F,D,c,f)$ uma instância do problema de localização de instalações e $(x^*,y^*)$ uma solução da relaxação do programa inteiro referente a $I$. 
 Denote os vizinhos de um cliente $j$ como $N(j) \coloneqq\{i \in F : x^*_{ij} > 0\}$. 
@@ -5,7 +7,7 @@ Denote também os vizinhos dos vizinhos de um cliente $j$ como $N^2(j) \coloneqq
 Além disso, defina $C^*_j \coloneqq \sum_{i \in F} c_{ij}x^*_{ij}$ .
 
 \begin{algorithm}[tbh]
-\caption{CS($F,D,c,f$)}
+\caption{\sc ArredProb-CS($F,D,c,f$)}
 \begin{algorithmic}[1]
         \State Sejam $(x^*,y^*)$ e $(v^*,y^*)$ soluções ótimas para o primal e o dual da relaxação do programa inteiro de $I(F,D,c,f)$.
         \State $S \gets \emptyset$
@@ -23,7 +25,7 @@ Além disso, defina $C^*_j \coloneqq \sum_{i \in F} c_{ij}x^*_{ij}$ .
 \end{algorithmic}
 \end{algorithm}
 
-\begin{theorem} O algoritmo {\sc CS} é uma 3-aproximação para o problema da localização de instalações.
+\begin{theorem} O algoritmo {\sc ArredProb-CS} é uma 3-aproximação para o problema da localização de instalações.
 \end{theorem}
 
 \begin{proof}

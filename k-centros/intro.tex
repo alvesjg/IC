@@ -1,9 +1,9 @@
-Seja $I(G,c,k)$ uma instância do problema dos $k$-centros e $C \subseteq V$ uma solução viável para $I$. Vamos definir alguns termos que facilitarão as explicações seguintes. Os vértices de $C$ serão chamados \emph{centros de cluster}. Os vértices de $V$ serão particionados em $k$ conjuntos chamados \emph{clusters} e cada um deles terá exatamente um centro de cluster. Um vértice estará no mesmo cluster que um centro de cluster associado a ele. Cada cluster terá um \emph{raio} que é o maior custo entre o seu centro e um vértice qualquer dele. O nosso problema se resume a encontrar um conjunto $C$ que minimize o maior desses raios. Denotamos por raio$(C)$ o maior raio de um cluster induzido por $C$.
+Seja $I(G,c,k)$ uma instância do problema dos $k$-centros em que $G\coloneqq (V,E)$ e $C \subseteq V$ uma solução viável para $I$. Vamos definir alguns termos que facilitarão as explicações seguintes. Os vértices de $C$ serão chamados de \emph{centros de cluster}. Os vértices de $V$ serão particionados em $k$ conjuntos chamados \emph{clusters} e cada um deles terá exatamente um centro de cluster. Um vértice estará no mesmo cluster que um centro de cluster associado a ele. Cada cluster terá um \emph{raio} que é o maior custo, de acordo com $c$, entre o seu centro e um vértice qualquer dele. Denotamos por raio$(C)$ o maior raio de um cluster induzido por $C$. Assim, o problema dos $k$-centros consiste em encontrar um conjunto $C$ de $k$ centros tal que raio$(C)$ é mínimo.
 
-Antes de falarmos sobre algoritmos de aproximação para o problema dos $k$-centros, vamos mostrar que, assumindo $P\neq\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema do $k$-conjunto dominante.
+Antes de falarmos sobre algoritmos de aproximação para o problema dos $k$-centros, vamos mostrar o problema é $\NP$-difícil, esse resultado é encontrado a partir de uma pequena alteração na prova do Teorema 5.7 do livro V2001. Para isso, vamos definir o problema do $k$-conjunto dominante.
 
 \begin{definition}
-    Seja $G = (V,E)$ um grafo. Um conjunto $D \subseteq V$ é chamado \emph{dominante} se, para todo vértice $u \in V \setminus D$, existe um vértice $v \in D$ tal que $uv \in E$.
+    Seja $G = (V,E)$ um grafo. Um conjunto $D \subseteq V$ é \emph{dominante} se, para todo vértice $u \in V \setminus D$, existe um vértice $v \in D$ tal que $uv \in E$.
 \end{definition}
 
 \begin{problem}[$k$-conjunto dominante]
@@ -16,7 +16,7 @@ Esse problema é $\NP$-completo, sendo o problema GT2 do famoso livro de Garey e
 \end{theorem}
 
 \begin{proof}
-    Suponha que exista um algoritmo $A$ que resolve o problema dos $k$-centros em tempo polinomial. Seja $G = (V,E)$ um grafo e $I(G,k)$ uma instância do problema $k$-conjunto dominante. Vamos criar uma instância $I'(G',c,k)$ do problema dos $k$-centros a partir da instância $I$. A instância $I'$ tem como grafo $G'(V,E')$ completo tal que, para todo $e \in E'$,
+    Suponha que exista um algoritmo $A$ que resolve o problema dos $k$-centros em tempo polinomial. Seja $G = (V,E)$ um grafo e $I(G,k)$ uma instância do problema do $k$-conjunto dominante. Vamos criar uma instância $I'(G',c,k)$ do problema dos $k$-centros a partir da instância $I$. A instância $I'$ tem como grafo o grafo completo $G'(V,E')$ e, para todo $e \in E'$,
     \[
     c_e = \begin{cases}
             1, \text{ se } e \in E \\
@@ -24,39 +24,40 @@ Esse problema é $\NP$-completo, sendo o problema GT2 do famoso livro de Garey e
             \end{cases}\]\\
     Note que $c$ satisfaz a desigualdade triangular e pode ser obtida de $I$ em tempo polinomial.
 
-    O algoritmo aplicado à instância $I'$ encontra uma solução $C$, ou seja, um conjunto de $k$ centros de cluster. Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster com uma aresta de $G$ e assim $C$ é um conjunto dominante em $G$. 
+    O algoritmo $A$ aplicado à instância $I'$ encontra uma solução $C$, ou seja, um conjunto de $k$ centros de cluster de raio mínimo. Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster com uma aresta de $G$ e assim $C$ é um conjunto dominante em $G$. 
     Como o algoritmo $A$ minimiza o raio de $C$, se raio$(C)=2$, não existe uma solução para $I'$ em que os vértices estejam ligados ao centro do seus clusters apenas por arestas de $G$ e, por isso, não existe um conjunto dominante de tamanho menor ou igual a $k$ em $G$.
 
     Portanto, conseguimos resolver em tempo polinomial o problema do $k$-conjunto dominante, o que implicaria que $P = \NP$.
 \end{proof}
 
-O resultado acima pode ser adaptado para dar um resultado mais forte de inaproximabilidade para a versão geral do problema, não restrita à métrica.
+O resultado acima pode ser adaptado para dar um resultado mais forte de inaproximabilidade para a versão geral do problema dos $k$-centros, não restrita a métricas.
 \begin{theorem}
-    Seja $\alpha(n)$ uma função computável com $\alpha(n)\geq 1$ para todo $n$. Não existe $\alpha(n)$-aproximação para a versão geral do $k$-centros, onde $n$ é o número de vértices do grafo da instância, a menos que $P=\NP$.
+    Seja $\alpha(n)$ uma função computável em tempo polinomial em $n$ com $\alpha(n)\geq 1$ para todo $n$. Não existe $\alpha(n)$-aproximação para a versão geral do problema dos $k$-centros, onde $n$ é o número de vértices do grafo da instância, a menos que $P=\NP$.
 \end{theorem}
 
 \begin{proof}
-        A demonstração desse teorema é muito parecida com a do Teorema~\ref{theorem:2.3}. \\
-        Seja $G = (V,E)$. Suponha que exista um algoritmo polinomial $A$ que é uma $\alpha(n)$-aproximação do $k$-centros e seja $I(G,k)$ uma instância do problema do $k$-conjunto dominante em que $G$ tem $n$ vértices. Vamos criar uma instância $I'(G',c,k)$ do problema dos $k$-centros a partir da instância $I$. A instância $I'$ tem como grafo $G'(V,E')$ completo tal que, para cada $e \in E'$, \\
+    A demonstração desse teorema é muito parecida com a do Teorema~\ref{theorem:2.3}.
+    Seja $G \coloneqq (V,E)$. Suponha que exista um algoritmo polinomial $A$ que é uma $\alpha(n)$-aproximação para o problema dos $k$-centros e seja $I(G,k)$ uma instância do problema do $k$-conjunto dominante em que $G$ tem $n$ vértices. Vamos criar uma instância $I'(G',c,k)$ do problema dos $k$-centros a partir da instância $I$. A instância $I'$ tem como grafo o grafo completo $G'(V,E')$ e, para cada $e \in E'$,
     \[c_e = \begin{cases}
             1, \text{ se } e \in E \\
             \alpha(n)+1, \text{ caso contrário.} 
             \end{cases}\]\\
-    Como $\alpha(n)$ é uma função computável, essa instância pode ser construída a partir de $I$ em tempo polinomial.
+    Como $\alpha(n)$ é uma função computável em tempo polinomial em $n$, essa instância pode ser construída a partir de $I$ em tempo polinomial.
     Se $\alpha(n)=1$, então $c$ obedece a desigualdade triangular e $A$ é um algoritmo polinomial e exato, o que, pelo Teorema~\ref{theorem:2.3}, é absurdo. Então, suponha $\alpha(n)>1$.
 
-    O algoritmo aplicado à instância $I'$ encontra uma solução $C$ de tamanho $k$. Como $c_e = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$.
-    Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster com aresta de $G$, e assim $C$ é um conjunto dominante em $G$.
-    Se raio$(C) = \alpha(n) + 1$, então $\opt(I) \geq \frac{\alpha(n)+1}{\alpha(n)}>1$. Assim, não existe solução $C'$ tal que raio$(C')=1$ e não existe $k$-conjunto dominante em $G'$ que utilize apenas arestas de $G$.
+    O algoritmo $A$ aplicado à instância $I'$ encontra uma solução $C$ de tamanho $k$. Como $c_e = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$.
+    Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster por uma aresta de $G$, e assim $C$ é um conjunto dominante em $G$.
+    Se raio$(C) = \alpha(n) + 1$, então $\opt(I') \geq \frac{\alpha(n)+1}{\alpha(n)}>1$. Assim, não existe solução $C'$ de $I'$ tal que raio$(C')=1$ e não existe $k$-conjunto dominante em $G$.
 
     Portanto, conseguimos resolver o problema do $k$-conjunto dominante em tempo polinomial o que, assumindo que $P \neq \NP$, é um absurdo.
 \end{proof}
-    Fica, então, explícita a impossibilidade de encontrarmos algoritmos de aproximação para a versão geral do problema dos $k$-centros, a menos que $P = \NP$\\
-    Agora que justificamos o estudo de algoritmos de aproximação para esse problema vamos mostrar um limitante inferior para a razão de aproximação desses algoritmos.
+    Fica, então, explícita a impossibilidade de encontrarmos algoritmos de aproximação para a versão geral do problema dos $k$-centros, a menos que $P = \NP$.
+
+    Agora que justificamos o estudo de algoritmos de aproximação para a versão métrica desse problema vamos mostrar um limitante inferior para a razão de aproximação desses algoritmos. Esse teorema é de autoria do Hsu e Nemhauser~\cite{HSU1979209} e é o algoritmo 5.7 do livro V2001.
     
     \begin{theorem}
-        Seja $\varepsilon \in (0,1]$. Não existe $(2-\varepsilon)$-aproximação para o problema dos $k$-centros, a menos que $P=\NP$.
+        Seja $\varepsilon \in (0,1]$. Não existe $(2-\varepsilon)$-aproximação para a versão métrica do problema dos $k$-centros, a menos que $P=\NP$.
     \end{theorem}
-    A prova do Teorema~\ref{theorem:2.3} essencialmente serve também para esse Teorema, a única diferença é que aqui precisamos assumir a existência de um algoritmo que é uma $(2 - \varepsilon)$-aproximação para o problema dos $k$-centros.
+    A prova do Teorema~\ref{theorem:2.3} essencialmente serve também para esse teorema. A única diferença é que aqui assumimos a existência de uma $(2 - \varepsilon)$-aproximação para o problema dos $k$-centros e chegamos no mesmo absurdo.
 
     Começaremos por um algoritmo simples, mas que garante a melhor razão de aproximação.

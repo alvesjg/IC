@@ -1,19 +1,29 @@
-Vamos mostrar que se existe uma $\alpha$-aproximação para o problema de $k$-mediana com $\alpha < 1.735$ então existe um algoritmo que é uma $(c \ln n)$-aproximação para o problema da cobertura de conjuntos sem peso com $c<1$. 
-Feige~\cite{Feige98} mostrou que se tal algoritmo existe, então existe um algoritmo determinístico que leva tempo $O(n^{O(\log\log n)})$ para todo problema $NP$-completo.
+Nesta seção vamos mostrar um resultado que limita inferiormente a razão de aproximação para os algoritmos do problema das $k$-medianas. Esse resultado é o Teorema 16.17 que se encontra na Seção 16.2 do livro WS2011. Ele foi desenvolvido por Jain, Mahdian, Markakis, Saberi e Vazirani~\cite{jain2002greedy}.
 
-Vamos fazer um algoritmo de aproximação para o problema da cobertura de conjuntos utilizando várias chamadas ao algoritmo que é uma $\alpha$-aproximação para o problema de $k$-mediana. 
-Seja $(E,\{S_1,\ldots,S_m\})$ uma instância do problema de cobertura de conjuntos, criaremos uma sequência de instâncias para o problema de $k$-mediana. 
+Vamos mostrar que se existe uma $\alpha$-aproximação para o problema das $k$-medianas com $\alpha < 1.735$ então existe um algoritmo que é uma $(c \ln n)$-aproximação para o problema da cobertura de conjuntos sem peso com $c<1$. 
+Feige~\cite{Feige98} mostrou que a existência desse segundo algoritmo implica a existência de um algoritmo determinístico que leva tempo $O(n^{O(\log\log n)})$ para todo problema $\NP$-completo.
+
+Vamos apresentar um algoritmo de aproximação para o problema da cobertura de conjuntos que utiliza várias chamadas ao algoritmo que é uma $\alpha$-aproximação para o problema das $k$-medianas. 
+Seja $(E,\{S_1,\ldots,S_m\})$ uma instância do problema de cobertura de conjuntos. Criaremos uma sequência de instâncias para o problema das $k$-medianas. 
 A primeira delas terá o conjunto de instalações $F \coloneqq [m]$ e o conjunto de clientes $D \coloneqq E$. 
-A ideia é que escolheremos um subconjunto $F' \subseteq F$ de instalações que serão abertas e existirá um subconjunto $D' \subseteq D$ tal que para todo $j \in D'$ existe $i \in F'$ tal que $j \in S_i$. 
-Então, para construir a próxima instância usaremos o conjunto de instalações $F \setminus F'$ e o conjunto de clientes $D \setminus D'$, que representam os subconjuntos de $E$ que ainda podem ser escolhidos e os elementos de $E$ que ainda não foram cobertos, respectivamente.
+A ideia é que escolheremos um conjunto $F' \subseteq F$ de instalações que serão abertas e existirá um conjunto $D' \subseteq D$ tal que, para todo $j \in D'$, existe $i \in F'$ tal que $j \in S_i$. 
+Então, para construir a próxima instância, usaremos o conjunto de instalações $F \setminus F'$ e o conjunto de clientes $D \setminus D'$, que representam os subconjuntos de $E$ que ainda podem ser escolhidos e os elementos de $E$ que ainda não foram cobertos, respectivamente.
 Isso acontecerá sucessivamente até que todo os elementos de $E$ sejam cobertos, ou seja, até que $D = \emptyset$.
-O custo de conexão dos clientes será igual para todas as instâncias. Para uma instalação $i$ e um cliente $j$ definimos $c_{ij}\coloneqq 1$ se $j \in S_i$ e $3$ caso contrário.
-Queremos escolher $k^*$ instalações em cada chamada do algoritmo do problema de $k$-mediana, em que $k^*$ é o menor tamanho de uma cobertura de conjunto para essa instância. Como é difícil saber o tamanho de uma cobertura de conjuntos ótima, vamos rodar essa rotina para todo $k \in [m]$, ou seja, todos os candidatos para o tamanho de uma cobertura de conjuntos ótima para essa instância.
+O custo de conexão dos clientes será igual para todas as instâncias. Para uma instalação $i$ e um cliente $j$ definimos $c_{ij}\coloneqq 1$ se $j \in S_i$ e $c_{ij} \coloneqq 3$ caso contrário.
+Queremos escolher $k^*$ instalações em cada chamada do algoritmo do problema das $k$-medianas, em que $k^*$ é o menor tamanho de uma cobertura de conjunto para essa instância. Como é difícil saber o tamanho de uma cobertura de conjuntos ótima, vamos rodar essa rotina para todo $k \in [m]$, ou seja, para todos os candidatos para o tamanho $k^*$ de uma cobertura de conjuntos ótima para essa instância.
 
 \begin{algorithm}
-    \caption{}
+    \caption{\sc Inaprox-JMMSV$(E,\{S_1,\ldots,S_m\})$}
     \begin{algorithmic}[1]
-        \State $c_{ij} \gets 1$ se $j \in S_i$ e 3 caso contrário, para todo $i \in [m]$ e $j \in E$.
+        \For{$i \gets 1$ até $m$}
+            \For{todo $j \in E$}
+            \If{$j \in S_i$}
+            \State $c_{ij} \gets 1$
+            \Else
+            \State $c_{ij} \gets 3$
+            \EndIf
+            \EndFor
+        \EndFor
         \For{$k \gets 1$ até $m$}
             \State $I_k \gets \emptyset$
             \State $D \gets E$; $F \gets [m]$
@@ -30,32 +40,30 @@ Queremos escolher $k^*$ instalações em cada chamada do algoritmo do problema d
 
 
 \begin{theorem}
-Se existe uma $\alpha$-aproximação para o problema de $k$-mediana com $\alpha < 1.735$, então o {\bf Algoritmo 9} é uma $(c \ln n)$-aproximação para o problema de cobertura de conjuntos com $c<1$ quando $n$ é suficiente grande.
+Se existe uma $\alpha$-aproximação para o problema das $k$-medianas com $\alpha < 1.735$, então {\sc Inaprox-JMMSV} é uma $(c \ln n)$-aproximação para o problema de cobertura de conjuntos com $c<1$ quando $n$ é suficiente grande.
 \end{theorem}
 
 \begin{proof}
-Seja $k^*$ o tamanho de uma cobertura de conjuntos ótima para a instância. Suponha que estamos na iteração $k^*$ do laço {\bf Para} e na iteração $\ell$ do laço {\bf Enquanto}.
-Seja $D_\ell$ e $F_\ell$ os conjuntos $D$ e $F$ no começo dessa iteração. Denote $n_\ell \coloneqq |D_\ell|$. Note que existe uma solução para essa instância do problema de $k$-mediana com custo $n_\ell$ em que abrimos todas as instalações que representam subconjuntos que estão em uma mesma resposta ótima da cobertura de conjuntos e associamos os clientes restantes às instalações com custo de conexão 1.
-Seja $F_\ell'$ o subconjunto das instalações devolvido pela chamada do algoritmo na Linha~6 e $D_\ell'$ o subconjunto de clientes encontrado na Linha~8. Denote $p_\ell \coloneqq n_\ell / |D_\ell'|$. É fácil notar que o custo da solução $F'$ é
+Seja $k^*$ o tamanho de uma cobertura de conjuntos ótima da instância $(E,\{S_1,\ldots,S_m\})$. Suponha que estamos na iteração $k^*$ do laço {\bf Para} e na iteração $\ell$ do laço {\bf Enquanto} do algoritmo {\sc Inaprox-JMMSV}.
+Seja $D_\ell$ e $F_\ell$ os conjuntos $D$ e $F$ no começo dessa iteração do laço {\bf Enquanto}. Seja $n_\ell \coloneqq |D_\ell|$. Note que existe uma solução para a instância $(F_\ell,D_\ell,c,k^*)$ do problema das $k$-medianas com custo $n_\ell$ em que abrimos todas as instalações que representam subconjuntos que estão em uma mesma resposta ótima da cobertura de conjuntos e associamos os clientes restantes às instalações com custo de conexão 1.
+Seja $F_\ell'$ o conjunto das instalações devolvido pela chamada do algoritmo na linha~6 e $D_\ell'$ o conjunto de clientes encontrado na linha~8. Denote $p_\ell \coloneqq  |D_\ell'|/n_ell$. É fácil notar que o custo da solução $F'_\ell$ é
 \[ p_\ell n_\ell + 3 (1-p_\ell) n_\ell \leq \alpha  n_\ell\]
 e, portanto, 
 \begin{equation} 
 3 - 2p_\ell \leq \alpha.
 \end{equation}
 
-Seja $c$ uma constante entre 0 e 1 que vamos escolher depois. Suponha que $p_\ell \leq 1 - e^{-\frac{1}{c}}$ para algum $\ell$. 
+Seja $c$ uma constante entre 0 e 1 que vamos escolher depois. Suponha que ${p_\ell \leq 1 - e^{-\frac{1}{c}}}$ para algum $\ell$. 
 Então
 \[ 1 + 2e^{-\frac{1}{c}} \leq 3 - 2p_\ell < \alpha\]
 
-O valor de $c$ que maximiza o lado esquerdo da desigualdade é $c$ próximo de 1 e teremos $1.735 \leq \alpha < 1.735$ o que é um absurdo. Note que o lado esquerdo da desigualdade é quem nos traz o valor do resultado de inaproximabilidade para o problema de $k$-mediana.
+O valor de $c$ que maximiza o lado esquerdo da desigualdade é $c$ próximo de 1 e teremos $1.735 \leq \alpha < 1.735$ o que é um absurdo. Note que o lado esquerdo da desigualdade é quem nos traz o valor do resultado de inaproximabilidade para o problema das $k$-medianas.
 
-Agora, vamos mostrar que se $p_\ell > 1 - e^{ - \frac{1}{c}}$ para todo $\ell$, então o algoritmo devolve uma $(c'\ln n)$-aproximação para o problema da cobertura de conjuntos com $c' < 1$. Vamos chamar de $r$ a quantidade de iterações que o laço {\bf Para} realiza. É evidente que $|I_{k^*}| = k^*r$, então a razão de aproximação desse algoritmo é no máximo $r$. Como vale que $p_\ell > 1 - e^{ - \frac{1}{c}}$, então temos que $1 < c \ln\left( \frac{1}{1-p_\ell}\right)$. Note que $n_{\ell + 1} = n_\ell(1-p_\ell)$ e $n_r \geq 1$. Assim, vale que $n_1 \prod_{\ell =1}^{r-1} (1 - p_\ell) = n_r \geq 1$ e, consequentemente, $\ln\left(\prod_{\ell =1 }^{r-1} \frac{1}{1-p_\ell}\right) \leq \ln n_1 = \ln n$. Assim,
-\[
-r = (r - 1) + 1 < c\sum_{\ell = 1}^{r-1} \ln \left( \frac{1}{1-p\ell}\right) + 1 \leq c \ln n + 1 \leq c' \ln n
-\]
-em que a última desigualdade vale para algum $c' \in (c,1)$, uma vez que $n$ é suficientemente grande.
+Agora, vamos mostrar que, se $p_\ell > 1 - e^{ - \frac{1}{c}}$ para todo $\ell$, então {\sc Inaprox-JMMSV} devolve uma $(c'\ln n)$-aproximação para o problema da cobertura de conjuntos com $c' < 1$. Vamos chamar de $r$ a quantidade de iterações que o laço {\bf Enquanto} realiza. É evidente que $|I_{k^*}| \leq k^*r$, logo a razão de aproximação desse algoritmo é no máximo $r$. Para todo $\ell$ vale que $p_\ell > 1 - e^{ - \frac{1}{c}}$, então temos que $1 < c \ln\left( \frac{1}{1-p_\ell}\right)$. Note que $n_{\ell + 1} = n_\ell(1-p_\ell)$ e $n_r \geq 1$. Assim, vale que $n_1 \prod_{\ell =1}^{r-1} (1 - p_\ell) = n_r \geq 1$ e, consequentemente, $\ln\left(\prod_{\ell =1 }^{r-1} \frac{1}{1-p_\ell}\right) \leq \ln n_1 = \ln n$. Assim,
+\[ r = (r - 1) + 1 < c\sum_{\ell = 1}^{r-1} \ln \left( \frac{1}{1-p\ell}\right) + 1 \leq c \ln n + 1 \leq c' \ln n, \]
+em que a última desigualdade vale para algum $c' \in (c,1)$, uma vez que, pelo enunciado do teorema, podemos assumir que $n$ é suficientemente grande.
 
-Assim, temos uma aproximação para o problema de cobertura de conjuntos com razão de aproximação estritamente menor que $\ln n$.
+Assim, temos uma aproximação para o problema de cobertura de conjuntos com razão de aproximação estritamente menor que $\ln n$ para $n$ suficientemente grande.
 \end{proof}
 
-Juntando esse resultado com o resultado do Feige temos que a existência de uma $\alpha$-aproximação para o problema de $k$-mediana com $\alpha < 1.735$ implica a existência de um algoritmo determinístico que leva tempo $O(n^{O(\log \log n)})$ para todo problema $\NP$-completo.
+Juntando esse resultado com o resultado do Feige temos que a existência de uma $\alpha$-aproximação para o problema das $k$-medianas com $\alpha < 1.735$ implica a existência de um algoritmo determinístico que leva tempo $O(n^{O(\log \log n)})$ para todo problema $\NP$-completo.

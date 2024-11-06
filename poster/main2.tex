@@ -1,0 +1,164 @@
+\documentclass[final]{beamer} 
+\usepackage[orientation=portrait,size=a1,scale=1.2,debug]{beamerposter} 
+
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+
+% para poder usar imagens eps e psfrag
+
+%\usepackage{epstopdf} 
+%\usepackage{epsfig}
+\usepackage{graphicx}
+\newcommand{\tdots}{\,.\,.\,} % in place of \ldots
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usetikzlibrary{matrix,backgrounds, decorations.pathreplacing, automata, arrows}
+\usepackage{subfig}
+
+
+
+\newcommand{\E}{\Sigma}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\Oh}{\mathcal{O}}
+\renewcommand{\emph}[1]{\textbf{#1}}
+
+
+\newcommand{\PP}{\mbox{P}}
+\newcommand{\NP}{\mbox{NP}}
+\newcommand{\PL}{\mathit{PL}}
+\newcommand{\PLI}{\mathit{PLI}}
+\newcommand{\OPT}{\mbox{OPT}}
+
+\newtheorem{teo}{Teorema}[section]  % numerado por section
+\newtheorem{lema}[teo]{Lema}        % numerado como teo
+\newtheorem{cor}[teo]{Corolário}    % numerado como teo
+\newtheorem{fato}[teo]{Fato}        % numerado como teo
+\newtheorem{mdef}[teo]{Definição}   % numerado como teo
+
+\newcommand{\emptystring}{\varepsilon}
+
+%cardinalidade
+\newcommand{\card}[1]
+{\left|#1\right|}
+
+\let\:=\colon
+\let\epsilon=\varepsilon
+
+%\def\({\left(}
+%\def\){\right)}
+\def\<{\langle}
+\def\>{\rangle}
+
+% valor (e.g., de uma solução)
+\newcommand{\Val}[1]
+{\mathrm{val}\(#1\)}
+
+
+% cores utilizadas para os algoritmos
+\usepackage{framed}
+\definecolor{azul}{rgb}{0.76471,0.81176,0.91373}  % c3cfe9 -> 195,207,233 -> 0.76471   0.81176   0.91373
+\definecolor{lilas}{rgb}{0.83529,0.80784,0.89804} % d5cee5 -> 213,206,229 -> 0.83529   0.80784   0.89804
+\definecolor{ops}{rgb}{0.9,0.9,0.9} % d5cee5 -> 213,206,229 -> 0.83529   0.80784   0.89804
+
+\urlstyle{same}
+
+%==The poster style============================================================
+\usetheme{poster-exemplo}            % our poster style
+%--set colors for blocks (without frame)---------------------------------------
+  \setbeamercolor{block title}{fg=dblue,bg=white}
+  \setbeamercolor{block body}{fg=black,bg=white}
+%--set colors for alerted blocks (with frame)----------------------------------
+%--textcolor = fg, backgroundcolor = bg, dblue is the jacobs blue
+  \setbeamercolor{block alerted title}{fg=dblue,bg=gray!50}%frame color
+  \setbeamercolor{block alerted body}{fg=black,bg=gray!20}%body color
+%
+%==Title, date and authors of the poster=======================================
+\title{Algoritmos de Aproximação para Problemas de Clustering}
+\author{João Guilherme Alves Santos \hspace{100pt} Orientadora: Cristina Gomes Fernandes}
+\institute{\vspace{10pt}Departamento de Ciência da Computação,
+Instituto de Matemática e Estatística, Universidade de São Paulo}
+%\date{\today}
+
+
+%==============================================================================
+%==the poster content==========================================================
+%==============================================================================
+\begin{document}
+%--the poster is one beamer frame, so we have to start with:
+\begin{frame}[t]
+%--to seperate the poster in columns we can use the columns environment
+\begin{columns}[t] % the [t] options aligns the columns content at the top
+%--the left column-------------------------------------------------------------
+%\begin{column}{0.28\paperwidth}% the right size for a 3-column layout
+\begin{column}{.9\paperwidth}% the right size for a 3-column layout
+
+	\begin{alertblock}{Introdução}
+    Clustering refere-se a uma classe de problemas cujo objetivo é agrupar objetos de maneira que objetos no mesmo cluster apresentam mais semelhanças quando comparados a objetos em clusters diferentes. Resumidamente, os problemas que estudamos buscam encontrar uma maneira menos custosa de posicionar instalações para melhor atender um conjunto de clientes. Os clientes estarão em um mesmo cluster se a instalação mais próxima a eles for a mesma. Neste trabalho estudamos, sob o ponto de vista de algoritmos de aproximação, três problemas de clustering NP-difíceis: k-medianas, k-centros e localização de instalações. Para cada um deles, estudamos vários algoritmos de aproximação bem como resultados de inaproximabilidade. Esses problemas são muito conhecidos e importantes nas áreas de pesquisa operacional e otimização combinatória.
+    \end{alertblock}
+
+    \end{column}
+\end{columns}
+
+\begin{columns}[t]
+
+  \begin{column}{0.47\paperwidth}
+    \begin{block}{$k$-Centros}
+      No problema dos $k$-centros temos um conjunto de cidades que precisamos atender e, para isso, iremos construir instalações em $k$ delas. Temos uma função $c_{ij}$ que representa a distância entre uma cidade $i$ e a cidade $j$. Cada cidade $j$ vai ser associada à instalação $i$ mais próxima a ela com custo $c_{ij}$. O objetivo é minimizar o maior custo entre uma cidade qualquer e a instalação a qual ela está associada. Note que podemos modelar nosso problema em um grafo completo $G \coloneqq (V,E)$ em que $V$ são as cidades e queremos encontrar $ S \subseteq V$ que minimize $\max_{j \in V} c(j,S)$ em que $c(j,S)\coloneqq min_{i\in S} \; c_{ij}$.
+
+      Para esse problema, vamos mostrar uma 2-aproximação gulosa desenvolvida por González[1]. O algoritmo é simples: vamos começar escolhendo arbitrariamente uma cidade para construir uma instalação e vamos, iterativamente, escolhendo a cidade mais distante do conjunto das instalações.
+    \end{block}
+  \end{column}
+
+  \begin{column}{0.47\paperwidth}
+    \begin{block}{Localização de instalações}
+      Localização de instalações é um problema que visa determinar a melhor localização para instalações, como fábricas ou depósitos, com base no custo de abertura das instalações e custos de transporte. Temos um conjunto $F$ de possíveis instalações a serem abertas e um conjunto $D$ de clientes que precisam ser atendidos. Temos uma função $c_{ij}$ que representa a distância entre uma instalação $i$ e um cliente $j$. Uma instalação $i$ custa $f_i$ para ser aberta. Cada cliente $j$ vai ser associado à instalação $i$ mais próxima a ele com custo $c_{ij}$. O objetivo então é encontrar um conjunto $S \subseteq F$ que minimize \( \scalebox{1.5}{$\sum$}_{i \in S} f_i + \scalebox{1.5}{$\sum$}_{j \in D} \; c(j,S) \) em que $c(j,S)\coloneqq min_{i\in S} \; c_{ij}$.
+
+      Para o problema de localização de instalações vamos mostrar uma 3-aproximação primal-dual desenvolvida por Jain e Vazirani[2]. A relaxação do programa inteiro que modela o problema é 
+      \begin{subequations}
+        \begin{align}
+          \text{Minimizar} \quad & \scalebox{1.5}{$\sum$}_{i \in F}f_iy_i + \scalebox{1.5}{$\sum$}_{i\in F,j\in D} \; c_{ij}x_{ij}, \\
+          \text{sujeito a} \quad & \scalebox{1.5}{$\sum$}_{i\in F} x_{ij}\geq1, && \forall j \in D, \\
+          &y_i - x_{ij} \geq 0, && \forall i\in F,j\in D, \\
+          &x_{ij} \geq 0, && \forall i\in F,j\in D, \\
+          &y_i \geq 0, && \forall i\in F.
+        \end{align}
+      \end{subequations}
+
+      O seu dual é 
+      \begin{subequations}
+        \begin{align}
+          \text{Maximizar} \quad & \scalebox{1.5}{$\sum$}_{j \in D} v_{j},\\
+          \text{sujeito a} \quad & \scalebox{1.5}{$\sum$}_{j\in D} w_{ij}\leq f_i, && \forall i \in F\\
+          &v_{j} - w_{ij}\leq c_{ij}, && \forall i\in F,j\in D,\\
+          &w_{ij} \geq 0 , && \forall i\in F,j\in D,\\
+          &v_j \geq 0, && \forall j\in D.
+        \end{align}
+      \end{subequations}
+      As variáveis $x_{ij}$ e $y_i$ do primal indicam se o cliente $j$ está associado à instalação $i$ e se a instalação $i$ está aberta, respectivamente. As variáveis $w_{ij}$ e $v_j$ podem ser interpretadas como quanto o cliente $j$ pode contribuir para pagar pela abertura da instalação $i$ e qual o orçamento do cliente $j$ (que irá pagar pela sua associação com alguma instalação e vai contribuir com a abertura dessa instalação).
+
+      Para uma solução $(v,w)$ chamamos de \emph{vizinhança} de uma instalação $i$ os clientes $j$ tais que $v_j \geq c_{ij}$. 
+      
+      O algoritmo é dividido em duas fases. Na primeira delas, vamos construir uma solução viável $(v,w)$ do dual aumentando uniformemente as variáveis de clientes que ainda não estão na vizinhança de alguma instalação que já recebeu contribuição suficiente para ser aberta. Vamos simular uma pequena instância com duas instalações e seis clientes. As arestas vão crescendo conforme o $v_j$ de um cliente aumenta e uma vez que ela encosta na instalação significa que o cliente entrou na vizinhança daquela instalação, a partir dai o cliente começa a contribuir para a abertura dessa instalação. A contribuição que uma instalação recebe irá aparecer como traços ao lado dela. A solução começa com $(v,w) = (0,0)$ e é representada pelo seguinte desenho
+      \begin{figure}
+        \includegraphics[scale=0.2]{imgs/fac0.png}
+      \end{figure}
+      em que as bolas azuis são os clientes e os quadrados vermelhos são as instalações. O número próximo a cada instalação é o preço de sua abertura.
+      
+      Na primeira iteração vamos aumentar o valor de cada $v_j$ em 1.
+      \begin{figure}
+        \includegraphics[scale=0.2]{imgs/fac1.png}
+      \end{figure}
+      Note que dois clientes já fazem parte da vizinhança da instalação que está na esquerda e três clientes já fazem parte da vizinhança da instalação que está na direita. Assim, na próxima iteração aumentaremos a contribuição desses clientes para a abertura dessas instalações. Aumentamos novamente o valor de cada $v_j$ em 1 e o valor de cada $w_{ij}$ para cada instalação e cliente em sua vizinhança.
+      
+      \begin{figure}
+        \includegraphics[scale=0.2]{imgs/fac2.png}
+      \end{figure}
+      Assim, cada instalação já conseguiu contribuições o suficiente para pagar pela sua abertura e todos os clientes estão na vizinhança de uma instalação que consegue pagar pela sua abertura. Essa última observação é o critério de parada da primeira fase.
+    \end{block}
+    \end{column}
+\end{columns}
+
+% ---------------------------------------------------------------------------- %
+\end{frame}
+\end{document}

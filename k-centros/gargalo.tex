@@ -1,3 +1,5 @@
+Nessa seção vamos apresentar o algoritmo que utiliza o método do gargalo para o problema dos $k$-centros. Esse algoritmo foi desenvolvido pelo Hochbaum e pelo Shmoys~\cite{HSBottle} e foi estudado no capítulo 5 do livro V2001.
+
 Os chamados problemas de gargalo são aqueles definidos em grafos com pesos nas arestas tais que a resposta ótima é o peso de uma aresta.
 
 Para o próximo algoritmo será necessário saber o que é um conjunto independente de vértices.
@@ -32,7 +34,7 @@ Dada a definição vamos enunciar e provar um lema que nos ajudará no algoritmo
 \end{proof}
 Agora, temos todas as definições e lemas que serão necessários para o algoritmo.
 \begin{algorithm}
-    \caption{GHS$(G,c,k)$}
+    \caption{\sc Gargalo-HS$(G,c,k)$}
     \label{k-center:bottleneck}
     \begin{algorithmic}[1]
         \State $i \leftarrow 0$
@@ -45,10 +47,9 @@ Agora, temos todas as definições e lemas que serão necessários para o algori
     \end{algorithmic}
 \end{algorithm}
 
-Este algoritmo é de autoria de Gonzalez~\cite{GONZALEZ1985293} e independentemente Hochbaum e Shmoys~\cite{HSBottle}, e, por isso, está sendo creditado com suas iniciais em seu nome. 
 
 \begin{theorem}
-    O algoritmo {\sc GHS}$(G,c,k)$ é uma $2$-aproximação do problema dos $k$-centros.
+    O algoritmo {\sc Gargalo-HS} é uma $2$-aproximação do problema dos $k$-centros.
 \end{theorem}
 \begin{proof}
     Primeiro vamos mostrar que o algoritmo é polinomial.

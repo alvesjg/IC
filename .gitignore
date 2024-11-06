@@ -7,3 +7,8 @@
 *.bbl
 *.blg
 .vscode
+*.fdb*
+*.fls
+*.nav
+*.snm
+!poster/imgs/*
