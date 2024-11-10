@@ -1,7 +1,7 @@
-Nesta seção vamos mostrar um resultado que limita inferiormente a razão de aproximação para os algoritmos do problema de localização de instalações. Esse resultado é o Corolário 16.16 que se encontra na seção 16.2 do livro WS2011. Ele foi desenvolvido por Guha e Kuller~\cite{GUHA1999228}.
+Nesta seção vamos mostrar um resultado que limita inferiormente a razão de aproximação para os algoritmos do problema de localização de instalações. Esse resultado é o Corolário 16.16 que se encontra na Seção 16.2 do livro WS2011. Ele foi desenvolvido por Guha e Kuller~\cite{GUHA1999228}.
 
 Vamos mostrar que se existe uma $\alpha$-aproximação para o problema de localização de instalações com $\alpha < 1.463$ então existe um algoritmo que é uma $(c \ln n)$-aproximação para o problema da cobertura de conjuntos sem peso com $c<1$. 
-Feige~\cite{Feige98} mostrou a existência desse segundo algoritmo implica na existência de um algoritmo determinístico que leva tempo $O(n^{O(\log\log n)})$ para todo problema $\NP$-completo.
+Feige~\cite{Feige98} mostrou que a existência desse segundo algoritmo implica na existência de um algoritmo determinístico que leva tempo $O(n^{O(\log\log n)})$ para todo problema $\NP$-completo.
 
 Vamos apresentar um algoritmo de aproximação para o problema da cobertura de conjuntos que utiliza várias chamadas ao algoritmo que é uma $\alpha$-aproximação para o problema de localização de instalações. 
 Seja $(E,\{S_1,\ldots,S_m\})$ uma instância do problema de cobertura de conjuntos. Criaremos uma sequência de instâncias para o problema de localização de instalações. 
@@ -10,7 +10,7 @@ A ideia é que escolheremos um conjunto $F' \subseteq F$ de instalações que se
 Então, para construir a próxima instância, usaremos o conjunto de instalações $F \setminus F'$ e o conjunto de clientes $D \setminus D'$, que representam os subconjuntos de $E$ que ainda podem ser escolhidos e os elementos de $E$ que ainda não foram cobertos, respectivamente. 
 Isso acontecerá sucessivamente até que todo os elementos de $E$ sejam cobertos, ou seja, até que $D = \emptyset$.
 O custo de conexão dos clientes será igual para todas as instâncias. Para uma instalação $i$ e um cliente $j$, definimos $c_{ij}\coloneqq 1$ se $j \in S_i$ e $c_{ij} \coloneqq 3$ caso contrário.
-O custo de abertura das instalações será uniforme em uma mesma instância. Definimos $f_i \coloneqq \gamma |D|/k^*$ para todo $i\in F$ em que $\gamma$ é uma constante que definiremos posteriormente, $D$ é o conjunto de elementos que ainda não foram cobertos e $k^*$ é o tamanho mínimo de uma cobertura de conjuntos para a instância do problema de cobertura de conjuntos recebida. Como é difícil saber o tamanho de uma cobertura de conjuntos ótima, vamos executar essa rotina para todo $k \in [m]$, ou seja, para todos os candidatos a tamanho $k^*$ de uma cobertura de conjuntos ótima para essa instância.
+O custo de abertura das instalações será uniforme em uma mesma instância. Definimos $f_i \coloneqq \gamma |D|/k^*$ para todo $i\in F$ em que $\gamma$ é uma constante que definiremos posteriormente, $D$ é o conjunto de elementos que ainda não foram cobertos e $k^*$ é o tamanho mínimo de uma cobertura de conjuntos para a instância $E,\set{S_1,\ldots,S_m}$ do problema de cobertura de conjuntos. Como é difícil saber o tamanho de uma cobertura de conjuntos ótima, vamos executar essa rotina para todo $k \in [m]$, ou seja, para todos os candidatos a tamanho $k^*$ de uma cobertura de conjuntos ótima para essa instância.
 
 O algoritmo é formalizado no algoritmo {\sc Inaprox-GK}, onde {\sc $\alpha$-aprox-loc-inst} refere-se à $\alpha$-aproximação para o problema de localização de instalações e o valor de $\gamma$ será estabelecido no Teorema~\ref{inaprox}.
 
@@ -48,7 +48,7 @@ Se existe uma $\alpha$-aproximação para o problema da localização de instala
 \end{theorem}
 
 \begin{proof}
-Seja $k^*$ o tamanho de uma cobertura de conjuntos ótima para a instância do problema de cobertura de conjuntos recebida. Suponha que estamos na iteração $k^*$ do laço {\bf Para} e na iteração $\ell$ do laço {\bf Enquanto} do algoritmo {\sc Inaprox-GK}.
+Seja $k^*$ o tamanho de uma cobertura de conjuntos ótima para a instância $(E,\set{S_1,\ldots,S_m})$ do problema de cobertura de conjuntos. Suponha que estamos na iteração $k^*$ do laço {\bf Para} e na iteração $\ell$ do laço {\bf Enquanto} do algoritmo {\sc Inaprox-GK}.
 Sejam $D_\ell$ e $F_\ell$ os conjuntos $D$ e $F$ no começo dessa iteração do laço {\bf Enquanto}. Sejam $n_\ell \coloneqq |D_\ell|$ e $f^\ell \coloneqq \gamma n_\ell /k^*$. Note que existe uma solução para a instância $(D_\ell,F_\ell,c,f^\ell)$ do problema de localização de instalações com custo no máximo $f^\ell k^* + n_\ell$ em que abrimos todas as instalações que representam subconjuntos que estão em uma cobertura de conjuntos ótima e associamos os clientes restantes às instalações com custo de conexão 1.
 Seja $F_\ell'$ o conjunto das instalações devolvido pela chamada do algoritmo na linha 7 e $D_\ell'$ o conjunto de clientes encontrado na linha 9. Sejam $\beta_\ell \coloneqq k^*/|F_\ell'|$ e $p_\ell \coloneqq |D_\ell'|/n_\ell $. É fácil notar que o custo da solução $F'_\ell$ é
 \[ |F_\ell'| f^\ell+ p_\ell n_\ell + 3 (1-p_\ell) n_\ell = n_\ell(\beta_\ell \gamma + 3 - 2p_\ell) \leq \alpha ( f^\ell k^* + n_\ell) = \alpha n_\ell (\gamma + 1)\]

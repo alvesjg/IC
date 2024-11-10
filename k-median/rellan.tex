@@ -1,6 +1,6 @@
 Nessa seção falaremos sobre o algoritmo que utiliza o método de relaxação Lagrangeana para o problema das $k$-medianas. Esse algoritmo foi estudado na Seção 7.7 do livro WS2011 e foi desenvolvido por Jain e Vazirani~\cite{JV}.
 
-A relaxação Lagrangeana é um modo de aumentar o conjunto de soluções viáveis de um programa linear retirando uma de suas restrições e penalizando soluções que não respeitem essa restrição. Para o programa linear que é uma relaxação do programa inteiro do problema das $k$-medianas iremos retirar a restrição (22) que limita a quantidade de instalações abertas. Essa remoção resultará no seguinte programa.
+A relaxação Lagrangeana é um modo de aumentar o conjunto de soluções viáveis de um programa linear retirando uma de suas restrições e penalizando soluções que não respeitem essa restrição. Para o programa linear que é uma relaxação do programa inteiro do problema das $k$-medianas iremos retirar a restrição (23) que limita a quantidade de instalações abertas. Essa remoção resultará no seguinte programa.
 \begin{align}
     \text{Minimizar} \quad & \sum_{i \in F, j \in D} c_{ij}x_{ij} + \lambda \left(\sum_{i \in F} (y_i) - k\right) \\
     \text{sujeito a} \quad & \sum_{i \in F} x_{ij} \geq 1, &&\forall j \in D, \\
@@ -9,7 +9,7 @@ A relaxação Lagrangeana é um modo de aumentar o conjunto de soluções viáve
                            & y_i \geq 0, &&\forall i \in F.
 \end{align}
 A constante $\lambda$ é um multiplicador de Lagrange que nos deixará escolher o quão grande será o desconto no valor objetivo.
-Como queremos piorar o valor das solução que não respeitavam a restrição (22) no programa sem relaxação e como nosso problema é de maximização, então vamos nos restringir a falar de valores não-negativos para $\lambda$.
+Como queremos piorar o valor das solução que não respeitavam a restrição (23) no programa sem relaxação e como nosso problema é de maximização, então vamos nos restringir a falar de valores não-negativos para $\lambda$.
 O valor de uma solução ótima desse programa é no máximo o valor de uma solução ótima do programa sem a relaxação, uma vez que as soluções anteriores continuam viáveis e o seu custo não aumentou.
 
 Como essa relaxação é um programa linear, podemos encontrar o seu dual. O dual desse programa é o seguinte.
@@ -24,18 +24,18 @@ As restrições desses programas são iguais às restrições do programa linear
 %Observe que, com exceção dos termos constantes $-\lambda k$ nos valores objetivos, os dois programas lineares são idênticos a uma instância da relaxação linear do problema de localização de instalações e seu dual em que cada facilidade tem custo de abertura $f_i = \lambda$. 
 Desse modo, gostaríamos de usar algum algoritmo para o problema localização de instalações para encontrar uma solução para o problema das $k$-medianas. 
 
-No algoritmo de dual fitting para o problema de localização de instalações na seção~\ref{facility:guloso&fitting} encontramos um conjunto $X$ de instalações e construímos variáveis $\alpha$ tal que, definindo $v_j \coloneqq \frac{\alpha_j}{2}$ e $w_{ij} \coloneqq \max(0,v_j - c_{ij})$ para toda instalação $i$ e cliente~$j$, vale que $(v, w)$ é solução viável do dual e, pelo Teorema~\ref{greedy:5}, vale que
+No algoritmo de dual fitting para o problema de localização de instalações na Seção~\ref{facility:guloso&fitting} encontramos um conjunto $X$ de instalações e construímos variáveis $\alpha$ tal que, definindo $v_j \coloneqq \frac{\alpha_j}{2}$ e $w_{ij} \coloneqq \max(0,v_j - c_{ij})$ para toda instalação $i$ e cliente~$j$, vale que $(v, w)$ é solução viável do dual e, pelo Teorema~\ref{greedy:5}, vale que
 \[\sum_{j \in D} c(j,X) + 2\sum_{i \in X} f_i = \sum_{j \in D} \alpha_j =  2\sum_{j\in D} v_j.\]
 Substituindo $f_i$ por $\lambda$ e rearranjando, encontramos que
 \[\sum_{j\in D} c(j,X) \leq 2\left(\sum_{j\in D}v_j - \lambda|X|\right).\]
 Se $|X| = k$, então esse algoritmo é uma $2$-aproximação para o problema das $k$-medianas, uma vez que $ \sum_{j\in D} v_j - \lambda k$ é o valor da função objetivo do dual da relaxação Lagrangeana que por sua vez é um limitante inferior da resposta ótima para o problema das $k$-medianas. 
 
-Note que o valor de $\lambda$ está diretamente relacionado com a quantidade de instalações que serão abertas, caso $\lambda = 0$ é normal esperar que muitas instalações sejam abertas e caso $\lambda = \sum_{j \in D}\sum_{i \in F}c_{ij}$ o algoritmo abrirá apenas uma instalação. Então é natural pensar em encontrar um método que garanta um $\lambda$ que abra exatamente $k$ instalações, porém tal método não é conhecido. No entanto, podemos rodar uma busca binária para tentar encontrá-lo. Nessa busca binária, manteremos dois valores de $\lambda$, o primeira se iniciará como $\lambda_1 \coloneqq 0$ e o segundo como $\lambda_2 \coloneqq \sum_{j \in D}\sum_{i \in F}c_{ij}$, esses dois valores de $\lambda$ retornam soluções $X_1$ e $X_2$ (respectivamente) com $|X_1| > k$ e $|X_2| < k$. Rodaremos o algoritmo com o valor $\lambda \coloneqq \frac{1}{2}\left(\lambda_1 + \lambda_2 \right)$ que retorna um conjunto de instalações $X$. Caso $|X| = k$, então encontramos um $\lambda$ que garante uma $2$-aproximação. Caso contrário, atualizaremos o valor de $\lambda_1$ ou de $\lambda_2$, caso $|X| > k$ então atualizaremos o valor de $\lambda_1$ e, caso contrário, atualizaremos o valor de $\lambda_2$. Assim, rodaremos esse algoritmo até encontrar um $\lambda$ que garanta a abertura de $k$ instalações ou até que a diferença entre $\lambda_1$ e $\lambda_2$ seja tão pequena que seremos capazes de encontrar uma solução para o problema das $k$-medianas combinando essas duas soluções. Considerando $c_{\min}$ como o valor da menor aresta não nula, o valor que vamos considerar como suficiente para pararmos a busca binária é quando $\lambda_2 - \lambda_1 \leq \frac{\epsilon c_{\min}}{|F|}$. Vamos assumir aqui que $0 < c_{\min} \leq opt(I)$ e vamos mostrar que é possível encontrar resposta para o problema das $k$-medianas em tempo polinomial quando $\opt(I)=0$. Quando o algoritmo parar por conta dessa diferença, iremos combinar as soluções $X_1$ e $X_2$ para encontrar uma solução viável $X$ para o problema das $k$-medianas com custo no máximo $4 + \epsilon$ vezes o ótimo.
+Note que o valor de $\lambda$ está diretamente relacionado com a quantidade de instalações que serão abertas, caso $\lambda = 0$ é normal esperar que muitas instalações sejam abertas e caso $\lambda = \sum_{j \in D}\sum_{i \in F}c_{ij}$ o algoritmo abrirá apenas uma instalação. Então é natural pensar em encontrar um método que garanta um $\lambda$ que abra exatamente $k$ instalações. Infelizmente, esse método não é conhecido. No entanto, podemos rodar uma busca binária para tentar encontrar um bom valor para $\lambda$. Nessa busca binária, manteremos dois valores de $\lambda$:  $\lambda_1$ que inicialmente terá valor 0 e $\lambda_2$ que inicialmente terá valor $\sum_{j \in D}\sum_{i \in F}c_{ij}$. Esses valores de $\lambda$ retornam soluções $X_1$ e $X_2$ (respectivamente) com $|X_1| > k$ e $|X_2| < k$. Rodaremos o algoritmo com o valor $\lambda \coloneqq \frac{1}{2}\left(\lambda_1 + \lambda_2 \right)$ que retorna um conjunto de instalações $X$. Caso $|X| = k$, então encontramos um $\lambda$ que garante uma $2$-aproximação. Caso contrário, atualizaremos o valor de $\lambda_1$ ou de $\lambda_2$, caso $|X| > k$ então atualizaremos o valor de $\lambda_1$ e, caso contrário, atualizaremos o valor de $\lambda_2$. Assim, rodaremos esse algoritmo até encontrar um $\lambda$ que garanta a abertura de $k$ instalações ou até que a diferença entre $\lambda_1$ e $\lambda_2$ seja tão pequena que seremos capazes de encontrar uma solução aproximada para o problema das $k$-medianas combinando essas duas soluções. Seja $c_{\min}$ o valor da menor aresta não nula, o valor que vamos considerar como suficiente para pararmos a busca binária é quando $\lambda_2 - \lambda_1 \leq \frac{\epsilon c_{\min}}{|F|}$. Vamos assumir aqui que $0 < c_{\min} \leq opt(I)$ e vamos mostrar que é possível encontrar resposta para o problema das $k$-medianas em tempo polinomial quando $\opt(I)=0$. Quando o algoritmo parar por conta dessa diferença, iremos combinar as soluções $X_1$ e $X_2$ para encontrar uma solução viável $X$ para o problema das $k$-medianas com custo no máximo $4 + \epsilon$ vezes o ótimo.
 
 Note que essa busca binária em $\lambda$ faz $O(\log \frac{|F| \sum c_{ij}}{\epsilon c_{\min}})$ chamadas ao algoritmo dual fitting do problema de localização de instalações e, por isso, leva tempo polinomial para ser executado.
 
 \begin{lemma}
-    Seja $I$ uma instância para o problema das $k$-medianas. É possível decidir, em tempo polinomial, se $\opt(I) = 0$.
+    Seja $I$ uma instância para o problema das $k$-medianas. É possível decidir se $\opt(I) = 0$ em tempo polinomial.
 \end{lemma}
 \begin{proof}
     Seja $I(F,D,c,k)$ uma instância do problema das $k$-medianas. Seja $Z(i) \coloneqq \{j \in D: c_{ij} = 0\}$, ou seja, o conjunto de clientes que a instalação $i$ pode suprir com custo 0. Então, para que $\opt(I) = 0$, precisa existir $S \subseteq F$ tal que $|S|\leq k$ e $Z(S) \coloneqq \bigcup_{i \in S} Z(i) = D$.
@@ -48,7 +48,7 @@ Note que essa busca binária em $\lambda$ faz $O(\log \frac{|F| \sum c_{ij}}{\ep
 
     Vamos mostrar apenas que $\opt(I) = 0$ implica $|S|\leq k$ e $Z(S) = D$, uma vez que a volta é trivial. Seja $S^*$ tal que custo$(S^*) = 0$. Suponha sem perda de generalidade que $Z(i) \neq \emptyset$ para todo $i \in S^*$. Se $S^* = S$, então a afirmação é verdadeira. Seja $A = S \cap S^*$. Suponha $S^* \neq S$. Como $Z(S^*)=D$ não podemos ter $S^* \subset S$. Seja $i^* \in S^* \setminus S$. Como $i^* \not \in S$ então existe $i \in S$ tal que $Z(i) = Z(i^*)$. Então, seja $B \coloneqq \{i \in S: \text{existe } i^* \in S^* \setminus S \text{ tal que } Z(i) = Z(i^*)\}$. Note que $Z(B) = Z(S^*\setminus S)$. Assim,
     \[Z(S) \supseteq Z(A) \cup Z(B) = Z(S^* \cap S) \cup Z(S^*\setminus S) = Z(S^*) = D.\]
-    Como $Z(S) \subseteq D$, então $Z(S) = D$. Além disso, como $S$ não tem duas instalações com o mesmo $Z$, então $S = A \cup B$. Portanto, $|S| = |A| + |B| \leq |S^* \cap S| + |S^* \setminus S| = S^* \leq k$.
+    Como $Z(S) \subseteq D$, então $Z(S) = D$. Além disso, como $S$ não tem duas instalações com o mesmo $Z$, então $S = A \cup B$. Portanto, $|S| = |A| + |B| \leq |S^* \cap S| + |S^* \setminus S| = |S^*| \leq k$.
 \end{proof}
 
 A partir desse momento, vamos considerar que estamos em uma instância que não foi possível encontrar um $\lambda$ que nos resultasse em uma solução $X$ com $|X| = k$. Então, temos $\lambda_1$ e $\lambda_2$ que nos levam a soluções $X_1$ e $X_2$ com $|X_1| > k$ e $|X_2| < k$, respectivamente, com $\lambda_2 - \lambda_1 \leq \frac{\epsilon c_{\min}}{|F|}$. Vamos considerar também as variáveis $\alpha^1$ e $\alpha^2$ produzidas pelo algoritmo de dual fitting e definir $v_j^\ell \coloneqq \alpha_j^\ell$ e $w_{ij}^\ell \coloneqq \max(0,v_j^\ell - c_{ij})$ para instalações $i$ e clientes $j$ e para $\ell = 1,2$. Seja $a$ e $b$ tal que $a|X_1| + b|X_2| = k$ e $a + b = 1$ com $a,b>0$, ou seja, coeficientes de uma combinação convexa com os tamanhos das soluções encontradas que resulta em $k$. Esses coeficientes existem, uma vez que $|X_1| > k > |X_2|$. Isso implica que 
@@ -56,21 +56,21 @@ A partir desse momento, vamos considerar que estamos em uma instância que não 
 Conseguimos construir uma solução do dual $(v,w)$ definindo ${v = av^1 + bv^2}$ e ${w = aw^1 + bw^2}$. É fácil notar que essa solução é viável quando utilizamos custos de abertura $\lambda_2$, uma vez que $(v^1,w^1)$ também é solução viável do dual quando utilizamos $\lambda_2$ e, portanto, $(v,w)$ é combinação convexa de duas soluções viáveis. Seja $I$ a instância do problema das $k$-medianas recebido. 
 \begin{lemma}
     \label{k-median_relLag_lema1}
-    \[ac(X_1) + bc(X_2) \leq (1+\epsilon) 2\opt(I).\]
+    \[a \, \custo(X_1) + b \,\custo(X_2) \leq (1+\epsilon) 2\opt(I).\]
 \end{lemma}
 \begin{proof}
 Primeiro observemos que 
 \begin{subequations}
     \begin{align*}
-        c\left(X_1\right) &\leq 2\left(\sum_{j \in D} v_j^1 - \lambda_1|X_1|\right) = 2\left(\sum_{j\in D} v_j^1 - \left( \lambda_1 + \lambda_2 - \lambda_2 \right)|X_1|\right)\\
+        \custo\left(X_1\right) &\leq 2\left(\sum_{j \in D} v_j^1 - \lambda_1|X_1|\right) = 2\left(\sum_{j\in D} v_j^1 - \left( \lambda_1 + \lambda_2 - \lambda_2 \right)|X_1|\right)\\
         & = 2 \left(\sum_{j \in D} v_j^1 - \lambda_2 |X_1| \right) + 2 \left(\lambda_2 - \lambda_1\right) |X_1| \\
         &\leq 2 \left(\sum_{j \in D} v_j^1 - \lambda_2 |X_1| \right) + 2\frac{\epsilon\, c_{\min}}{|F|}|X_1| \leq 2 \, \epsilon \, \opt(I)
     \end{align*}
 \end{subequations}
-onde a primeira desigualdade vale pela garantia do algoritmo utilizado para encontrar a solução $X_1$, a segunda vale pelo limitante imposto para $\lambda_2 - \lambda_1$ e a última vale, pois $c_{\min} \leq \opt(I)$ e $\frac{|X_1|}{|F|} \leq 1$. Utilizando a desigualdade análoga à primeira desigualdade só que para $c(X_2)$ e utilizando o coeficiente convexo para construir a nossa solução, temos
+onde a primeira desigualdade vale pela garantia do algoritmo utilizado para encontrar a solução $X_1$, a segunda vale pelo limitante imposto para $\lambda_2 - \lambda_1$ e a última vale, pois $c_{\min} \leq \opt(I)$ e $\frac{|X_1|}{|F|} \leq 1$. Utilizando a desigualdade análoga à primeira desigualdade só que para $\custo(X_2)$ e utilizando o coeficiente convexo para construir a nossa solução, temos
 \begin{subequations}
     \begin{align*}
-        ac(X_1) + b c(X_2) &\leq 2a \left(\sum_{j\in D} v_j^1 - \lambda_2|X_1|\right) + 2a\, \epsilon\,\opt(I) + 2b\left(\sum_{j\in D} v_j^2 - \lambda_2|X_2|\right) \\
+        a \, \custo(X_1) + b \,\custo(X_2) &\leq 2a \left(\sum_{j\in D} v_j^1 - \lambda_2|X_1|\right) + 2a\, \epsilon\,\opt(I) + 2b\left(\sum_{j\in D} v_j^2 - \lambda_2|X_2|\right) \\
         &= 2\left(\sum_{j \in D} a v_j^1 + b v_j^2\right) - 2\lambda_2\left( a|X_1| + b|X_2|\right) + 2a\,\epsilon\,\opt(I)\\
         & = 2\left(\sum_{j\in D } v_j\right) - 2\lambda_2 k + 2a\,\epsilon\,\opt(I)\\
         & = 2\left( \sum_{j \in D } v_j -\lambda_2 k\right) + 2a\,\epsilon\,\opt(I) \leq (1+\epsilon)2\opt(I)
@@ -82,7 +82,8 @@ em que a segunda desigualdade vale pois $(v,w)$ é uma solução viável para o 
 O algoritmo então separa em dois casos, um caso simples em que $b \geq \frac{1}{2}$ e um caso um pouco mais complicado em que $b < \frac{1}{2}$. Se $b \geq \frac{1}{2}$, então devolvemos $X_2$ como solução viável, uma vez que $|X_2| < k$. Usando $b \geq \frac{1}{2}$ e o Lema~\ref{k-median_relLag_lema1}, temos que
 \begin{subequations}
     \begin{align*}
-        c(X_2) \leq 2bc(X_2) \leq 2\left(ac(X_1) + bc(X_2) \right) \leq 2(1+\epsilon) 2\opt(I) = (1+\epsilon)4\opt(I).
+        \custo(X_2) \leq 2b\,\custo(X_2) &\leq 2\left(a\,\custo(X_1) + b\,\custo(X_2) \right) \\
+        &\leq 2(1+\epsilon) 2\opt(I) = (1+\epsilon)4\opt(I).
     \end{align*}
 \end{subequations}
 
@@ -92,7 +93,7 @@ Agora precisamos mostrar que essa desigualdade também vale para o caso em que $
     Se $b < \frac{1}{2}$, então o custo esperado da solução gerada é no máximo $(1 + \epsilon)4\opt(I)$.
 \end{lemma}
 \begin{proof}
-Para provar esse lema vamos considerar o custo de associação esperado para um cliente $j$ para uma instalação aberta pelo algoritmo aleatório. Seja $i_1$ a instalação de $X_1$ mais próxima de $j$ e $i_2$ a instalação de $X_2$ mais próxima de $j$. Note que a probabilidade de $i_1$ ser aberta pelo algoritmo aleatório é $\frac{k - |X_2|}{|X_1| - |X_2|} = a$, caso ela não tenha sido aberta na primeira parte do algoritmo. Então, com probabilidade pelo menos $a$, o custo de associação de $j$ para a instalação mais próxima em $S$ é no máximo $c_{i_1j}$. Com probabilidade no máximo $1 - a = b$, a instalação $i_1$ não será aberta. Assim, no pior dos casos, iremos associar $j$ a uma instalação aberta no primeiro passo do algoritmo, em particular, a instalação de $X_1$ mais próxima à $i_2$. Seja $i$ a instalação  de $X_1$ mais próxima a $i_2$. Então, pela desigualdade triangular, vale que
+Para provar esse lema vamos considerar o custo de associação esperado entre um cliente $j$ e uma instalação aberta pelo algoritmo aleatório. Seja $i_1$ a instalação de $X_1$ mais próxima de $j$ e $i_2$ a instalação de $X_2$ mais próxima de $j$. Note que a probabilidade de $i_1$ ser aberta pelo algoritmo aleatório é $\frac{k - |X_2|}{|X_1| - |X_2|} = a$, caso ela não tenha sido aberta na primeira parte do algoritmo. Então, com probabilidade pelo menos $a$, o custo de associação de $j$ para a instalação mais próxima em $S$ é no máximo $c_{i_1j}$. Com probabilidade no máximo $1 - a = b$, a instalação $i_1$ não será aberta. Assim, no pior dos casos, iremos associar $j$ a uma instalação aberta no primeiro passo do algoritmo, em particular, a instalação de $X_1$ mais próxima à $i_2$. Seja $i$ a instalação  de $X_1$ mais próxima a $i_2$. Então, pela desigualdade triangular, vale que
 \[c_{ij} \leq c_{ii_2} + c_{i_2j}.\]
 Pela definição de $i$, sabemos que $c_{ii_2} \leq c_{i_1i_2}$. Então \(c_{ij} \leq c_{i_1i_2} + c_{i_2j}\). Novamente pela desigualdade triangular, vale que 
 \[c_{i_1i_2} \leq c_{i_1j} + c_{i_2j}\]
@@ -106,7 +107,7 @@ Somando para todos os clientes $j$, temos
 \begin{subequations}
     \begin{align*}
         \sum_{j \in D}\mathbb{E}[c(j,X)] &\leq \sum_{j \in D}2\left( a c(j,X_1) + bc(j,X_2)\right) = 2\left(a \sum_{j\in D} c(j,X_1) + b \sum_{j \in D} c(j,X_2)\right) \\
-        & = 2\left( a c(X_1) + b c(X_2)\right) \leq 2 (1 + \epsilon) 2 \opt(I) = (1+\epsilon) 4\opt(I)
+        & = 2\left( a\, \custo(X_1) + b\, \custo(X_2)\right) \leq 2 (1 + \epsilon) 2 \opt(I) = (1+\epsilon) 4\opt(I)
     \end{align*}
 \end{subequations}
 em que a última desigualdade vale pelo Lema~\ref{k-median_relLag_lema1}.
@@ -125,7 +126,7 @@ Isso implica que existe um $i$ tal que $\mathbb{E}(S \cup \{i\}, X_1' - (S \cup 
     \caption{\sc RelLag-JV$(F,D,c,k)$}
     \begin{algorithmic}[1]
         \State $(X_1,X_2) \gets$ {\sc relaxed\_solutions}$(F,D,c,k)$
-        \If{$X_2 \neq \emptyset$}
+        \If{$X_2 = \emptyset$}
         \State \Return $X_1$
         \EndIf
         \State $a \gets \frac{k-|X_2|}{|X_1| - |X_2|}$; $b \gets \frac{|X_1| - k}{|X_1| - |X_2|}$

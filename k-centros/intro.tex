@@ -1,6 +1,6 @@
 Seja $I(G,c,k)$ uma instância do problema dos $k$-centros em que $G\coloneqq (V,E)$ e $C \subseteq V$ uma solução viável para $I$. Vamos definir alguns termos que facilitarão as explicações seguintes. Os vértices de $C$ serão chamados de \emph{centros de cluster}. Os vértices de $V$ serão particionados em $k$ conjuntos chamados \emph{clusters} e cada um deles terá exatamente um centro de cluster. Um vértice estará no mesmo cluster que um centro de cluster associado a ele. Cada cluster terá um \emph{raio} que é o maior custo, de acordo com $c$, entre o seu centro e um vértice qualquer dele. Denotamos por raio$(C)$ o maior raio de um cluster induzido por $C$. Assim, o problema dos $k$-centros consiste em encontrar um conjunto $C$ de $k$ centros tal que raio$(C)$ é mínimo.
 
-Antes de falarmos sobre algoritmos de aproximação para o problema dos $k$-centros, vamos mostrar o problema é $\NP$-difícil, esse resultado é encontrado a partir de uma pequena alteração na prova do Teorema 5.7 do livro V2001. Para isso, vamos definir o problema do $k$-conjunto dominante.
+Antes de falarmos sobre algoritmos de aproximação para o problema dos $k$-centros, vamos mostrar que o problema é $\NP$-difícil. Esse resultado é encontrado a partir de uma pequena alteração na prova do Teorema 5.7 do livro V2001. Para isso, vamos definir o problema do $k$-conjunto dominante.
 
 \begin{definition}
     Seja $G = (V,E)$ um grafo. Um conjunto $D \subseteq V$ é \emph{dominante} se, para todo vértice $u \in V \setminus D$, existe um vértice $v \in D$ tal que $uv \in E$.
@@ -37,7 +37,7 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
 
 \begin{proof}
     A demonstração desse teorema é muito parecida com a do Teorema~\ref{theorem:2.3}.
-    Seja $G \coloneqq (V,E)$. Suponha que exista um algoritmo polinomial $A$ que é uma $\alpha(n)$-aproximação para o problema dos $k$-centros e seja $I(G,k)$ uma instância do problema do $k$-conjunto dominante em que $G$ tem $n$ vértices. Vamos criar uma instância $I'(G',c,k)$ do problema dos $k$-centros a partir da instância $I$. A instância $I'$ tem como grafo o grafo completo $G'(V,E')$ e, para cada $e \in E'$,
+    Suponha que exista um algoritmo polinomial $A$ que é uma $\alpha(n)$-aproximação para o problema dos $k$-centros e seja $I(G,k)$ uma instância do problema do $k$-conjunto dominante em que $G = (V,E)$ é um grafo com $n$ vértices. Vamos criar uma instância $I'(G',c,k)$ do problema dos $k$-centros a partir da instância $I$. A instância $I'$ tem como grafo o grafo completo $G'(V,E')$ e, para cada $e \in E'$,
     \[c_e = \begin{cases}
             1, \text{ se } e \in E \\
             \alpha(n)+1, \text{ caso contrário.} 
@@ -45,8 +45,8 @@ O resultado acima pode ser adaptado para dar um resultado mais forte de inaproxi
     Como $\alpha(n)$ é uma função computável em tempo polinomial em $n$, essa instância pode ser construída a partir de $I$ em tempo polinomial.
     Se $\alpha(n)=1$, então $c$ obedece a desigualdade triangular e $A$ é um algoritmo polinomial e exato, o que, pelo Teorema~\ref{theorem:2.3}, é absurdo. Então, suponha $\alpha(n)>1$.
 
-    O algoritmo $A$ aplicado à instância $I'$ encontra uma solução $C$ de tamanho $k$. Como $c_e = 1$ ou $\alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou $\alpha(n)+1$.
-    Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster por uma aresta de $G$, e assim $C$ é um conjunto dominante em $G$.
+    O algoritmo $A$ aplicado à instância $I'$ encontra uma solução $C$ de tamanho $k$. Como $c_e = 1$ ou $c_e = \alpha(n)+1$ para todo $e \in E'$, então raio$(C)=1$ ou raio$(C)=\alpha(n)+1$.
+    Se raio$(C)=1$ então todos os vértices estão ligados ao centro do seu cluster por uma aresta de $G$, logo $C$ é um conjunto dominante em $G$.
     Se raio$(C) = \alpha(n) + 1$, então $\opt(I') \geq \frac{\alpha(n)+1}{\alpha(n)}>1$. Assim, não existe solução $C'$ de $I'$ tal que raio$(C')=1$ e não existe $k$-conjunto dominante em $G$.
 
     Portanto, conseguimos resolver o problema do $k$-conjunto dominante em tempo polinomial o que, assumindo que $P \neq \NP$, é um absurdo.

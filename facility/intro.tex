@@ -1,3 +1,6 @@
+Nessa seção falaremos sobre a versão métrica do problema de localização de instalações. 
+O problema de localização de instalações métrico consiste em, dado um conjunto de instalações $F$, um conjunto de clientes $D$, uma métrica $c : F \times D \rightarrow \mathbb{R}$ e uma função de custo de abertura $f: F \rightarrow \mathbb{R}$, encontrar $S \subseteq F$ que minimize custo${(S) \coloneqq \sum_{i \in S} f_i +  \sum_{j \in D} \min_{i \in S} c_{ij}}$.
+
 Antes de falarmos sobre algoritmos de aproximação para o problema da localização de instalações, vamos mostrar que, assumindo $P\neq\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema da cobertura por vértices.
 
 
@@ -13,7 +16,7 @@ Esse problema é $\NP$-completo, sendo um dos famosos $21$ problemas do Karp~\ci
 
 \begin{proof}
 
-    Seja $I(G,k)$ uma instância do problema da cobertura por vértices. Tome $F \coloneqq V(G)$ e $D \coloneqq E(G)$. Considere também $f_i = 1$ para todo $i \in V$ e $c_{ij} = 1$ se $i \in V(G)$ é extremo de $j \in E(G)$ e 3 caso contrário. Note que a função $c$ está no espaço métrico. Assim, construímos uma instância métrica $I'(F,D,c,f)$ do problema de localização de instalações a partir de uma instância do problema da cobertura por vértices.
+    Seja $I(G,k)$ uma instância do problema da cobertura por vértices. Tome $F \coloneqq V(G)$ e $D \coloneqq E(G)$. Considere também $f_i \coloneqq 1$ para todo $i \in V$ e $c_{ij} \coloneqq 1$ se $i \in V(G)$ é extremo de $j \in E(G)$ e $c_{ij} \coloneqq 3$ caso contrário. Note que $c$ é uma métrica. Assim, construímos uma instância métrica $I'(F,D,c,f)$ do problema de localização de instalações a partir de uma instância do problema da cobertura por vértices.
 
     % Note que a resposta ótima de $I'$ será a quantidade de clientes somado à menor quantidade de instalações que precisamos abrir até que todos os clientes possam ser associados a instalações em que o seu custo de associação é 0. Se um cliente (aresta) está associado a uma instalação(vértice) cujo custo de associação é 2, podemos diminuir o custo total abrindo uma instalação em que o custo de sua associação é 0, uma vez que abrir a instalação custaria 1 e diminuiríamos o custo de associação do cliente de 2 para 0. Sabemos que essa instalação existe, pois para cada cliente (aresta) existem duas instalações com custo de associação 0 (seus vértices extremos).
     % Assim, é fácil notar que essa quantidade de instalações é o tamanho mínimo de uma cobertura por vértices em $G$. Portanto, se o custo total da solução do algoritmo $A$ aplicado à instância $I'$ é menor ou igual a $k$, então a resposta para $I$ é sim. Caso contrário, a resposta é não.

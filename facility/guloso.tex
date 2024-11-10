@@ -1,4 +1,4 @@
-Nessa seção vamos apresentar o algoritmo guloso que é equivalente a uma 2-aproximação que utiliza o método de \emph{dual fitting}. Esse algoritmo foi estudado pela seção 9.4 do livro WS2011 e foi desenvolvido por Jain, Mahdian, Markakis, Saberi e Vazirani~\cite{jain2002greedy}.
+Nessa seção vamos apresentar o algoritmo guloso que é equivalente a uma 2-aproximação que utiliza o método de \emph{dual fitting}. Esse algoritmo foi estudado pela Seção 9.4 do livro WS2011 e foi desenvolvido por Jain, Mahdian, Markakis, Saberi e Vazirani~\cite{jain2002greedy}.
 
 O algoritmo guloso para o problema da localização de instalações consiste em, a cada iteração, abrir uma instalação fechada e associá-la a um conjunto de clientes ainda não associados, garantindo um baixo aumento no custo total. 
 Isso se repete até que todos os clientes estejam associados a uma instalação aberta. Então, seja $X$ o conjunto de instalações abertas até o momento e $C$ o conjunto de clientes ainda não associados a uma instalação em $X$. Queremos escolher $i \in F \setminus X$ e $\emptyset \neq Y \subseteq C$ que minimize
@@ -28,7 +28,7 @@ O algoritmo dual fitting devolve um conjunto $X$ de instalações e produz vari�
 Vamos mostrar que a solução em que as instalações de $X$ são abertas e todos os clientes estão ligados a uma instalação mais próxima em $X$ tem custo no máximo $\sum_{j \in D} \alpha_j$ e que conseguimos obter variáveis $w$ tais que $(\frac{\alpha}{2},w)$ é solução viável para o dual. 
 Assim, deduzimos que o algoritmo é uma 2-aproximação.
 
-Para cada instalação $i$, seja $N(i) \coloneqq \{j \in D: \alpha_j \geq c_{ij}\}$. Chamaremos de \emph{oferta} o valor que um cliente pode contribuir para a abertura de uma instalação. Para um cliente $j$ que ainda não foi associado a nenhuma instalação a sua oferta para a abertura da instalação $i$ é $(\alpha_j - c_{ij})_+$. Já para um cliente $j$ que já foi associado a alguma instalação, a sua oferta para a abertura da instalação $i$ é $(c(j,X) - c_{ij})_+$.
+Para cada instalação $i$, seja $N(i) \coloneqq \{j \in D: \alpha_j \geq c_{ij}\}$. Chamaremos de \emph{oferta} o valor que um cliente pode contribuir para a abertura de uma instalação. Para um cliente $j$ que ainda não foi associado a nenhuma instalação, a sua oferta para a abertura da instalação $i$ é $(\alpha_j - c_{ij})_+$. Já para um cliente $j$ que já foi associado a alguma instalação, a sua oferta para a abertura da instalação $i$ é $(c(j,X) - c_{ij})_+$.
 
 \begin{algorithm}
     \caption{\sc DualFitting-JMMSV$(F,D,c,f)$}
@@ -134,7 +134,8 @@ Seja $\alpha$ a variável produzida e $X$ o conjunto de clientes escolhido pelo 
 \end{lemma}
 
 \begin{proof}
-Vamos provar por absurdo que, no inicio da iteração $k$ do algoritmo {\sc DualFitting-JMMSV}, $\sum_{j \in D \setminus C_k} \alpha_j = 2 \sum_{i \in X_k} f_i + \sum_{j \in D \setminus C_k} c(j,X) $. Como no final do algoritmo $C = \emptyset$ e $D\setminus C = D$, o que vamos provar é equivalente ao lema.
+    Seja $C_k$ e $X_k$ os conjuntos $C$ e $X$ no início da iteração $k$ do algoritmo {\sc DualFitting-JMMSV}, respectivamente.
+Vamos provar que, para qualquer $k$, vale que $\sum_{j \in D \setminus C_k} \alpha_j = 2 \sum_{i \in X_k} f_i + \sum_{j \in D \setminus C_k} c(j,X) $. Como no final do algoritmo $C = \emptyset$ e $D\setminus C = D$, o que vamos provar é equivalente ao lema.
 
 Suponha, por absurdo, que a afirmação é falsa. Seja $k$ a primeira iteração em que a afirmação não vale. Se $k=1$, então no começo da iteração $k$ não retiramos nenhum cliente de $C$ e, portanto, $D\setminus C_k = \emptyset$, assim a afirmação vale. Então $k > 1$.
 
@@ -148,12 +149,10 @@ Se, na iteração $k-1$, vale que $\alpha_j = c_{ij}$ para algum $j \in C_{k-1}$
 em que a segunda igualdade vale, pois a afirmação vale para $C_{k-1}$ e a terceira vale pois $\alpha_j = c_{ij} = c(j,X)$, caso contrário $j$ não estaria em $C_{k-1}$.
 
 Se, na iteração $k-1$, vale que $\sum_{j \in C_{k-1}} (\alpha_j - c_{ij})_+ + \sum_{j \not \in C_{k-1}}(c(j,X) - c_{ij})_+ = f'_i$ para algum $i \in F \setminus X_{k-1}$, então $X_k = X_{k-1} \cup \set{i}$ e $C_k = C_{k-1} \setminus N(i)$. Consequentemente 
-\begin{subequations}
 \begin{align*}
 \sum_{j \in D \setminus C_k} \alpha_j &= \sum_{j \in D\setminus C_{k-1}} \alpha_j + \sum_{j \in C_{k-1}\cap N(i)} \alpha_j \\
 &= \sum_{j \in C_{k-1}\cap N(i)} \alpha_j +  \sum_{j \in D\setminus C_{k-1}}c(j,X_{k-1}) + 2 \sum_{h \in X_{k-1}} f_h.
 \end{align*}
-\end{subequations}
 Defina $A\coloneqq \set{j \in D\setminus C_{k-1}: c(j,X_{k-1}) \geq c_{ij}}$. Vale que
 \[ \sum_{j \in C_{k-1}\cap N(i)} \alpha_j = \sum_{j \in C_{k-1}\cap N(i)} c_{ij} - \sum_{j \in A} (c(j,X_{k-1}) - c_{ij}) + 2f_i. \]
 Seja $B$ tal que $A \cap B = \emptyset$ e $A \cup B = D\setminus C_{k-1}$. Portanto,

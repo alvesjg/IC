@@ -10,7 +10,7 @@ A ideia é que escolheremos um conjunto $F' \subseteq F$ de instalações que se
 Então, para construir a próxima instância, usaremos o conjunto de instalações $F \setminus F'$ e o conjunto de clientes $D \setminus D'$, que representam os subconjuntos de $E$ que ainda podem ser escolhidos e os elementos de $E$ que ainda não foram cobertos, respectivamente.
 Isso acontecerá sucessivamente até que todo os elementos de $E$ sejam cobertos, ou seja, até que $D = \emptyset$.
 O custo de conexão dos clientes será igual para todas as instâncias. Para uma instalação $i$ e um cliente $j$ definimos $c_{ij}\coloneqq 1$ se $j \in S_i$ e $c_{ij} \coloneqq 3$ caso contrário.
-Queremos escolher $k^*$ instalações em cada chamada do algoritmo do problema das $k$-medianas, em que $k^*$ é o menor tamanho de uma cobertura de conjunto para essa instância. Como é difícil saber o tamanho de uma cobertura de conjuntos ótima, vamos rodar essa rotina para todo $k \in [m]$, ou seja, para todos os candidatos para o tamanho $k^*$ de uma cobertura de conjuntos ótima para essa instância.
+Queremos escolher $k^*$ instalações em cada chamada do algoritmo do problema das $k$-medianas, em que $k^*$ é o menor tamanho de uma cobertura de conjunto para a instância $(E,\set{S_1,\ldots,S_m})$ do problema de cobertura de conjuntos. Como é difícil saber o tamanho de uma cobertura de conjuntos ótima, vamos rodar essa rotina para todo $k \in [m]$, ou seja, para todos os candidatos para o tamanho $k^*$ de uma cobertura de conjuntos ótima para essa instância.
 
 \begin{algorithm}
     \caption{\sc Inaprox-JMMSV$(E,\{S_1,\ldots,S_m\})$}
@@ -44,14 +44,14 @@ Se existe uma $\alpha$-aproximação para o problema das $k$-medianas com $\alph
 \end{theorem}
 
 \begin{proof}
-Seja $k^*$ o tamanho de uma cobertura de conjuntos ótima da instância $(E,\{S_1,\ldots,S_m\})$. Suponha que estamos na iteração $k^*$ do laço {\bf Para} e na iteração $\ell$ do laço {\bf Enquanto} do algoritmo {\sc Inaprox-JMMSV}.
+Seja $k^*$ o tamanho de uma cobertura de conjuntos ótima da instância $(E,\{S_1,\ldots,S_m\})$ do problema de cobertura de conjuntos. Suponha que estamos na iteração $k^*$ do laço {\bf Para} e na iteração $\ell$ do laço {\bf Enquanto} do algoritmo {\sc Inaprox-JMMSV}.
 Seja $D_\ell$ e $F_\ell$ os conjuntos $D$ e $F$ no começo dessa iteração do laço {\bf Enquanto}. Seja $n_\ell \coloneqq |D_\ell|$. Note que existe uma solução para a instância $(F_\ell,D_\ell,c,k^*)$ do problema das $k$-medianas com custo $n_\ell$ em que abrimos todas as instalações que representam subconjuntos que estão em uma mesma resposta ótima da cobertura de conjuntos e associamos os clientes restantes às instalações com custo de conexão 1.
 Seja $F_\ell'$ o conjunto das instalações devolvido pela chamada do algoritmo na linha~6 e $D_\ell'$ o conjunto de clientes encontrado na linha~8. Denote $p_\ell \coloneqq  |D_\ell'|/n_ell$. É fácil notar que o custo da solução $F'_\ell$ é
 \[ p_\ell n_\ell + 3 (1-p_\ell) n_\ell \leq \alpha  n_\ell\]
 e, portanto, 
-\begin{equation} 
+\[
 3 - 2p_\ell \leq \alpha.
-\end{equation}
+\]
 
 Seja $c$ uma constante entre 0 e 1 que vamos escolher depois. Suponha que ${p_\ell \leq 1 - e^{-\frac{1}{c}}}$ para algum $\ell$. 
 Então

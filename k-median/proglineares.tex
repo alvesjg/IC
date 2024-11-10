@@ -1,4 +1,4 @@
-Os algoritmos que irão aparecer nas próximas seções utilizam do programa inteiro do problema das $k$-medianas, da sua relaxação em programa linear e do seu dual. Então, vamos aqui apresentar todas essas três formulações. O programa inteiro para o problema das $k$-medianas é, dado um conjunto $F$, um conjunto $D$, uma métrica $c : F\times D \rightarrow \mathbb{R}$ e um inteiro $k$,
+Os algoritmos que irão aparecer nas próximas seções utilizam do programa inteiro do problema das $k$-medianas, da sua relaxação em programa linear e do seu dual. Então, vamos aqui apresentar todas essas três formulações. O programa inteiro para o problema das $k$-medianas métrico é, dado um conjunto $F$, um conjunto $D$, uma métrica $c : F\times D \rightarrow \mathbb{R}$ e um inteiro $k$,
 \begin{align*}
 \text{minimizar} \quad & \sum_{i \in F, j \in D} c_{ij}x_{ij} \\
 \text{sujeito a} \quad & \sum_{i \in F} x_{ij} \geq 1, &&\forall j \in D, \\
