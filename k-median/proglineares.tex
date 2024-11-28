@@ -1,13 +1,19 @@
-Os algoritmos que irão aparecer nas próximas seções utilizam do programa inteiro do problema das $k$-medianas, da sua relaxação em programa linear e do seu dual. Então, vamos aqui apresentar todas essas três formulações. O programa inteiro para o problema das $k$-medianas métrico é, dado um conjunto $F$, um conjunto $D$, uma métrica $c : F\times D \rightarrow \mathbb{R}$ e um inteiro $k$,
+Nessa seção vamos mostrar algoritmos para o problema das $k$-medianas que utilizam métodos baseados em programação linear.
+
+Vamos modelar o problema das $k$-medianas como um programa linear inteiro. Vamos relaxar esse programa e encontrar o seu dual.
+
+Para uma instância $(F,D,c,k)$ do problema das $k$-medianas, o programa inteiro terá dois tipos de variáveis. Uma variável $y_i$ para cada $i \in F$ que terá valor 1 se a instalação $i$ foi aberta e 0 caso contrário, e uma variável $x_{ij}$ para cada $i \in F$ e $j \in D$ que terá valor 1 se o cliente $j$ estiver associado a instalação $i$ e 0 caso contrário. 
+
+Assim, uma instância $(F,D,c,k)$ do problema das $k$-medianas pode ser modelada como o seguinte programa linear inteiro:
 \begin{align*}
-\text{minimizar} \quad & \sum_{i \in F, j \in D} c_{ij}x_{ij} \\
+\text{Minimizar} \quad & \sum_{i \in F, j \in D} c_{ij}x_{ij} \\
 \text{sujeito a} \quad & \sum_{i \in F} x_{ij} \geq 1, &&\forall j \in D, \\
                        & y_i - x_{ij} \geq 0, &&\forall i \in F, j \in D, \\
                        & \sum_{i \in F} y_i \leq k, \\
                        & x_{ij} \in \{0,1\}, && \forall i \in F,j \in D, \\
                        & y_i \in \{0,1\}, &&\forall i \in F. 
 \end{align*}
-Para a relaxação desse programa, apenas permitiremos que as variáveis em $x$ e em $y$ adotem quaisquer valores não negativos. Portanto, a relaxação do programa inteiro do problema das $k$-medianas resulta no seguinte programa.
+Para a relaxação desse programa permitiremos que as variáveis em $x$ e em $y$ adotem quaisquer valores não negativos. Portanto, a relaxação do programa inteiro do problema das $k$-medianas resulta no seguinte programa.
 \begin{align}
     \text{Minimizar} \quad & \sum_{i \in F, j \in D} c_{ij}x_{ij} \nonumber \\
     \text{sujeito a} \quad & \sum_{i \in F} x_{ij} \geq 1, &&\forall j \in D, \nonumber\\
@@ -16,9 +22,9 @@ Para a relaxação desse programa, apenas permitiremos que as variáveis em $x$ 
                            & x_{ij} \geq 0, && \forall i \in F,j \in D, \nonumber \\
                            & y_i \geq 0, &&\forall i \in F. \nonumber 
 \end{align}
-Desse modo, conseguimos construir o seu dual.
+O dual do programa linear acima consiste no seguinte programa.
 \begin{align*}
-    \text{Minimizar} \quad & \sum_{j \in D} (v_j) - zk \\
+    \text{Minimizar} \quad & \sum_{j \in D} v_j - zk \\
     \text{sujeito a} \quad & v_j - w_{ij} \leq c_{ij}, &&\forall i \in F, j\in D, \\
                            & \sum_{j\in D} w_{ij} \leq z, &&\forall i \in F, \\
                            & v_j \geq 0, &&\forall j\in D, \\
@@ -26,4 +32,4 @@ Desse modo, conseguimos construir o seu dual.
                            & z \geq 0. 
 \end{align*}
 
-Note que existe uma grande semelhança entre as formulações referentes ao problema das $k$-medianas e as formulações refentes ao problema localização de instalações que se encontram na Seção~\ref{facility:PL}. Desse modo, as variáveis desses dois problemas têm interpretações semelhantes.
+Note que existe uma grande semelhança entre os programas lineares derivados do problema das $k$-medianas e os derivados do problema de localização de instalações, que se encontram na Seção~\ref{facility:PL}. Desse modo, as variáveis e as restrições desses programas lineares têm interpretações equivalentes.

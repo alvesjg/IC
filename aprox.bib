@@ -27,7 +27,7 @@ number = {2},
 issn = {0004-5411},
 url = {https://doi.org/10.1145/375827.375845},
 doi = {10.1145/375827.375845},
-abstract = {We present approximation algorithms for the metric uncapacitated facility location problem and the metric k-median problem achieving guarantees of 3 and 6 respectively. The distinguishing feature of our algorithms is their low running time: O(m logm) and O(m logm(L + log (n))) respectively, where n and m are the total number of vertices and edges in the underlying complete bipartite graph on cities and facilities. The main algorithmic ideas are a new extension of the primal-dual schema and the use of Lagrangian relaxation to derive approximation algorithms.},
+abstract = {We present approximation algorithms for the metric uncapacitated facility location problem and the metric $k$-median problem achieving guarantees of 3 and 6 respectively. The distinguishing feature of our algorithms is their low running time: O(m logm) and O(m logm(L + log (n))) respectively, where n and m are the total number of vertices and edges in the underlying complete bipartite graph on cities and facilities. The main algorithmic ideas are a new extension of the primal-dual schema and the use of Lagrangian relaxation to derive approximation algorithms.},
 journal = {J. ACM},
 month = {mar},
 pages = {274–296},
@@ -62,7 +62,7 @@ url="https://doi.org/10.1007/978-1-4684-2001-2_9"
   pages = {I-IXI, 1-378},
   publisher = {Springer},
   timestamp = {2011-04-29T15:26:40.000+0200},
-  title = {Approximation algorithms.},
+  title = {Approximation Algorithms.},
   year = 2001
 }
 
@@ -159,7 +159,7 @@ doi = {10.1287/moor.10.2.180}
 @article{Chudak2003,
   title={Improved Approximation Algorithms for the Uncapacitated Facility Location Problem},
   author={Fabi{\'a}n A. Chudak and David B. Shmoys},
-  journal={SIAM J. Comput.},
+  journal={SIAM Journal on Compututing},
   year={2003},
   volume={33},
   pages={1-25},
@@ -241,7 +241,7 @@ keywords = {approximation algorithms, k-median, dependent rounding, facility loc
   description = {Amazon.com: Computers and Intractability: A Guide to the Theory of NP-Completeness (Series of Books in the Mathematical Sciences) (9780716710455): M. R. Garey, D. S. Johnson: Books},
   dewey = {519.4},
   ean = {9780716710455},
-  edition = {First Edition},
+  edition = {First},
   interhash = {ff69422a0dd852de42ed1c7d63fb2bf6},
   intrahash = {fac25cd952418baa739dd35243b3dbdc},
   isbn = {0716710455},
@@ -298,14 +298,27 @@ numpages = {18}
   bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 
-@misc{jain2002greedy,
-      title={Greedy Facility Location Algorithms Analyzed using Dual Fitting with Factor-Revealing {LP}}, 
-      author={Kamal Jain and Mohammad Mahdian and Evangelos Markakis and Amin Saberi and Vijay V. Vazirani},
-      year={2002},
-      eprint={cs/0207028},
-      archivePrefix={arXiv},
-      primaryClass={cs.DS}
+@article{jain2002greedy,
+author = {Jain, Kamal and Mahdian, Mohammad and Markakis, Evangelos and Saberi, Amin and Vazirani, Vijay V.},
+title = {Greedy facility location algorithms analyzed using dual fitting with factor-revealing LP},
+year = {2003},
+issue_date = {November 2003},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {50},
+number = {6},
+issn = {0004-5411},
+url = {https://doi.org/10.1145/950620.950621},
+doi = {10.1145/950620.950621},
+abstract = {In this article, we will formalize the method of dual fitting and the idea of factor-revealing LP. This combination is used to design and analyze two greedy algorithms for the metric uncapacitated facility location problem. Their approximation factors are 1.861 and 1.61, with running times of O(m log m) and O(n3), respectively, where n is the total number of vertices and m is the number of edges in the underlying complete bipartite graph between cities and facilities. The algorithms are used to improve recent results for several variants of the problem.},
+journal = {J. ACM},
+month = nov,
+pages = {795–824},
+numpages = {30},
+keywords = {Approximation algorithms, dual-fitting method, facility location problem, primal-dual method}
 }
+
+
 
 @article{Feige98,
 author = {Feige, Uriel},
@@ -338,12 +351,20 @@ journal = {SIAM Journal on Computing},
 doi = {10.1137/S0097539702416402}
 }
 
-@misc{li2012,
-      title={Approximating $k$-Median via Pseudo-Approximation}, 
-      author={Shi Li and Ola Svensson},
-      year={2012},
-      eprint={1211.0243},
-      archivePrefix={arXiv},
-      primaryClass={cs.DS},
-      url={https://arxiv.org/abs/1211.0243}, 
+@article{li2012,
+author = {Li, Shi and Svensson, Ola},
+title = {Approximating $k$-Median via Pseudo-Approximation},
+journal = {SIAM Journal on Computing},
+volume = {45},
+number = {2},
+pages = {530-547},
+year = {2016},
+doi = {10.1137/130938645},
+URL = { 
+        https://doi.org/10.1137/130938645
+},
+eprint = { 
+        https://doi.org/10.1137/130938645
+},
+    abstract = { We present a novel approximation algorithm for \$k\$-median that achieves an approximation guarantee of \$1+\sqrt{3}+\epsilon\$, improving upon the decade-old ratio of \$3+\epsilon\$. Our improved approximation ratio is achieved by exploiting the power of pseudo-approximation. More specifically, our approach is based on two components, each of which, we believe, is of independent interest. First, we show that in order to give an \$\alpha\$-approximation algorithm for \$k\$-median, it is sufficient to give a pseudo-approximation algorithm that finds an \$\alpha\$-approximate solution by opening \$k+O(1)\$ facilities. This is a rather surprising result as there exist instances for which opening \$k+1\$ facilities may lead to a significantly smaller cost than that of opening only \$k\$ facilities. Second, we give such a pseudo-approximation algorithm with \$\alpha=1+\sqrt{3}+\epsilon\$. Prior to our work, it was not even known whether opening \$k+o(k)\$ facilities would help improve the approximation ratio. }
 }

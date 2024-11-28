@@ -1,8 +1,10 @@
-Nessa seção vamos mostrar três algoritmos para o problema de localização de instalações: o arredondamento em programa linear, um algoritmo que utiliza o método primal-dual e um arredondamento probabilístico.
+Nessa seção vamos mostrar algoritmos para o problema de localização de instalações que utilizam métodos baseados em programação linear.
 
-Vamos modelar o nosso problema como um programa linear inteiro. Vamos relaxá-lo e mostrar o seu dual.
+Vamos modelar o problema de localização de instalações como um programa linear inteiro. Vamos relaxar esse programa e encontrar o seu dual.
 
-Nosso programa inteiro terá dois tipos de variáveis: uma variável $y_i$ para cada $i \in F$ que terá valor 1 se a instalação $i$ foi aberta e 0 caso contrário, e uma variável $x_{ij}$ para cada $i \in F$ e $j \in D$ que terá valor 1 se o cliente $j$ estiver associado a instalação $i$ e 0 caso contrário. Então o programa inteiro para a instância $I(F,D,c,f)$ é:
+Para uma instância $(F,D,c,f)$ do problema de localização de instalações, o programa inteiro terá dois tipos de variáveis. Uma variável $y_i$ para cada $i \in F$ que terá valor 1 se a instalação $i$ foi aberta e 0 caso contrário, e uma variável $x_{ij}$ para cada $i \in F$ e $j \in D$ que terá valor 1 se o cliente $j$ estiver associado a instalação $i$ e 0 caso contrário. 
+
+Assim, uma instância $(F,D,c,f)$ do problema de localização de instalações pode ser modelada como o seguinte programa linear inteiro:
 \begin{align}
  \text{Minimizar} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \nonumber \\
  \text{sujeito a} \quad & \sum_{i\in F} x_{ij}\geq1, \quad \forall j \in D \label{eq:inst}\\
@@ -12,7 +14,7 @@ Nosso programa inteiro terá dois tipos de variáveis: uma variável $y_i$ para 
 \end{align}
 A restrição~\eqref{eq:inst} garante que todo cliente esteja associado a alguma instalação, a restrição~\eqref{eq:fac} garante que todo cliente esteja associado apenas a instalações abertas.
 
-Para a relaxação, apenas impomos que $x_{ij} \geq 0$ e $y_i \geq 0$ no lugar de~\eqref{fl:x} e~\eqref{fl:y}, respectivamente. Assim, temos o seguinte programa linear correspondente à nossa relaxação:
+Para a relaxação desse programa permitiremos que as variáveis em $x$ e em $y$ adotem quaisquer valores não negativos. Portanto, a relaxação do programa inteiro do problema de localização de instalações resulta no seguinte programa.
 
     \begin{align}
         \text{Minimizar} \quad & \sum_{i \in F}f_iy_i + \sum_{i\in F,j\in D}c_{ij}x_{ij} \tag{P1} \label{P1}\\
@@ -22,7 +24,7 @@ Para a relaxação, apenas impomos que $x_{ij} \geq 0$ e $y_i \geq 0$ no lugar d
         &y_i \geq 0, \quad \; \,\forall i\in F. \tag{P5} \label{P5}
        \end{align}
 
-    A partir desse programa linear conseguimos construir o seu dual que é o seguinte:
+       O dual do programa linear acima consiste no seguinte programa.
     \label{D}
     \begin{align}
         \text{Maximizar} \quad & \sum_{j \in D} v_{j} \tag{D1} \label{D1}\\
@@ -35,7 +37,7 @@ Para a relaxação, apenas impomos que $x_{ij} \geq 0$ e $y_i \geq 0$ no lugar d
 Sabemos que cada variável de um destes programas está associada a uma restrição do outro programa. 
 Especificamente, a variável $x_{ij}$ está associada à desigualdade~\eqref{D3}, a variável $y_i$ está associado à desigualdade~\eqref{D2}, a variável $w_{ij}$ está associada à desigualdade~\eqref{P3} e a variável $v_j$ está associado a desigualdade~\eqref{P2}.
 
-Como o primal é uma relaxação do nosso problema e trata-se de um problema de minimização, vale que o valor de uma solução ótima dele é no máximo o valor ótimo do nosso problema.
+Note que toda solução viável do programa linear inteiro é solução viável do programa linear relaxado. Desse modo, a resposta ótima do programa linear relaxado é no máximo a resposta ótima do programa linear inteiro.
 
 Vamos aqui interpretar o programa dual. Chamamos as variáveis $v$ de orçamento e as variáveis $w$ de contribuição. Dizemos que um cliente $j$ \emph{contribui} para uma instalação $i$ se $w_{ij} > 0$. Uma instalação recebe contribuições dos clientes para pagar pela sua abertura. Uma vez que as contribuições são suficientes para a sua abertura, a instalação não precisa receber mais contribuições. Isso está explicito na restrição~\eqref{D2}.
 
