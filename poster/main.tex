@@ -1,5 +1,5 @@
 \documentclass[final]{beamer} 
-\usepackage[orientation=portrait,size=a1,scale=1.2]{beamerposter} 
+\usepackage[orientation=portrait,size=a1,scale=1.09]{beamerposter} 
 
 \usepackage[portuguese]{babel}
 \usepackage[utf8]{inputenc}
@@ -135,7 +135,7 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}}
               \begin{algorithmic}[1]
                 \State Escolha arbitrariamente $u \in V(G)$.
                 \State $S \gets \{u\}$
-                \While{$|S| \leq k$}
+                \While{$|S| < k$}
                 \State $v \gets \arg\max_{j \in V} c(j,S)$
                 \State $S \gets S \cup \{v\}$
                 \EndWhile
@@ -218,17 +218,26 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}}
           \end{tcolorbox}
         \end{column}
       \end{columns}
+      \vspace{0.5cm}
+      Esse algoritmo pode ser parametrizado em um número $p$ e, no lugar de trocar apenas um par de instalações, podemos trocar um par de conjuntos de instalações com tamanho no máximo $p$. Essa parametrização resulta em uma $(3 + \frac{2}{p}$)-aproximação para o problema das $k$-medianas métrico que por muito tempo se manteve como o melhor algoritmo de aproximação para esse problema.
 
         % \fbox{\includegraphics[scale=1]{imgs/local-search3.pdf}} \hspace{2cm}
         % \fbox{\includegraphics[scale=1]{imgs/local-search4.pdf}} \hspace{2cm}
         % \fbox{\includegraphics[scale=1]{imgs/local-search5.pdf}} \hspace{2cm}
 \end{block}
-
-\begin{block}{Agradecimentos}
-  O presente trabalho foi realizado com apoio da Fundação de Amparo à Pesquisa do Estado de São Paulo (FAPESP), Brasil. Processo nº 2023/16197-0.
-
-  Análises desses e de outros algoritmos para esses problemas podem ser encontradas em \href{https://linux.ime.usp.br/~alvesjg/mac0499/}{https://linux.ime.usp.br/~alvesjg/mac0499}
+\begin{block}{Referências}
+      
+      
+  [1]T. F. Gonzalez. Clustering to minimize the maximum intercluster distance.
+  Theoretical Computer Science, 38:293–306, 1985.
   
+  [2]V. Arya, N. Garg, R. Khandekar, K. Munagala, and V. Pandit. Local search heuristics for $k$-median and facility location problems. SIAM
+  Journal on Computing, 33, 2003.
+  
+  [3]K. Jain and V. Vazirani. Approximation algorithms for metric facility location and $k$-median problems using the primal-dual schema and lagrangian
+  relaxation. J. ACM, 48(2):274–296, 2001.
+
+  [4]S. Li and O. Svensson. Approximating $k$-median via pseudo-approximation. SIAM Journal on Computing, 45(2):530–547, 2016.
 \end{block}
 \end{column}
 
@@ -332,17 +341,17 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}}
       \end{columns}
 
     \end{block}
-    \begin{block}{Referências}
+
+    \begin{block}{Conclusões}
+      Vários algoritmos foram estudados para cada um dos três problemas. De todos esses, escolhemos um de cada problema para ser apresentado aqui. Além disso, também estudamos os melhores resultados de inaproximabilidade para cada um desses problemas.
+
+      Além dos algoritmos apresentados, destaco também um algoritmo sofisticado para o problema das $k$-medianas métrico, desenvolvido por Li e Svensson [4]. Esse algoritmo trouxe avanço para um problema que estava há mais de uma década sem novos resultados. Eles mostraram que, para construir uma $(\alpha + \epsilon)$-aproximação para o problema das $k$-medianas métrico, é suficiente encontrar um algoritmo que devolve uma pseudo solução, ou seja, um conjunto com mais que $k$ instalações, com custo $\alpha$ vezes o ótimo. Esse resultado ampliou as possibilidades de pesquisa, evidenciando que soluções que não se limitam exatamente a $k$ instalações também podem trazer contribuições relevantes para o campo. Embora esse não seja o estado da arte para o problema das $k$-medianas métrico, os melhores resultados existentes hoje são derivados direto desse trabalho.
+    \end{block}
+    \begin{block}{Agradecimentos}
+      O presente trabalho foi realizado com apoio da Fundação de Amparo à Pesquisa do Estado de São Paulo (FAPESP), Brasil. Processo nº 2023/16197-0.
+    
+      Análises desses e de outros algoritmos para esses problemas podem ser encontradas em \href{https://linux.ime.usp.br/~alvesjg/mac0499/}{https://linux.ime.usp.br/~alvesjg/mac0499}
       
-      
-      [1]T. F. Gonzalez. Clustering to minimize the maximum intercluster distance.
-      Theoretical Computer Science, 38:293–306, 1985.
-      
-      [2]V. Arya, N. Garg, R. Khandekar, K. Munagala, and V. Pandit. Local search heuristics for $k$-median and facility location problems. SIAM
-      Journal on Computing, 33, 2003.
-      
-      [3]K. Jain and V. Vazirani. Approximation algorithms for metric facility location and $k$-median problems using the primal-dual schema and lagrangian
-      relaxation. J. ACM, 48(2):274–296, 2001.
     \end{block}
   \end{column}
 \end{columns}

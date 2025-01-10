@@ -1,24 +1,53 @@
 \documentclass[12pt]{article}
 \usepackage{packages}
+\input{sample.tikzstyles}
 \begin{document}
 \begin{center}
-  
+{\large Universidade de São Paulo\\
+Instituto de Matemática e Estatística\\
+Bacharelado em Ciência da Computação}
+    \vspace*{7cm}
+
+
 {\Large {\bf Algoritmos de Aproximação para \\Problemas de Clustering}
 }
 
 \vspace{0.2cm}
 {\small 
-{\bf Orientadora:} Cristina Gomes Fernandes \\
-{\bf Aluno:} João Guilherme Alves Santos
+{\bf Aluno:} João Guilherme Alves Santos\\
+{\bf Orientadora:} Cristina Gomes Fernandes
 }
+\vspace{3cm} 
 
-\vspace{5mm} 
+{MAC0499 - Trabalho de Formatura Supervisionado}
+\vspace{5cm}
 
-\begin{abstract}
-Este é o texto escrito durante a iniciação científica do aluno de graduação João Guilherme Alves Santos, financiado pelo projeto FAPESP 2023/16197-0, sob supervisão da Profa.\ Dra.\ Cristina Gomes Fernandes.
-\end{abstract}
-
+{\small
+São Paulo \\
+2024
+}
 \end{center}
+
+% \begin{center}
+
+%     {\Large {\bf Algoritmos de Aproximação para \\Problemas de Clustering}
+%     }
+    
+%     \vspace{0.2cm}
+%     {\small 
+%     {\bf Orientadora:} Cristina Gomes Fernandes \\
+%     {\bf Aluno:} João Guilherme Alves Santos
+%     }
+    
+%     \vspace{5mm} 
+    
+%     \begin{abstract}
+%     Este é o texto escrito durante a iniciação científica do aluno de graduação João Guilherme Alves Santos, financiado pelo projeto FAPESP 2023/16197-0, sob supervisão da Profa.\ Dra.\ Cristina Gomes Fernandes.
+%     \end{abstract}
+    
+%     \end{center}
+
+
 \newpage
 
 \tableofcontents
@@ -113,11 +142,14 @@ Com exceção do algoritmo de busca local que troca várias instalações simult
     \input{k-median/proglineares.tex}
 
 \subsubsection{Relaxação Lagrangeana}
-    \input{k-median/rellan.tex}
+\label{k-median:RelLag}
+    \input{k-median/rellag.tex}
 
 \subsection{Inaproximabilidade}
     \input{k-median/inaprox.tex}
-
+\newpage
+\section{Algoritmo Li e Svensson}
+    \input{k-median/pseudo.tex}
 \newpage
 \bibliographystyle{plain}
 \bibliography{aprox.bib}

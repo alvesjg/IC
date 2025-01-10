@@ -1,0 +1,51 @@
+\begin{tikzpicture}
+	\begin{pgfonlayer}{nodelayer}
+		\node [style=fac] (0) at (-5, 5) {};
+		\node [style=fac] (1) at (-4, 5) {};
+		\node [style=fac] (2) at (-2.75, 5) {};
+		\node [style=fac] (3) at (-0.5, 5) {{\scalebox{0.9}{$i_1$}}};
+		\node [style=fac] (4) at (0.5, 5) {};
+		\node [style=fac] (5) at (1.75, 5) {};
+		\node [style=fac] (6) at (4, 5) {};
+		\node [style=fac] (7) at (5, 5) {};
+		\node [style=fac] (8) at (6.25, 5) {};
+		\node [style=fac] (9) at (-4, 3.25) {{\scalebox{0.9}{$i_2$}}};
+		\node [style=fac] (10) at (0.5, 3.25) {};
+		\node [style=fac] (11) at (5, 3.25) {};
+		\node [style=none] (12) at (-7, 5) {$X_1$};
+		\node [style=none] (13) at (-7, 3.25) {$X_2$};
+		\node [style=none] (15) at (-5.5, 5) {};
+		\node [style=none] (16) at (-2.25, 5) {};
+		\node [style=lab none] (21) at (-4, 6) {$L(i_2)$};
+		\node [style=none] (22) at (4, 5) {};
+		\node [style=none] (23) at (5, 3.25) {};
+		\node [style=none] (24) at (5, 5) {};
+		\node [style=none] (25) at (6.25, 5) {};
+		\node [style=none] (26) at (0.5, 3.25) {};
+		\node [style=none] (27) at (0.5, 5) {};
+		\node [style=none] (28) at (1.75, 5) {};
+		\node [style=none] (29) at (-0.5, 5) {};
+		\node [style=none] (30) at (-4, 3.25) {};
+		\node [style=none] (31) at (-2.75, 5) {};
+		\node [style=none] (32) at (-4, 5) {};
+		\node [style=none] (33) at (-5, 5) {};
+		\node [style=lab none] (34) at (-3.5, 5) {\,  {\scalebox{0.8}{$\cdots$}}};
+		\node [style=lab none] (35) at (1, 5) {\,  {\scalebox{0.8}{$\cdots$}}};
+		\node [style=lab none] (36) at (5.5, 5) {\, {\scalebox{0.8}{$\cdots$}}};
+		\node [style=lab none] (37) at (-2, 4) {$j$};
+	\end{pgfonlayer}
+	\begin{pgfonlayer}{edgelayer}
+		\draw [bend left=90, looseness=0.50] (15.center) to (16.center);
+		\draw [bend right=90, looseness=0.50] (15.center) to (16.center);
+		\draw [style=thick] (33.center) to (30.center);
+		\draw [style=thick] (32.center) to (30.center);
+		\draw [style=thick] (31.center) to (30.center);
+		\draw [style=thick] (26.center) to (29.center);
+		\draw [style=thick] (26.center) to (27.center);
+		\draw [style=thick] (23.center) to (22.center);
+		\draw [style=thick] (23.center) to (24.center);
+		\draw [style=very thin] (30.center) to (29.center);
+		\draw [style=thick] (26.center) to (28.center);
+		\draw [style=thick] (23.center) to (25.center);
+	\end{pgfonlayer}
+\end{tikzpicture}
