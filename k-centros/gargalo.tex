@@ -1,19 +1,19 @@
-Nessa seção vamos apresentar o algoritmo que utiliza o método do gargalo para o problema dos $k$-centros. Esse algoritmo foi desenvolvido pelo Hochbaum e pelo Shmoys~\cite{HSBottle} e foi estudado no capítulo 5 do livro V2001.
+Nessa seção vamos apresentar o algoritmo que utiliza o método do gargalo para o problema dos $k$-centros métrico. Esse algoritmo foi desenvolvido por Hochbaum e Shmoys~\cite{HSBottle} e foi estudado no capítulo 5 do livro V2001.
 
-Os chamados problemas de gargalo são aqueles definidos em grafos com pesos nas arestas tais que a resposta ótima é o peso de uma aresta.
+Problemas de gargalo são problemas definidos em grafos com pesos nas arestas tais que a função objetivo é o peso de uma aresta. Note que esse é o caso do problema dos $k$-centros.
 
-Para o próximo algoritmo será necessário saber o que é um conjunto independente de vértices.
+Algumas definições serão necessárias antes de mostrarmos o algoritmo.
 \begin{definition}
-    Seja $G = (V,E)$ um grafo. Um conjunto $S \subseteq V$ é um conjunto \emph{independente} se não existe $e \in E$ que tenha ambos os extremos em $S$.
+    Seja $G = (V,E)$ um grafo. Um conjunto $S \subseteq V$ é um conjunto \emph{independente} se não existe $uv \in E$ tal que $u,v \in S$.
 \end{definition}
-Seja $I(G,c,k)$ uma instância do problema dos $k$-centros. Podemos supor que $E = \{e_1,e_2,\ldots,e_{|E|}\}$ com $c_{e_i} \leq c_{e_{i+1}}$ para todo $i \in [|E|-1]$, considerando que é possível ordenar em tempo polinomial.
+Seja $I = (G,c,k)$ uma instância do problema dos $k$-centros. Podemos supor que as arestas do grafo estão ordenadas de modo não decrescente pelo seu custo, ou seja, ${E = \{e_1,e_2,\ldots,e_{|E|}\}}$ com $c_{e_i} \leq c_{e_{i+1}}$ para todo $i = 1,\ldots, |E|-1$.
 Seja $E_i \coloneqq \{e_1,e_2,\ldots,e_i\}$ e $G_i \coloneqq (V,E_i)$. Seja também $i^*$ o menor $i$ tal que $G_i$ tem um $k$-conjunto dominante. Como $G$ é completo, $i^*$ existe. Claramente $c_{e_{i^*}} = \opt(I)$, porém não conseguimos encontrar $i^*$ eficientemente, uma vez que não é possível saber se um grafo tem um $k$-conjunto dominante em tempo polinomial, a menos que $P = \NP$. Vamos usar um conjunto independente maximal para aproximar uma resposta.
 
 \begin{lemma}\label{lemma:2.8}
     Seja $G = (V,E)$ um grafo. Um conjunto independente maximal em $G$ é também um conjunto dominante.
 \end{lemma}
 \begin{proof}
-    Seja $G = (V,E)$ e $S$ um conjunto independente maximal em $G$. Suponha, por absurdo, que $S$ não é um conjunto dominante. Então, existe vértice $u \in V \setminus S$ que não é vizinho de nenhum dos vértices de $S$. Portanto, $S \cup \{u\}$ é também um conjunto independente e $S \subset \{S \cup \{u\}\}$, uma contradição, pois $S$ é maximal.
+    Seja $G = (V,E)$ um grafo e $S$ um conjunto independente maximal em $G$. Suponha, por absurdo, que $S$ não é um conjunto dominante. Então, existe vértice $u \in V \setminus S$ que não é vizinho de nenhum dos vértices de $S$. Portanto, $S \cup \{u\}$ é também um conjunto independente e $S \subset \{S \cup \{u\}\}$, uma contradição, pois $S$ é maximal.
 \end{proof}
 Então, se encontrarmos um conjunto independente maximal de tamanho $k$ em $G$ teremos um conjunto dominante de mesmo tamanho. No entanto, não conseguimos garantir que iremos encontrar esse conjunto em $G$ e, por isso, vamos definir e usar o chamado quadrado de $G$.
 \begin{definition}
@@ -21,45 +21,50 @@ Então, se encontrarmos um conjunto independente maximal de tamanho $k$ em $G$ t
 \end{definition}
 Dada a definição vamos enunciar e provar um lema que nos ajudará no algoritmo.
 \begin{lemma}\label{lemma:2.10}
-    Seja $G$ um grafo, $G^2$ o seu quadrado e $k$ um inteiro positivo. Se $G$ contém um $k$-conjunto dominante então todo conjunto independente maximal em $G^2$ tem tamanho no máximo~$k$.
+    Seja $G$ um grafo e $k$ um inteiro positivo. Se $G$ contém um $k$-conjunto dominante então todo conjunto independente em $G^2$ tem tamanho no máximo~$k$.
 \end{lemma}
 \begin{proof}
-    A demonstração é pela contrapositiva.
-    Suponha que $G^2$ tem um conjunto independente maximal $S \subseteq V$ tal que $|S| > k$. Seja $D$ um conjunto dominante em $G$. Vamos mostrar que $|D| > k$.
+    Seja $S\subseteq V(G)$ um conjunto independente em $G^2$ e $D\subseteq V(G)$ um $k$-conjunto dominante em $G$. Vamos mostrar que $|S| \leq |D|$. Seja $u \in D$ e seja ${N(u) \coloneqq \set{v \in V(G): uv \in E(G)}}$ o conjunto dos vizinhos de $u$ em $G$. Note que $u$ e $N(u)$ formam uma estrela em $G^2$, uma vez que todos os vértices em $N(u)$ têm $u$ como vizinho em comum. Desse modo, para cada $u \in D$ no máximo um vértice de $u \cup N(u)$ pode estar em $S$. Como $D$ é um conjunto dominante, todos os vértices de $G$ estão em $D$ ou na vizinhança de algum vértice de $D$. Assim, $|S| \leq |D| \leq k$.
 
-    Por definição, uma aresta entre dois vértices de $S$ em $G^2$ é um caminho de tamanho~2 em $G$. Isso significa que, em $G$, não existe aresta nem vizinho comum entre dois vértices de $S$. Seja $u \in D$. Vamos mostrar que $u$ cobre no máximo um vértice de $S$ em~$G$. 
-    Se $u \in S$, o único vértice de $S$ coberto por $u$ é ele mesmo, uma vez que não existe aresta entre dois vértices de $S$ em $G$. 
-    Se $u \not \in S$, $u$ pode cobrir apenas um vértice de $S$, pois caso cobrisse dois, digamos $v$ e $w$, então $u$ seria um vizinho comum em $G$ de $v$ e $w$ e, portanto, $vw$ seria uma aresta em $G^2$.
-    Portanto, $|D| \geq |S| > k$.
+    % A demonstração é pela contrapositiva, ou seja, vamos provar que se existe algum conjunto independente maximal em $G^2$ com tamanho maior que $k$, então $G$ não contém um $k$-conjunto dominante.
+
+    % Suponha que $G^2$ tem um conjunto independente maximal $S \subseteq V$ tal que $|S| > k$. Seja $D$ um conjunto dominante em $G$. Vamos mostrar que $|D| > k$.
+    % Por definição, uma aresta entre dois vértices de $G^2$ é um caminho de tamanho no máximo 2 em $G$. Como $S$ é um conjunto independente em $G^2$, então não existe aresta em $G^2$ entre dois vértices de $S$, portanto, dois vértices de $S$ não são vizinhos nem compartilham vizinhos em $G$. Seja $u \in D$. Vamos mostrar que $u$ cobre no máximo um vértice de $S$ em~$G$. 
+    % Se $u \in S$, o único vértice de $S$ coberto por $u$ é ele mesmo, uma vez que não existe aresta entre dois vértices de $S$ em $G$. 
+    % Se $u \not \in S$, $u$ pode cobrir apenas um vértice de $S$, pois caso cobrisse dois, digamos $v$ e $w$, então $u$ seria um vizinho comum em $G$ de $v$ e $w$ e, portanto, $vw$ seria uma aresta em $G^2$.
+    % Portanto, $|D| \geq |S| > k$.
 \end{proof}
 Agora, temos todas as definições e lemas que serão necessários para o algoritmo.
-\begin{algorithm}
+\begin{algorithm}[H]
     \caption{\sc Gargalo-HS$(G,c,k)$}
     \label{k-center:bottleneck}
     \begin{algorithmic}[1]
         \State $i \leftarrow 0$
-        \State $M_0 \leftarrow V$
+        \State $M_0 \leftarrow V(G)$
         \While{$|M_i| > k$}
             \State $i\leftarrow i + 1$
             \State Seja $M_i$ um conjunto independente maximal em $G_i^2$
         \EndWhile
-        \State Devolva $M_i$
+        \State \Return $M_i$
     \end{algorithmic}
 \end{algorithm}
 
 
 \begin{theorem}
-    O algoritmo {\sc Gargalo-HS} é uma $2$-aproximação do problema dos $k$-centros.
+    O algoritmo {\sc Gargalo-HS} é uma $2$-aproximação do problema dos $k$-centros métrico.
 \end{theorem}
 \begin{proof}
     Primeiro vamos mostrar que o algoritmo é polinomial.
     
-    Como $G_{i^*}$ tem um $k$-conjunto dominante, então o laço vai iterar no máximo $i^* \leq |E|$ vezes, pois pelo Lema~\ref{lemma:2.10} qualquer conjunto independente maximal encontrado em $G_{i^*}^2$ terá tamanho no máximo $k$.
+    Como $G_{i^*}$ tem um $k$-conjunto dominante, então o laço vai iterar no máximo $i^* \leq |E|$ vezes, pois pelo Lema~\ref{lemma:2.10} qualquer conjunto independente encontrado em $G_{i^*}^2$ terá tamanho no máximo $k$.
     Também é fácil mostrar que é possível encontrar um conjunto independente maximal em tempo polinomial. Um algoritmo simples começa com um conjunto $A = \{u\}$ sendo $u$ um vértice arbitrário e, a cada iteração, coloca em $A$ um vértice que não é adjacente a nenhum vértice de $A$ até não ser mais possível.
     Além disso, também conseguimos construir o grafo $G_i^2$ em tempo polinomial. Começaremos $E_i^2$ como uma cópia de $E_i$ e, para cada tripla de vértice $(u,v,w)$ caso já não exista uma aresta $uw \in E_i$, vamos inseri-la em $E_i^2$ se $v$ for um vizinho comum de $u$ e $w$ em $E_i$. Como temos no máximo $|V|^3$ triplas de vértices e todas as operações que serão feitas tomam tempo polinomial, então podemos construir $G_i^2$ em tempo polinomial.
 
     Agora, vamos mostrar que o algoritmo é uma $2$-aproximação.
 
-    Para um grafo $H$ com peso nas arestas, definimos max$(H)$ como o maior peso de uma aresta. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal de tamanho no máximo $k$, então pelo Lema~\ref{lemma:2.8} ele é um $k$-conjunto dominante e como o grafo induzido $G_{i'}[M_{i'}]$ é um subgrafo de $G_{i'}^2$ então max$(G_{i'}[M_{i'}]) \leq \text{max}(G_{i'}^2) $. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i'})$. Assim, max$(G_{i'}[M_{i'}]) \leq $ max$(G_{i'}^2) \leq 2$ max$(G_{i'}) \leq 2$ max$(G_{i^*})= 2 \opt(I)$. 
+    Para um grafo $H$ com peso nas arestas, definimos max$(H)$ como o maior peso de uma aresta. Seja $i'$ o valor de $i$ ao final do algoritmo e $M_{i'}$ a solução devolvida por ele. Como $M_{i'}$ é um conjunto independente maximal de tamanho no máximo $k$, então pelo Lema~\ref{lemma:2.8} ele é um $k$-conjunto dominante. Como o grafo induzido $G_{i'}[M_{i'}]$ é um subgrafo de $G_{i'}^2$ então max$(G_{i'}[M_{i'}]) \leq \text{max}(G_{i'}^2) $. Pela desigualdade triangular, é fácil notar que max$(G_{i'}^2) \leq 2$  max$(G_{i'})$. Assim, 
+    \begin{equation}
+        \max(G_{i'}[M_{i'}]) \leq  \max(G_{i'}^2) \leq 2 \max(G_{i'}) \leq 2 \max(G_{i^*})= 2 \opt(I). \nonumber
+    \end{equation}
 \end{proof}
 

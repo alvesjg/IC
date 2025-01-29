@@ -1,7 +1,7 @@
 Nessa seção falaremos sobre a versão métrica do problema de localização de instalações. 
 O problema de localização de instalações métrico consiste em, dado um conjunto de instalações $F$, um conjunto de clientes $D$, uma métrica $c : F \times D \rightarrow \mathbb{R}$ e uma função de custo de abertura $f: F \rightarrow \mathbb{R}$, encontrar $S \subseteq F$ que minimize custo${(S) \coloneqq \sum_{i \in S} f_i +  \sum_{j \in D} \min_{i \in S} c_{ij}}$.
 
-Antes de falarmos sobre algoritmos de aproximação para o problema da localização de instalações, vamos mostrar que, assumindo $P\neq\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema da cobertura por vértices.
+Antes de falarmos sobre algoritmos de aproximação para o problema da localização de instalações métrico, vamos mostrar que, assumindo $P\neq\NP$, não existe algoritmo polinomial que resolva nosso problema, ou seja, vamos mostrar que nosso problema é $\NP$-difícil. Para isso, vamos definir o problema da cobertura por vértices.
 
 
 
@@ -11,19 +11,20 @@ Antes de falarmos sobre algoritmos de aproximação para o problema da localiza�
 Esse problema é $\NP$-completo, sendo um dos famosos $21$ problemas do Karp~\cite{Karp1972}. Disso deriva-se o seguinte.
 
 \begin{theorem}
-    O problema de localização de instalações é $\NP$-difícil.
+    O problema de localização de instalações métrico é $\NP$-difícil.
 \end{theorem}
 
 \begin{proof}
 
-    Seja $I(G,k)$ uma instância do problema da cobertura por vértices. Tome $F \coloneqq V(G)$ e $D \coloneqq E(G)$. Considere também $f_i \coloneqq 1$ para todo $i \in V$ e $c_{ij} \coloneqq 1$ se $i \in V(G)$ é extremo de $j \in E(G)$ e $c_{ij} \coloneqq 3$ caso contrário. Note que $c$ é uma métrica. Assim, construímos uma instância métrica $I'(F,D,c,f)$ do problema de localização de instalações a partir de uma instância do problema da cobertura por vértices.
+    Seja $I = (G,k)$ uma instância do problema da cobertura por vértices. Tome $F \coloneqq V(G)$ e $D \coloneqq E(G)$. Considere também $f_i \coloneqq 1$ para todo $i \in V$ e $c_{ij} \coloneqq 1$ se $i \in V(G)$ é extremo de $j \in E(G)$ e $c_{ij} \coloneqq 3$ caso contrário. Note que $c$ é uma métrica. Assim, construímos uma instância $I' = (F,D,c,f)$ do problema de localização de instalações métrico a partir de uma instância do problema da cobertura por vértices. Precisamos mostrar que a resposta para $I$ é sim se e somente se $\opt(I') \leq |D| + k$.
 
     % Note que a resposta ótima de $I'$ será a quantidade de clientes somado à menor quantidade de instalações que precisamos abrir até que todos os clientes possam ser associados a instalações em que o seu custo de associação é 0. Se um cliente (aresta) está associado a uma instalação(vértice) cujo custo de associação é 2, podemos diminuir o custo total abrindo uma instalação em que o custo de sua associação é 0, uma vez que abrir a instalação custaria 1 e diminuiríamos o custo de associação do cliente de 2 para 0. Sabemos que essa instalação existe, pois para cada cliente (aresta) existem duas instalações com custo de associação 0 (seus vértices extremos).
     % Assim, é fácil notar que essa quantidade de instalações é o tamanho mínimo de uma cobertura por vértices em $G$. Portanto, se o custo total da solução do algoritmo $A$ aplicado à instância $I'$ é menor ou igual a $k$, então a resposta para $I$ é sim. Caso contrário, a resposta é não.
 
     Vamos mostrar que se a resposta para $I$ é sim, então $\opt(I') \leq |D| + k$. Como a resposta para $I$ é sim, então existe uma cobertura por vértices $S$ tal que $|S|\leq k$. É fácil notar que a solução de $I'$ em que abrimos as instalações referentes a $S$ tem custo no máximo $|D| + k$, uma vez que para cada cliente $j$ existe $i \in S$ tal que $i$ é extremo de $j$ e, consequentemente, $c_{ij} = 1$ e o custo de abertura das instalações é no máximo $k$ uma vez que cada instalação tem custo de abertura 1. Portanto, $\opt(I') \leq |D| + |k|$.
 
-    Agora vamos mostrar que se $opt(I') \leq |D| + k$, então a resposta para $I$ é sim. Como $opt(I') \leq |D| + k$, então existe um conjunto $F' \subseteq F$ de tamanho $k$ tal que para todo cliente $j$ existe uma instalação $i \in F'$ tal que $c_{ij} = 1$ e, consequentemente, $i$ é extremo de $j$ por construção. Como isso vale para todo cliente $i \in D$, então $F'$ é uma cobertura por vértices em $G$ com tamanho no máximo $k$. Portanto, a resposta para $I$ é sim.
-
-    Desse modo, resolvemos o problema da cobertura por vértices em tempo polinomial, o que, assumindo $P\neq\NP$, é um absurdo.
+    Agora vamos mostrar que se $\opt(I') \leq |D| + k$, então a resposta para $I$ é sim. Seja $X$ a resposta ótima da instância $I'$. Note que não existe $j \in D$ tal que $c(j,X) = 3$. Caso contrário, conseguimos diminuir o custo de $X$ abrindo algum $i \in F$, tal que $c_{ij} = 1$. É evidente que $i$ existe, uma vez que para todo $j \in D$ existem exatamente duas instalações que satisfazem $c_{ij} = 1$, que são os extremos da aresta $j$. Como, para todo $j \in D$, $c(j,X) = 1$, e, como $X$ é ótimo, então $X$ é uma cobertura de vértices mínima de $G$. Assim, $\opt(I') - |D| \leq k$ é o tamanho de uma cobertura mínima de vértices de $G$. 
+    
+    
+    %Como $\opt(I') \leq |D| + k$, então existe um conjunto $F' \subseteq F$ de tamanho $k$ tal que para todo cliente $j$ existe uma instalação $i \in F'$ tal que $c_{ij} = 1$ e, consequentemente, $i$ é extremo de $j$ por construção. Como isso vale para todo cliente $i \in D$, então $F'$ é uma cobertura por vértices em $G$ com tamanho no máximo $k$. Portanto, a resposta para $I$ é sim.
 \end{proof}

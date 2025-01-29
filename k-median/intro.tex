@@ -1,13 +1,19 @@
 Nessa seção falaremos sobre a versão métrica do problema das $k$-medianas. 
-O problema das $k$-medianas métrico consiste em, dado um conjunto de instalações $F$, um conjunto de clientes $D$, uma métrica $c : F \times D \rightarrow \mathbb{R}$ e um inteiro $k$, encontrar $S \subseteq F$ com $|S| \leq k$ que minimize custo$(S) \coloneqq \sum_{j \in D} \min_{i \in S} c_{ij}$.
+O problema das $k$-medianas métrico consiste em, dado um conjunto de instalações $F$, um conjunto de clientes $D$, uma métrica $c : F \times D \rightarrow \mathbb{R}$ e um inteiro $k$, encontrar $S \subseteq F$ com $|S| \leq k$ que minimize custo$(S) \coloneqq \sum_{j \in D} c(j,S)$, em que $c(j,S) \coloneqq \min_{i \in S} c_{ij}$.
 
-Antes de falarmos sobre algoritmos de aproximação para o problema das $k$-medianas, vamos mostrar que, assumindo que $P \neq \NP$, não existe algoritmo polinomial que resolva esse problema. Mais forte que isso, vamos mostrar que a versão métrica do problema é $\NP$-difícil. Vamos fazer uma redução do problema da cobertura de conjuntos na sua versão de decisão para o problema das $k$-medianas métrico.
+Antes de falarmos sobre algoritmos de aproximação para o problema das $k$-medianas métrico, vamos mostrar que, assumindo que $P \neq \NP$, não existe algoritmo polinomial que resolva esse problema. Vamos fazer uma redução do problema da cobertura de conjuntos na sua versão de decisão para o problema das $k$-medianas métrico.
+
+\begin{problem}
+    Dada um conjunto $E$, uma família ${\mathcal{S} = \set{S_1,\ldots,S_m}}$ de subconjuntos de $E$ e um inteiro $k$, decidir se existe um conjunto $C \subseteq \mathcal{S}$ tal que $\bigcup_{S \in C} S = E$ e $|C| \leq k$.
+\end{problem}
+
+Esse problema é $\NP$-completo, sendo um dos famosos 21 problemas de Karp~\cite{Karp1972}. Disso, deriva-se o seguinte.
 
 \begin{theorem}
 O problema das $k$-medianas métrico é $\NP$-difícil.
 \end{theorem}
 \begin{proof}
-Seja $I \coloneqq (E,\{S_1,\ldots,S_m\},k)$ uma instância da versão de decisão do problema da cobertura de conjuntos. Vamos definir o conjunto de instalações $F \coloneqq [m]$, o conjunto de clientes $D \coloneqq E$ e a função de custo $c_{ij} \coloneqq 1$ se $j \in S_i$ e $c_{ij} \coloneqq 3$ caso contrário, para cada $i \in F$ e $j \in D$. Assim, temos uma instância $I' \coloneqq (F,D,c,k)$ para o problema das $k$-medianas. É fácil notar que essa corresponde a uma instância métrica do problema. Então, vamos mostrar que a resposta para $I$ é sim se e somente se $\opt(I') = |D|$. Antes, note que $\opt(I') \geq |D|$, uma vez que $c_{ij} \geq 1$ para todo $i \in F$ e $j\in D$.
+Seja $I = (E,\{S_1,\ldots,S_m\},k)$ uma instância da versão de decisão do problema da cobertura de conjuntos. Vamos definir o conjunto de instalações $F \coloneqq [m]$, o conjunto de clientes $D \coloneqq E$ e a função de custo $c_{ij} \coloneqq 1$ se $j \in S_i$ e $c_{ij} \coloneqq 3$ caso contrário, para cada $i \in F$ e $j \in D$. Assim, temos uma instância $I' = (F,D,c,k)$ para o problema das $k$-medianas. É fácil notar que essa corresponde a uma instância métrica do problema. Então, vamos mostrar que a resposta para $I$ é sim se e somente se $\opt(I') = |D|$. Antes, note que $\opt(I') \geq |D|$, uma vez que $c_{ij} \geq 1$ para todo $i \in F$ e $j\in D$.
 
 Vamos mostrar que se a resposta para $I$ é sim, então $\opt(I') = |D|$. Como a resposta para $I$ é sim, então existem $k$ elementos de $\{S_1,\ldots,S_m\}$ tal que a união deles é igual a $E$. Vamos supor sem perda de generalidade que esses elementos são os $k$ primeiros. Seja $F' \coloneqq [k]$. A solução de $I'$ em que abrimos as instalações em $F'$ tem custo $|D|$, uma vez que para cada cliente $j$ temos que $j \in E = \bigcup_{i= 1}^k S_i$. Então existe $i \in [k]$ tal que $j \in S_i$ e, consequentemente, $c_{ij} = 1$. Portanto, $\opt(I') \leq |D|$. Como já sabemos que $\opt(I') \geq |D|$, então $\opt(I') = |D|$.
 

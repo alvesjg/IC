@@ -4,7 +4,7 @@ O método do algoritmo é dividido em duas componentes principais de interesses 
 
 Primeiramente, vamos definir e relembrar definições que serão necessárias. Seja $I = (F,D,c,k)$ uma instância do problema das $k$-medianas métrico. Uma \emph{pseudo solução} de $I$ é um conjunto $S \subseteq F$. Dizemos que uma pseudo-solução $S$ é \emph{$d$-aditiva} se $|S| \leq k + d$. Se $S$ é uma (pseudo-)solução $0$-aditiva, então $S$ é uma solução. Falaremos que um algoritmo que produz uma solução $d$-aditiva com custo no máximo $\alpha\, \opt(I)$ é uma $\alpha$-aproximação $d$-aditiva para o problema das $k$-medianas.
 Em vários momentos precisaremos falar sobre clientes ou instalações que estão próximos, por isso, definimos, para qualquer $p \in F \cup D$ e $r \geq 0$, os conjuntos ${\text{FBall}(p,r) \coloneq \set{i \in F: c(p,i) < r}}$ e ${\text{DBall}(p,r) \coloneqq \set{j \in D: c(p,j) < r}}$.
-Além disso, utilizaremos o algoritmo {\sc BuscaBinária$_\eps$} e o Lema 4.5 da Seção~\ref{k-median:RelLag}.
+Além disso, utilizaremos o algoritmo {\sc BuscaBinária$_\eps$} e o Lema~\ref{k-median_relLag_lema1} da Seção~\ref{k-median:RelLag}.
 
 \subsection{Obtendo soluções a partir de pseudo-soluções aditivas}
 
@@ -23,9 +23,9 @@ Se $k = 1$, podemos notar que uma pseudo-solução $T$ com $|T| = 2$ tem custo 0
 \begin{definition}
     Para $\beta > 0$, uma instância $I = (F,D,c,k)$ do problema das $k$-medianas é \emph{$\beta$-esparsa} se, para cada instalação $i \in F$, vale que
     \begin{equation}
-        (1-\xi) \, c(i,S^*) \, |\text{DBall}(i,\xi c (i,S^*))| \leq \beta,
+        (1-\xi) \, c(i,S^*) \, |\text{DBall}(i,\xi c (i,S^*))| \leq \beta, \label{esparsa}
     \end{equation}
-    em que $\xi \coloneqq 1/3$ e $S^*$ é uma solução ótima para a instância $I$. Também dizemos que uma instalação $i$ é \emph{$\beta$-densa} se ela viola (27).
+    em que $\xi \coloneqq 1/3$ e $S^*$ é uma solução ótima para a instância $I$. Também dizemos que uma instalação $i$ é \emph{$\beta$-densa} se ela viola~\eqref{esparsa}.
 \end{definition}
 
 Veremos que qualquer pseudo-solução $d$-aditiva para uma instância esparsa pode ser transformada em uma solução sem aumentar muito o seu custo. Além disso, também veremos que é possível transformar qualquer instância em uma instância esparsa sem perder informações que julgaremos importantes sobre a instância original. 
@@ -48,7 +48,7 @@ A ideia do algoritmo que constrói instâncias esparsas é devolver várias inst
     \end{algorithmic}
 \end{algorithm}
 
-\begin{lemma}
+\begin{lemma} \label{lemma:5.3}
     Dada uma instância $I = (F,D,c,k)$ do problema das $k$-medianas métrico e um inteiro positivo $t$, {\sc Esparsa} devolve em tempo $n^{O(t)}$ um conjunto de instâncias do problema das $k$-medianas métrico tal que pelo menos uma, digamos ${I' = (F' \subseteq F,D,c,k)}$, satisfaz
     \begin{enumerate}
         \item uma solução ótima de $I$ também é uma solução ótima de $I'$; e
@@ -67,12 +67,12 @@ A ideia do algoritmo que constrói instâncias esparsas é devolver várias inst
     Agora, precisamos mostrar que a sequência $(i_1,i_1^*), (i_2,i_2^*), \ldots, (i_{\ell},i_{\ell}^*)$ está entre as sequências escolhidas por {\sc Esparsa}, ou seja, mostrar que $\ell \leq t$. Seja ${B_z \coloneqq \text{DBall}(i_z,\xi c(i_z,i_z^*))}$. Seja $1 \leq z < w \leq \ell$. Vamos mostrar que $B_z \cap B_w = \emptyset$. 
     Note que 
     \begin{equation}
-        c(i_w,i_w^*) \leq c(i_w,i_z^*) \leq c(i_w,i_z) + c(i_z,i_z^*) \leq 2 c(i_w,i_z),
+        c(i_w,i_w^*) \leq c(i_w,i_z^*) \leq c(i_w,i_z) + c(i_z,i_z^*) \leq 2 c(i_w,i_z), \label{pseudo:1}
     \end{equation}
     em que a primeira desigualdade vale uma vez que $i_w^*$ é a instalação de $S^*$ mais próxima à $i_w$, a segunda desigualdade vale pela desigualdade triangular e a terceira vale pois $i_w \not \in \text{FBall}(i_z,c(i_z,i_z^*))$. Seja $j$ um cliente em $B_z$.
     Vale que
     \begin{equation}
-        c(i_z,i_w) \leq c(i_z,j) + c(i_w,j) < \xi c(i_z,i_z^*) + c(i_w,j),
+        c(i_z,i_w) \leq c(i_z,j) + c(i_w,j) < \xi c(i_z,i_z^*) + c(i_w,j), \label{pseudo:2}
     \end{equation}
     em que a primeira desigualdade vale pela desigualdade triangular e a segunda vale por definição de $B_z$. \\
     Assim,
@@ -83,7 +83,7 @@ A ideia do algoritmo que constrói instâncias esparsas é devolver várias inst
         &= 2\xi c(i_z,i_w) \geq \xi c(i_w,i_w^*),
             \end{split}
         \end{align}
-    em que a primeira desigualdade vale por (29), a segunda desigualdade vale pois ${i_w \not \in \text{FBall}(i_z,c(i_z,i_z^*))}$ e a última desigualdade vale por (28).
+    em que a primeira desigualdade vale por~\eqref{pseudo:2}, a segunda desigualdade vale pois ${i_w \not \in \text{FBall}(i_z,c(i_z,i_z^*))}$ e a última desigualdade vale por~\eqref{pseudo:1}.
     Portanto, $j \not \in B_w$. Agora que mostramos que as bolas de clientes não se intersectam, vamos mostrar que isso implica $\ell \leq t$. Seja $h^*$ a instalação de $S^*$ mais próxima à $j$. Vale que
         \begin{align}
             \begin{split} \nonumber
@@ -135,7 +135,7 @@ O seguinte algoritmo será responsável por, a partir de uma solução $d$-aditi
     \end{algorithmic}
 \end{algorithm}
 
-\begin{lemma}
+\begin{lemma} \label{lemma:5.4}
     Dado uma instância $\beta$-esparsa $I = (F,D,c,k)$, uma solução $d$-aditiva $\mathcal{T}$, um número $\delta \in (0,1/8)$ e um inteiro $t \geq \frac{2d}{\delta \xi}$, {\sc Pseudo-Para-Sol-Esp} encontra em tempo $t\, n^{O(t)}$ um conjunto $S \subseteq F$ tal que 
     \begin{itemize}
         \item $|S| \leq k$; e
@@ -143,7 +143,7 @@ O seguinte algoritmo será responsável por, a partir de uma solução $d$-aditi
     \end{itemize}
 \end{lemma}
 
-A prova do Lema 5.4 será dividida em vários lemas. O primeiro deles irá provar o tempo de execução do algoritmo.
+A prova do Lema~\ref{lemma:5.4} será dividida em vários lemas. O primeiro deles irá provar o tempo de execução do algoritmo.
 
 \begin{lemma}
     Dado uma instância $\beta$-esparsa $I = (F,D,c,k)$, uma solução $d$-aditiva $\mathcal{T}$, um número $\delta \in (0,1/8)$ e um inteiro $t \geq \frac{2d}{\delta \xi}$, {\sc Pseudo-Para-Sol} leva tempo $t\, n^{O(t)}$ para executar.
@@ -163,7 +163,7 @@ A prova do Lema 5.4 será dividida em vários lemas. O primeiro deles irá prova
 \end{proof}
 
 
-Agora precisamos mostrar que o conjunto $S \subseteq F$ devolvido por {\sc Pseudo-para-Sol} satisfaz o que é proposto pelo Lema 5.4. Vamos separar no caso em que $S$ é devolvido na linha 5 e em que $S$ é devolvido na linha 12. Caso $S$ seja devolvido na linha 5 é evidente que $|S| \leq k$ e que custo$(S) \leq \text{custo}(\mathcal{T}) + dB$. Caso $S$ seja devolvido na linha~12 também é evidente que $|S| \leq k$, mas não é evidente que o custo de $S$ satisfaz o que é proposto. Como chegamos no laço {\bf Para} da linha 6, então temos um conjunto $\mathcal{T}' \subseteq \mathcal{T}$ com $|\mathcal{T}'| > k$ e que custo$(\mathcal{T}' \setminus \set{i}) > \text{custo}(\mathcal{T}') + B$, para todo $i \in \mathcal{T}'$.  Assim, iremos mostrar conjuntos $Q_0 \subseteq \mathcal{T}'$ e $V_0 \subseteq F$ com $|Q_0| + |V_0| = k$ e $|V_0| < t$ tal que custo$(S_{Q_0,V_0}) \leq \frac{1+3\delta}{1-3\delta}\opt(I)$.
+Agora precisamos mostrar que o conjunto $S \subseteq F$ devolvido por {\sc Pseudo-para-Sol} satisfaz o que é proposto pelo Lema~\ref{lemma:5.4}. Vamos separar no caso em que $S$ é devolvido na linha 5 e em que $S$ é devolvido na linha 12. Caso $S$ seja devolvido na linha 5 é evidente que $|S| \leq k$ e que custo$(S) \leq \text{custo}(\mathcal{T}) + dB$. Caso $S$ seja devolvido na linha~12 também é evidente que $|S| \leq k$, mas não é evidente que o custo de $S$ satisfaz o que é proposto. Como chegamos no laço {\bf Para} da linha 6, então temos um conjunto $\mathcal{T}' \subseteq \mathcal{T}$ com $|\mathcal{T}'| > k$ e que custo$(\mathcal{T}' \setminus \set{i}) > \text{custo}(\mathcal{T}') + B$, para todo $i \in \mathcal{T}'$.  Assim, iremos mostrar conjuntos $Q_0 \subseteq \mathcal{T}'$ e $V_0 \subseteq F$ com $|Q_0| + |V_0| = k$ e $|V_0| < t$ tal que custo$(S_{Q_0,V_0}) \leq \frac{1+3\delta}{1-3\delta}\opt(I)$.
 Para mostrar esses conjuntos usaremos a seguinte definição.
 \begin{definition}
     Para toda instalação $i \in \mathcal{T}'$, seja $L_i \coloneqq c(i,\mathcal{T}' \setminus \set{i})$ e $\ell_i \coloneqq c(i,S^*)$, em que $S^*$ é uma reposta ótima de $I$. Dizemos que uma instalação $i \in \mathcal{T}'$ é \emph{determinada} se $\ell_i < \delta L_i$.
@@ -223,7 +223,7 @@ Vamos então definir os conjuntos $Q_0$ e $V_0$. O conjunto $Q_0$ é formado pel
     \end{subequations}
     Isso é um absurdo, pois conseguiríamos retirar $i$ de $\mathcal{T}'$ na linha 2-3 do algoritmo. Portanto, $|U_0| \leq t$ e, consequentemente, $|V_0| < t$.
 \end{proof}
-Para completar a prova do Lema 5.4, vamos mostrar o seguinte lema.
+Para completar a prova do Lema~\ref{lemma:5.4}, vamos mostrar o seguinte lema.
 \begin{lemma}
     Sejam $Q_0$ e $V_0$ conjuntos como já definidos. Vale que 
     \begin{equation}
@@ -285,11 +285,11 @@ Agora, utilizaremos os algoritmos mostrados nas Seções 5.1.1 e 5.1.2 para prov
 
 É fácil perceber que o tempo de execução desse algoritmo é $O(n^{O(d/\eps)})$ vezes o tempo de execução de $A$, uma vez que rodamos o algoritmo $A$, uma vez que temos $n^{O(t)} = n^{O(d/\eps)}$ instâncias em $\mathcal{I}$ e, para cada uma delas, executamos o algoritmo $A$ uma vez. Além disso, rodamos {\sc Pseudo-para-Sol-Esp} para cada solução devolvida por $A$. Cada uma dessas execuções toma tempo $O(t\,n^{O(t)}) = O(\frac{d}{\eps} \, n^{O(d/\eps)})$ que totaliza $n^{O(d/\eps)} \cdot O(\frac{d}{\eps} \, n^{O(d/\eps)}) = O(\frac{d}{\eps} \, n^{O(d/\eps)})$.
 
-Agora mostraremos que {\sc Pseudo-Para-Sol}$_\eps$ é uma $(\alpha + \eps)$-aproximação para o problema das $k$-medianas métrico. É evidente que o conjunto $S$ devolvido é uma solução viável para o problema das $k$-medianas métrico. Precisamos mostrar que ${\text{custo}(S) \leq (\alpha + \eps)\, \opt(I)}$, sendo $I \coloneq (F,D,c,k)$. Seja $I'$ a instância que satisfaz as propriedades do Lema 5.3. Como $A$ é uma $\alpha$-aproximação $d$-aditiva para o problema das $k$-medianas métrico vale que
+Agora mostraremos que {\sc Pseudo-Para-Sol}$_\eps$ é uma $(\alpha + \eps)$-aproximação para o problema das $k$-medianas métrico. É evidente que o conjunto $S$ devolvido é uma solução viável para o problema das $k$-medianas métrico. Precisamos mostrar que ${\text{custo}(S) \leq (\alpha + \eps)\, \opt(I)}$, sendo $I \coloneq (F,D,c,k)$. Seja $I'$ a instância que satisfaz as propriedades do Lema~\ref{lemma:5.3}. Como $A$ é uma $\alpha$-aproximação $d$-aditiva para o problema das $k$-medianas métrico vale que
 \(
     \text{custo}(\mathcal{T}_{I'}) \leq \alpha \, \opt(I') = \alpha \, \opt(I). \nonumber
 \) 
-Como vale que $I'$ é uma instância $\opt(I)/t$-esparsa, $\delta \in (0,1/8)$ e $t = \lceil\frac{4}{\eps} \cdot \frac{\alpha d}{\xi \delta}\rceil \geq \frac{2d}{\delta \xi}$, então, pelo Lema 5.4, vale que 
+Como vale que $I'$ é uma instância $\opt(I)/t$-esparsa, $\delta \in (0,1/8)$ e $t = \lceil\frac{4}{\eps} \cdot \frac{\alpha d}{\xi \delta}\rceil \geq \frac{2d}{\delta \xi}$, então, pelo Lema~\ref{lemma:5.4}, vale que 
 \begin{align}
     \text{custo}(S) &\leq \text{custo}(S_{I'}) \nonumber\\
     &\leq \max \left\{ \text{custo}(\mathcal{T}_{I'}) + d \cdot 2 \frac{\opt(I) + \text{custo}(\mathcal{T}_{I'})}{t\xi\delta}, \frac{1+3\delta}{1-3\delta}\opt(I) \right\} \nonumber \\
@@ -303,9 +303,9 @@ Assim, o Teorema 5.1 está provado.
 
 Nessa seção vamos apresentar um algoritmo que é uma $(1 + \sqrt{3} + \eps)$ pseudo-aproximação $O(1/\eps)$-aditiva desenvolvida por Li e Svensson para o problema das $k$-medianas métrico. Esse algoritmo faz o papel do algoritmo $A$ presente na linha 5 do {\bf Algoritmo 16}.
 
-Vamos relembrar o algoritmo {\sc BuscaBinária}$_\eps$ que recebe uma instância ${I = (F,D,c,k)}$ do problema das $k$-medianas métrico e devolve dois conjuntos ${X_1,X_2 \subseteq F}$. Se $|X_2| = 0$, então $X_1$ é uma solução com custo no máximo duas vezes o ótimo. Se $|X_2| \neq 0$, então $|X_1| > k > |X_2|$ e, pelo Lema~\ref{k-median_relLag_lema1}, para $a \coloneqq \frac{k - |X_2|}{|X_1| - |X_2|}$ e $b \coloneqq \frac{|X_1| - k}{|X_1| - |X_2|}$, vale que $a \, \custo(X_1) + b \,\custo(X_2) \leq (1+\epsilon) 2\opt(I)$.
+Vamos relembrar o algoritmo {\sc BuscaBinária}$_\eps$ que recebe uma instância ${I = (F,D,c,k)}$ do problema das $k$-medianas métrico e devolve dois conjuntos ${X_1,X_2 \subseteq F}$. Se $|X_2| = 0$, então $X_1$ é uma solução com custo no máximo duas vezes o ótimo. Se $|X_2| \neq 0$, então $|X_1| > k > |X_2|$ e, pelo Lema~\ref{k-median_relLag_lema1}, para $a \coloneqq \frac{k - |X_2|}{|X_1| - |X_2|}$ e $b \coloneqq \frac{|X_1| - k}{|X_1| - |X_2|}$, vale que $a \, \custo(X_1) + b \,\custo(X_2) \leq (2+\epsilon)\,\opt(I)$.
 
-Sejam $(x_1,y_1)$ e $(x_2,y_2)$ soluções (não necessariamente viáveis) do programa linear relaxado que representam $X_1$ e $X_2$, respectivamente. Chamamos de  solução \emph{bi-point} a solução ${(ax_1 + bx_2, ay_1 + by_2)}$, ou seja, a solução que é combinação convexa de $(x_1,y_1)$ e $(x_2,y_2)$ com coeficientes $a$ e $b$. É fácil mostrar que essa solução é realmente viável para o programa linear relaxado. É evidente que o valor objetivo dessa solução é igual a $a \, \custo(X_1) + b \,\custo(X_2)$ que por sua vez é no máximo $(2 + \eps) \opt(I)$. Vamos mostrar que é possível transformar a solução bi-point em uma solução inteira $O(1/\eps)$-aditiva aumentando o custo em uma razão de no máximo $\frac{1 + \sqrt{3} + \eps}{2}$. Isso é suficiente para termos um algoritmo que é uma $(1 + \sqrt{3} + \eps)$ pseudo-aproximação $O(1/\eps)$-aditiva para o problema das $k$-medianas métrico. 
+Sejam $(x_1,y_1)$ e $(x_2,y_2)$ soluções (não necessariamente viáveis) do programa linear relaxado~\eqref{PL:med} que representam $X_1$ e $X_2$, respectivamente. Chamamos de  solução \emph{bi-point} a solução ${(ax_1 + bx_2, ay_1 + by_2)}$, ou seja, a solução que é combinação convexa de $(x_1,y_1)$ e $(x_2,y_2)$ com coeficientes $a$ e $b$. É fácil mostrar que essa solução é realmente viável para o programa linear relaxado. É evidente que o valor objetivo dessa solução é igual a $a \, \custo(X_1) + b \,\custo(X_2)$ que por sua vez é no máximo $(2 + \eps) \opt(I)$. Vamos mostrar que é possível transformar a solução bi-point em uma solução inteira $O(1/\eps)$-aditiva aumentando o custo em uma razão de no máximo $\frac{1 + \sqrt{3} + \eps}{2}$. Isso é suficiente para termos um algoritmo que é uma $(1 + \sqrt{3} + \eps)$ pseudo-aproximação $O(1/\eps)$-aditiva para o problema das $k$-medianas métrico. 
 
 É conveniente pensarmos na solução bi-point como um grafo $(X_1,X_2)$-bipartido em que para cada cliente $j$ teremos uma aresta que liga $i_1(j)$ e $i_2(j)$, em que $i_1(j)$ é a instalação de $X_1$ mais próxima à $j$ e $i_2(j)$ é a instalação de $X_2$ mais próxima à $j$. Seja $\phi : X_1 \rightarrow X_2$ tal que $\phi(i_1) \coloneqq \arg\min_{i_2 \in X_2} c(i_1,i_2)$, ou seja, função que mapeia cada instalação em $X_1$ para a instalação em $X_2$ mais próxima a ela. Vamos particionar os elementos de $X_1$ baseado na função $\phi$. Para cada $i_2 \in X_2$ criamos uma parte $L(i_2) \coloneqq \set{i_1 \in X_1 : \phi(i_1) = i_2}$. Vamos nos referir à $L(i_2)$ como as folhas de uma estrela com centro $i_2$.
 
@@ -317,8 +317,6 @@ Sejam $(x_1,y_1)$ e $(x_2,y_2)$ soluções (não necessariamente viáveis) do pr
 
 \vspace{-2cm}
 A figura acima é uma representação do grafo bipartido associado à solução bi-point. As arestas grossas são os clientes que formam as arestas da estrela. A aresta fina representa um cliente $j$ tal que $i_1(j) \not \in L(i_2(j))$.
-
-O algoritmo tem como invariante que, para cada estrela com centro $i \in X_2$, caso a instalação $i$ esteja fechada, então todas as instalações em $L(i)$ estarão abertas.
 
 \begin{algorithm}[H]
     \caption{\sc Pseudo$_\eps(I = (F,D,c,k))$}
@@ -395,7 +393,7 @@ Para o caso em que $b \leq \frac{\sqrt{3} - 1}{4}$, então executamos a função
         \State $X \gets X \cup X_2$
         \State Ordene $X_2$ em ordem decrescente da função
                     \[\sum_{ j \, \in \, \delta(L(i))} \frac{ c(j,X_1) + c(j,X_2)} {|L(i)| - 1} \]
-        \State $\text{cap} \gets k - |X_2|$
+        \State $\text{cap} \gets k - |X|$
         \For{cada $i \in X_2$}
             \If{cap $\leq 0$}
                 \State \textbf{continue}
@@ -422,7 +420,7 @@ Seja $j$ um cliente qualquer e $i \in X_2$ tal que $i_1(j) \in L(i)$. O custo de
     &\leq c(i_1(j),i_2(j)) +  c(i_1(j),j) \nonumber \\
     &\leq 2\,c(i_1(j),j) + c(i_2(j),j) = 2\,c(j,X_1) + c(j,X_2)\nonumber
 \end{align}
-caso contrário, em que a primeira e a terceira desigualdade valem pela desigualdade triangular e a segunda desigualdade vale por definição de $L(i)$. Assim, toda vez que escolhemos uma estrela pra fechar o seu centro $i$  e abrir suas folhas diminuímos o limitante superior do custo da solução em $\sum_{j \in \delta(L(i))}(c(j,X_1) + c(j,X_2))$. Isso resulta em um programa linear para maximizar o quanto podemos diminuir esse limitante superior a partir da solução inicial $X_2$.
+caso contrário, em que a primeira e a terceira desigualdade valem pela desigualdade triangular e a segunda desigualdade vale por definição de $L(i)$. Assim, toda vez que escolhemos uma estrela pra fechar o seu centro $i$  e abrir suas folhas diminuímos o limitante superior do custo da solução em $\sum_{j \in \delta(L(i))}(c(j,X_1) + c(j,X_2))$. Assim, podemos formular um programa linear para escolher quais estrelas fecharemos o centro e abriremos as folhas, a fim de maximizar o quanto podemos diminuir esse limitante superior a partir da solução inicial $X_2$.
 \begin{align}
 \text{Maximize} \quad &\sum_{i \in X_2} \sum_{j\in \delta(L(i))} (c(j,X_1) + c(j,X_2))x_i \nonumber\\
 \text{sujeito a}\quad & \sum_{i \in X_2} x_i(|L(i)| - 1) \leq k - |X_2| \nonumber \\
@@ -430,19 +428,25 @@ caso contrário, em que a primeira e a terceira desigualdade valem pela desigual
 \end{align}
 Intuitivamente, $x_i$ tem valor 1 se fechamos $i$ e abrimos todas as instalações em $L(i)$ e 0 se mantemos $i$ aberta. Note que $x_i \coloneqq a$ para todo $i \in X_2$ é uma solução viável, uma vez que $\sum_{i \in X_2} a(|L(i)| - 1) = a(|X_1| - |X_2|) = k - |X_2|$ e $ 0 \leq a \leq 1$. Assim, uma solução ótima tem custo pelo menos $a(\text{custo}(X_1) + \text{custo}(X_2))$.
 
-Note que esse programa linear é equivalente ao programa linear do problema da mochila fracionária em que cada instalação $i \in X_2$ é um objeto com valor ${\sum_{j \in \delta(L(i))} c(j,X_1) + c(j,X_2)}$ e peso $|L(i)| - 1$. Portanto, existe uma solução ótima com no máximo uma variável fracionária. Nas linhas 6-15 de {\sc b-pequeno} construímos, implicitamente, uma solução ótima desse tipo. Suponha que estamos na iteração para a instalação $i$ do laço {\bf Para} da linha 6. Se a condicional da linha 7 é satisfeita, então temos $x_i = 0$, caso a condicional da linha 9 seja satisfeita então $x_i = 1$, caso nenhuma das duas condicionais sejam satisfeitas, então $x_i$ é uma variável fracionária. Note que só teremos uma variável fracionária, uma vez que se entramos no {\sc Senão} da linha 12 atualizamos cap para um valor negativo, uma vez que $cap < |L(i)| - 1$ e, após isso, a condição da linha 7 sempre é satisfeita. Evidentemente, se $x_i = 1$ fechamos $i$ e abrimos todas as instalações em $L(i)$, se $x_i = 0$ mantemos $i$ aberta e se $x_i$ é fracionária mantemos $i$ aberta e abrimos $\lceil x_i |L(i)|\rceil$ instalações de $L(i)$ aleatoriamente. Assim, abrimos instalações tal que o custo esperado diminuído da solução inicial $X_2$ é pelo menos o valor da solução ótima desse programa linear. Portanto, o custo de $X$ é no máximo $2c(j,X_1) + c(j,X_2) -a (c(j,X_1) + c(j,X_2)) = (1 + b)c(j,X_1) + bc(j,X_2)$. Além disso, $|X| \leq k + 2$, onde o termo aditivo 2 vem da estrela com valor de $x$ fracionário.
-
-Como podemos assumir que $c(j,X_1) \leq c(j,X_2)$, caso contrário poderíamos somente abrir $X_1$, então
+Note que esse programa linear é equivalente ao programa linear do problema da mochila fracionária em que cada instalação $i \in X_2$ é um objeto com valor ${\sum_{j \in \delta(L(i))} c(j,X_1) + c(j,X_2)}$ e peso $|L(i)| - 1$. Portanto, existe uma solução ótima com no máximo uma variável fracionária. Nas linhas $6-15$ de {\sc b-pequeno} construímos, implicitamente, uma solução ótima desse tipo. Suponha que estamos na iteração para a instalação $i$ do laço {\bf Para} da linha 6. Se a condicional da linha 7 é satisfeita, então temos $x_i = 0$, caso a condicional da linha 9 seja satisfeita então $x_i = 1$, caso nenhuma das duas condicionais sejam satisfeitas, então $x_i$ é uma variável fracionária. Note que só teremos uma variável fracionária, uma vez que se entramos no {\bf Senão} da linha 12 atualizamos cap para um valor negativo, uma vez que $cap < |L(i)| - 1$ e, após isso, a condição da linha 7 sempre é satisfeita. Evidentemente, se $x_i = 1$ fechamos $i$ e abrimos todas as instalações em $L(i)$, se $x_i = 0$ mantemos $i$ aberta e se $x_i$ é fracionária mantemos $i$ aberta e abrimos $\lceil x_i |L(i)|\rceil$ instalações de $L(i)$ aleatoriamente. Assim, abrimos instalações tal que a redução no custo esperado da solução inicial $X_2$ é pelo menos o valor da solução ótima desse programa linear. Portanto, 
 \begin{align}
-    \text{custo}(X) &\leq (1+b) c(j,X_1) + bc(j,X_2) \nonumber \\
-    &\leq (1+2b)((1-b)c(j,X_1) + bc(j,X_2)) \nonumber \\
-    &\leq (1 +\sqrt{3} + \eps)\,\opt(I). \nonumber
+    \text{custo}(X) &\leq 2\,\text{custo}(X_1) + \text{custo}(X_2) - a (\text{custo}(X_1) + \text{custo}(X_2)) \nonumber \\
+    &= (1 + b)\text{custo}(X_1) + b\,\text{custo}(X_2). \nonumber
 \end{align}
-Portanto, custo$(X) \leq (1+\sqrt{3} + \eps)\,\opt(I)$ e $|X| \leq k + 2 = k + O (1/\eps)$.
+Além disso, $|X| \leq k + 2$, onde o termo aditivo 2 vem da estrela com valor de $x$ fracionário.
+Podemos assumir que $\text{custo}(X_1) \leq \text{custo}(X_2)$, então
+\begin{align}
+    \text{custo}(X) &\leq (1+b) \text{custo}(X_1) + b\,\text{custo}(X_2) \nonumber \\
+    &\leq (1+2b)(a\,\text{custo}(X_1) + b\,\text{custo}(X_2)) \nonumber \\
+    %&\leq \left(\frac{1 + \sqrt{3}}{2}\right) (2 + \eps)\, \opt(I) \nonumber\\
+    &\leq (1 +\sqrt{3} + \eps)\,\opt(I), \nonumber
+\end{align}
+em que a terceira desigualdade vale uma vez que $b \leq \frac{\sqrt{3} - 1}{4}$.
+\vspace{-0.3cm}
 \subsubsection{Caso $\frac{\sqrt{3} - 1}{4} < b \leq \frac{2}{1 + \sqrt{3}}$}
 
-No caso em que $b$ tem valor no intervalo intermediário, então temos o caso mais complicado em que a seguinte função é executada.
-\begin{algorithm}
+No caso em que $b$ tem valor no intervalo intermediário, a seguinte função é executada.
+\begin{algorithm}[H]
     \caption{\sc b-médio$(I,X_1,X_2,a,b)$}
     \begin{algorithmic}[1]
         \State $\eta \gets \frac{\eps}{1 + \sqrt{3}}$
@@ -492,12 +496,12 @@ Temos que mostrar que, para $X$ devolvido por {\sc b-médio}, o tamanho de $X$ n
 \begin{proof}
     Lembre que $a|X_1| + b|X_2| = k$. Portanto,
     \begin{equation}
-        \sum_{i \in X_2}(a|L(i)| + b) = k.
+        \sum_{i \in X_2}(a|L(i)| + b) = k. \label{pseudo:3}
     \end{equation}
     Seja $i \in X_2$ o centro de uma estrela grande. %Por definição, $|L(i)| \geq  2/(ab\eta)$, portanto $b |L(i)| \geq 1/(a\eta) \geq 1/\eta$.
-    Para essa estrela o algoritmo abre ${1 + \left \lfloor a(L(i) - 1) \right \rfloor \leq 1 + a(|L(i) - 1) = b + a|L(i)|}$ instalações.
+    Para essa estrela o algoritmo abre ${1 + \left \lfloor a(|L(i)| - 1) \right \rfloor \leq 1 + a(|L(i)| - 1) = b + a|L(i)|}$ instalações.
 
-    Agora considere um grupo $\mathcal{U}_h$ de pequenas estrelas e seja $m \coloneqq |\mathcal{U}_h$. Para esse grupo, o algoritmo abre $\left \lceil bm \right \rceil + 1 \leq bm + 2 $ instalações em $X_2$ nas linhas 10 e 11. Além disso abre no máximo 
+    Agora considere um grupo $\mathcal{U}_h$ de pequenas estrelas e seja $m \coloneqq |\mathcal{U}_h|$. Para esse grupo, o algoritmo abre $\left \lceil bm \right \rceil + 1 \leq bm + 2 $ instalações em $X_2$ nas linhas 10 e 11. Além disso abre no máximo 
     \begin{equation}
         (m - \lceil bm \rceil -1 ) h + \left \lceil ahm - (m - \lceil bm \rceil - 1)h \right \rceil \leq ahm + 1 \nonumber
     \end{equation}
@@ -507,22 +511,22 @@ Temos que mostrar que, para $X$ devolvido por {\sc b-médio}, o tamanho de $X$ n
         & = \sum_{i \in X_2 } (b + a |L(i)|) + 3 \left \lceil 2/(ab\eta) \right \rceil \nonumber \\
         & = k + 3 \left \lceil 2/(ab\eta) \right \rceil \nonumber,
     \end{align}
-    em que a primeira igualdade vale por definição de $\mathcal{U}_h$ e a segunda desigualdade vale por (36).
+    em que a primeira igualdade vale por definição de $\mathcal{U}_h$ e a segunda desigualdade vale por~\eqref{pseudo:3}.
 \end{proof}
 
 Agora precisamos limitar o custo de $X$.
 
 \begin{lemma}
     Seja $X$ o conjunto devolvido por {\sc b-médio}. O custo esperado de $X$ é no máximo 
-    \[( 1 + \eta) (b\, \text{custo}(X_2) + a (1 + 2b)\text{custo}(X_1))\]
+    \[( 1 + \eta) (b\, \text{custo}(X_2) + a (1 + 2b)\text{custo}(X_1)).\]
 \end{lemma}
 
 \begin{proof}
-    Vamos fixar um cliente $j$ e definir $i_1 \coloneqq i_1(j)$ e $i_2 \coloneqq i_2(j)$. Seja $i \in X_2$ tal que $i_1 \in L(i)$. Note que $c(i_1,i) \leq c(i_1,i_2) \leq c(i_1,j) + c(i_2,j)$, por definição de $i$ e pela desigualdade triangular. Assim, $c(i,j) \leq c(i,i_1) + c(i_1,j)\leq 2 c(i_1,j) + c(i_2,j)$. Se $i_1$ for aberto, então o custo de conexão de $j$ é $c(i_1,j)$. Se $i_1$ estiver fechado e $i_2$ for aberto, então o custo de conexão de $j$ é $c(i_2,j)$. Se ambas estiverem fechadas, então o custo de conexão de $j$ é $c(i,j) \leq 2c(i_1,j) + c(i_2,j)$. Vamos, por abuso de notação, indicar por $i$ o evento em que a instalação $i$ está aberta e $\bar{i}$ o evento em que a instalação $i$ está fechada. Assim, o custo de conexão esperado para $j$ é 
+    Vamos fixar um cliente $j$ e definir $i_1 \coloneqq i_1(j)$ e $i_2 \coloneqq i_2(j)$. Seja $i \in X_2$ tal que $i_1 \in L(i)$. Note que $c(i_1,i) \leq c(i_1,i_2) \leq c(i_1,j) + c(i_2,j)$, por definição de $i$ e pela desigualdade triangular. Assim, $c(i,j) \leq c(i,i_1) + c(i_1,j)\leq 2 c(i_1,j) + c(i_2,j)$. Se $i_1$ for aberto, então o custo de conexão de $j$ é $c(i_1,j)$. Se $i_1$ estiver fechado e $i_2$ for aberto, então o custo de conexão de $j$ é $c(i_2,j)$. Se ambas estiverem fechadas, então o custo de conexão de $j$ é $c(i,j) \leq 2c(i_1,j) + c(i_2,j)$. Vamos, por abuso de notação, indicar por $i$ o evento em que a instalação $i$ está aberta e $\bar{i}$ o evento em que a instalação $i$ está fechada. Assim, o custo de conexão esperado para $j$ é no máximo
     \[ \text{Pr}[i_1]\cdot c(i_1,j) + \text{Pr}[\bar{i_1}i_2] c(i_2,j) + \text{Pr}[\bar{i}_1\bar{i}_2] (2c(i_1,j) + c(i_2,j))\] 
     que, substituindo Pr$[\bar{i}_1\bar{i}_2]$ por $1 - \text{Pr}[i_1] - \text{Pr}[\bar{i}_1i_2]$, é igual a
     \begin{equation}
-        (2 - \text{Pr}[i_1] - 2 \text{Pr}[\bar{i}_1i_2]) c(i_1,j) + (1 - \text{Pr}[i_1])c(i_2,j).
+        (2 - \text{Pr}[i_1] - 2 \text{Pr}[\bar{i}_1i_2]) c(i_1,j) + (1 - \text{Pr}[i_1])c(i_2,j). \label{pseudo:4}
     \end{equation}
     Vamos limitar essa expressão analisando essas probabilidades separadamente.
 
@@ -539,10 +543,44 @@ Agora precisamos limitar o custo de $X$.
         & = \frac{\left \lceil bm \right \rceil}{m - 1 } \cdot (1 - \text{Pr}[i_1]) \nonumber \\
         & \geq \frac{\left \lceil bm \right \rceil}{m} \cdot (1 - \text{Pr}[i_1]) \geq b (1 - \text{Pr}[i_1]), \nonumber
     \end{align}
-    em que a segunda desigualdade vale uma vez que se $i_1$ está fechada, então $i$ está aberta sobrando escolher $\left \lceil bm \right \rceil$ estrelas dentre $m -1 $ estrelas para abrir seus centros. Portanto, Pr$[\bar{i}_1i_2]$ é sempre pelo menos $b (1 - \text{Pr}[i_1])$. Substituindo esse valor em (37), temos que o custo de conexão esperado de $j$ é no máximo
+    em que a segunda desigualdade vale uma vez que se $i_1$ está fechada, então $i$ está aberta sobrando escolher $\left \lceil bm \right \rceil$ estrelas dentre $m -1 $ estrelas para abrir seus centros. Portanto, Pr$[\bar{i}_1i_2]$ é sempre pelo menos $b (1 - \text{Pr}[i_1])$. Substituindo esse valor em~\eqref{pseudo:4}, temos que o custo de conexão esperado de $j$ é no máximo
     \begin{equation}
-        (2a + (2b -1) \text{Pr}[i_1])c(i_1,j) + (1 - \text{Pr}[i_1])c(i_2,j).
+        (2a + (2b -1) \text{Pr}[i_1])c(i_1,j) + (1 - \text{Pr}[i_1])c(i_2,j). \label{pseudo:5}
     \end{equation}
 
-    Agora analisaremos o valor de Pr$[i_1]$. 
+    Agora analisaremos o valor de Pr$[i_1]$. Se $i_1$ é folha de uma estrela grande então
+    \begin{align}
+        \text{Pr}[i_1] &= \frac{\lfloor a (|L(i)| - 1) \rfloor}{|L(i)|}  = \frac{\lfloor  a|L(i)| - a \rfloor}{|L(i)|}\nonumber \\
+        &\geq \frac{a |L(i)| - a - 1}{|L(i)|} = a - \frac{a+1}{|L(i)|} \nonumber \\
+        &\geq a - \frac{2}{|L(i)|} \geq a (1 - b\eta)\nonumber
+    \end{align}
+    em que a última desigualdade vale pela definição de estrelas grandes.
+
+    Se $i_1$ é uma folha de uma estrela pequena no grupo $\mathcal{U}_h$ com $m \coloneqq |\mathcal{U}_h|$ então a quantidade esperada de folhas abertas em $\mathcal{U}_h$ é exatamente $amh$. Assim, Pr$[i_1] = a$. Desse modo, temos que $a(1 - b\eta) \leq \text{Pr}[i_1] \leq b$. Como $(1+\eta)\cdot(1 - b\eta) \geq 1$ podemos atualizar o limitante superior para o custo esperado de $j$ em~\eqref{pseudo:5} para
+    \begin{equation}
+        (1 + \eta) ((2a + (2b - 1)a)c(i_1,j) + (1 - a) c(i_2,j)) \nonumber
+    \end{equation}
+    que é igual a 
+    \begin{equation}
+        (1 + \eta) (a (1 + 2b)c(i_1,j) + bc(i_2,j)) \nonumber.
+    \end{equation}
+    Somando esse limitante superior para todos os clientes, temos o custo esperado para a solução $X$.
+\end{proof}
+
+Completamos a análise balanceando a solução obtida com a solução trivial $X_2$.
+
+\begin{lemma}
+    Seja $d_1 \coloneqq \text{custo}(X_1)$ e $d_2 \coloneqq \text{custo}(X_2)$. Vale que \[\min\set{d_2,bd_2 + a(1+2b)d_1} \leq \frac{1 + \sqrt{3}}{2}(ad_1 + b d_2).\]
+\end{lemma}
+
+\begin{proof}
+    Mudaremos $d_1$ e $d_2$ simultaneamente para que o valor $ad_1 + bd_2$ não altere. Escolhemos diminuir $d_1$ ou $d_2$ e aumentar o outro valor a fim de aumentar o lado esquerdo da desigualdade. Essa operação pode ser aplicada até que uma das três condições sejam verdadeiras:
+    \begin{enumerate}
+        \item $d_1 = 0$;
+        \item $d_2 = 0$;
+        \item $d_2 = bd_2 + a (1 + 2b)d_1$.
+    \end{enumerate}
+
+    Para os dois primeiros casos é evidente que a desigualdade é verdadeira. No terceiro caso, temos que $d_2 = (1 + 2b)d_1$. Assim 
+    \(\frac{d_2}{ad_1 + bd_2} = \frac{1 +2b}{b(1+2b) + 1 - b} = \frac{1+2b}{1+2b^2} \leq \frac{1+\sqrt{3}}{2}\) em que o último valor é obtido quando $b = \frac{\sqrt{3} - 1}{2}$. Como aumentamos os valores do lado esquerdo da desigualdade então também é válido para os valores iniciais.
 \end{proof}

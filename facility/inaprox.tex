@@ -1,22 +1,20 @@
-Nesta seção vamos mostrar um resultado que limita inferiormente a razão de aproximação para os algoritmos do problema de localização de instalações. Esse resultado é o Corolário 16.16 que se encontra na Seção 16.2 do livro WS2011. Ele foi desenvolvido por Guha e Kuller~\cite{GUHA1999228}.
+Nesta seção vamos mostrar um resultado que, sob certa hipótese, limita inferiormente a razão de aproximação para os algoritmos do problema de localização de instalações métrico. Esse resultado é o Corolário 16.16 que se encontra na Seção 16.2 do livro WS2011. Ele foi provado por Guha e Kuller~\cite{GUHA1999228}.
 
-Vamos mostrar que se existe uma $\alpha$-aproximação para o problema de localização de instalações com $\alpha < 1.463$ então existe um algoritmo que é uma $(c \ln n)$-aproximação para o problema da cobertura de conjuntos sem peso com $c<1$. 
-Feige~\cite{Feige98} mostrou que a existência desse segundo algoritmo implica na existência de um algoritmo determinístico que leva tempo $O(n^{O(\log\log n)})$ para todo problema $\NP$-completo.
+Para esse resultado vamos precisar definir a versão de otimização do problema de cobertura de conjuntos.
+\begin{problem}\label{otsetcover}
+    Dada um conjunto $E$ e uma família ${\mathcal{S} = \set{S_1,\ldots,S_m}}$ de subconjuntos de $E$, encontrar $C \subseteq \mathcal{S}$ tal que $\bigcup_{S \in C} S = E$ que minimize $|C|$.
+\end{problem}
 
-Vamos apresentar um algoritmo de aproximação para o problema da cobertura de conjuntos que utiliza várias chamadas ao algoritmo que é uma $\alpha$-aproximação para o problema de localização de instalações. 
-Seja $(E,\{S_1,\ldots,S_m\})$ uma instância do problema de cobertura de conjuntos. Criaremos uma sequência de instâncias para o problema de localização de instalações. 
-A primeira delas terá o conjunto de instalações $F \coloneqq [m]$ e o conjunto de clientes $D \coloneqq E$. 
-A ideia é que escolheremos um conjunto $F' \subseteq F$ de instalações que serão abertas e existirá um conjunto $D' \subseteq D$ tal que, para todo $j \in D'$, existe $i \in F'$ tal que $j \in S_i$. 
-Então, para construir a próxima instância, usaremos o conjunto de instalações $F \setminus F'$ e o conjunto de clientes $D \setminus D'$, que representam os subconjuntos de $E$ que ainda podem ser escolhidos e os elementos de $E$ que ainda não foram cobertos, respectivamente. 
-Isso acontecerá sucessivamente até que todo os elementos de $E$ sejam cobertos, ou seja, até que $D = \emptyset$.
-O custo de conexão dos clientes será igual para todas as instâncias. Para uma instalação $i$ e um cliente $j$, definimos $c_{ij}\coloneqq 1$ se $j \in S_i$ e $c_{ij} \coloneqq 3$ caso contrário.
-O custo de abertura das instalações será uniforme em uma mesma instância. Definimos $f_i \coloneqq \gamma |D|/k^*$ para todo $i\in F$ em que $\gamma$ é uma constante que definiremos posteriormente, $D$ é o conjunto de elementos que ainda não foram cobertos e $k^*$ é o tamanho mínimo de uma cobertura de conjuntos para a instância $E,\set{S_1,\ldots,S_m}$ do problema de cobertura de conjuntos. Como é difícil saber o tamanho de uma cobertura de conjuntos ótima, vamos executar essa rotina para todo $k \in [m]$, ou seja, para todos os candidatos a tamanho $k^*$ de uma cobertura de conjuntos ótima para essa instância.
+Esse problema é $\NP$-difícil, uma vez que sua versão de decisão é um dos 21 problemas $\NP$-completos de Karp~\cite{Karp1972}. Além disso, Feige~\cite{Feige98} provou que não existe $(1-\eps)$-aproximação para esse problema, a menos que, para todo problema em $\NP$, exista um algoritmo determinístico que resolva o problema em tempo $n^{O(\log\log n)}$. Assim como ${P = \NP}$ essa também é uma conjectura conhecida na área de complexidade computacional que acreditam ser falsa.
 
-O algoritmo é formalizado no algoritmo {\sc Inaprox-GK}, onde {\sc $\alpha$-aprox-loc-inst} refere-se à $\alpha$-aproximação para o problema de localização de instalações e o valor de $\gamma$ será estabelecido no Teorema~\ref{inaprox}.
+Vamos mostrar que se existe uma $\alpha$-aproximação para o problema de localização de instalações com $\alpha < 1.463$ então existe um algoritmo que é uma $(c \ln n)$-aproximação para o problema da cobertura de conjuntos sem peso com $c<1$.
+
+Vamos apresentar um algoritmo de aproximação para o problema da cobertura de conjuntos que utiliza várias chamadas ao algoritmo que é uma $\alpha$-aproximação para o problema de localização de instalações métrico. 
 
 \begin{algorithm}
     \caption{\sc Inaprox-GK($E,\{S_1,\ldots,S_m\}$)}
     \begin{algorithmic}[1]
+        \State $\gamma \gets 0.463$
         \For{$i \gets 1$ até $m$}
             \For{todo $j \in E$}
             \If{$j \in S_i$}
@@ -28,29 +26,34 @@ O algoritmo é formalizado no algoritmo {\sc Inaprox-GK}, onde {\sc $\alpha$-apr
         \EndFor
         \For{$k \gets 1$ até $m$}
             \State $I_k \gets \emptyset$
-            \State $D \gets E$; $F \gets [m]$
+            \State $D \gets E$; \quad $F \gets [m]$
             \While{$D\neq \emptyset$}
                 \State $f_i \gets \gamma |D|/k$ para todo $i \in F$
-                \State $F' \gets$ {\sc $\alpha$-aprox-loc-inst}$(F,D,f,c)$
+                \State $F' \gets$ {\sc $\alpha$-aprox-loc-inst}$(F,D,c,f)$
                 \State $I_k \gets I_k \cup F'$
                 \State $D' \gets \{j \in D: c(j,F') = 1 \}$
-                \State $F \gets F \setminus F'$; $D\gets D\setminus D'$
+                \State $F \gets F \setminus F'$;\quad $D\gets D\setminus D'$
             \EndWhile
         \EndFor
     \State \Return $I_k$ que minimize $|I_k|$.
     \end{algorithmic}
 \end{algorithm}
 
+Seja $I = (E,\{S_1,\ldots,S_m\})$ uma instância do problema de cobertura de conjuntos. Criaremos uma sequência de instâncias para o problema de localização de instalações métrico.
+Para um $k$ fixo, o algoritmo cria uma sequência de instâncias métricas para o problema de localização de instalações. Todas elas terão a mesma função de custo $c$ tal que, para todo $i \in [m]$ e $j \in E$, $c_{ij} = 1$ se $j \in S_i$ e $c_{ij}=3$, caso contrário. É fácil notar que essa função é métrica.
+A primeira instância da sequência terá o conjunto de instalações $F \coloneqq [m]$ e o conjunto de clientes $D \coloneqq E$. Além disso, toda instalação terá custo de abertura $f_i \coloneqq \gamma |D|/k$. A ideia é que usamos o algoritmo {\sc $\alpha$-aprox-loc-inst} para encontrar um conjunto $F' \subseteq F$ de instalações que serão abertas e existirá um conjunto $D' \subseteq D$ tal que, para todo $j \in D'$ existe $i \in F'$ tal que $j \in S_i$.
+Então, para construir a próxima instância, usaremos o conjunto de instalações $F \setminus F'$ e o conjunto de clientes $D\setminus D'$, que representam os subconjuntos de $E$ que ainda podem ser escolhidos e os elementos de $E$ que ainda não foram cobertos, respectivamente.
+Isso acontecerá sucessivamente até que todos os elementos de $E$ sejam cobertos, ou seja, até que $D = \emptyset$.
 
 \begin{theorem}
     \label{inaprox}
-Se existe uma $\alpha$-aproximação para o problema da localização de instalações com $\alpha < 1.463$, então o  Algoritmo {\sc Inaprox-GK} com $\gamma = 0.463$ é uma $(c \ln n)$-aproximação para o problema de cobertura de conjuntos com $c<1$ quando $n$ é suficiente grande.
+Se existe uma $\alpha$-aproximação para o problema da localização de instalações com $\alpha < 1.463$, então {\sc Inaprox-GK} é uma $(c \ln n)$-aproximação para o problema de cobertura de conjuntos com $c<1$ quando $n$ é suficiente grande.
 \end{theorem}
 
 \begin{proof}
 Seja $k^*$ o tamanho de uma cobertura de conjuntos ótima para a instância $(E,\set{S_1,\ldots,S_m})$ do problema de cobertura de conjuntos. Suponha que estamos na iteração $k^*$ do laço {\bf Para} e na iteração $\ell$ do laço {\bf Enquanto} do algoritmo {\sc Inaprox-GK}.
-Sejam $D_\ell$ e $F_\ell$ os conjuntos $D$ e $F$ no começo dessa iteração do laço {\bf Enquanto}. Sejam $n_\ell \coloneqq |D_\ell|$ e $f^\ell \coloneqq \gamma n_\ell /k^*$. Note que existe uma solução para a instância $(D_\ell,F_\ell,c,f^\ell)$ do problema de localização de instalações com custo no máximo $f^\ell k^* + n_\ell$ em que abrimos todas as instalações que representam subconjuntos que estão em uma cobertura de conjuntos ótima e associamos os clientes restantes às instalações com custo de conexão 1.
-Seja $F_\ell'$ o conjunto das instalações devolvido pela chamada do algoritmo na linha 7 e $D_\ell'$ o conjunto de clientes encontrado na linha 9. Sejam $\beta_\ell \coloneqq k^*/|F_\ell'|$ e $p_\ell \coloneqq |D_\ell'|/n_\ell $. É fácil notar que o custo da solução $F'_\ell$ é
+Sejam $D_\ell$ e $F_\ell$ os conjuntos $D$ e $F$ no começo dessa iteração do laço {\bf Enquanto}. Sejam $n_\ell \coloneqq |D_\ell|$ e $f^\ell \coloneqq \gamma n_\ell /k^*$. Note que existe uma solução para a instância $(D_\ell,F_\ell,c,f^\ell)$ do problema de localização de instalações com custo no máximo $f^\ell k^* + n_\ell$ em que abrimos todas as instalações que representam subconjuntos que estão em uma cobertura de conjuntos ótima.
+Seja $F_\ell'$ o conjunto das instalações devolvido pela chamada de {\sc $\alpha$-aprox-loc-inst} na linha~13 e $D_\ell'$ o conjunto de clientes encontrado na linha 15. Sejam $\beta_\ell \coloneqq |F_\ell'|/k^*$ e $p_\ell \coloneqq |D_\ell'|/n_\ell $. É fácil notar que o custo da solução $F'_\ell$ é
 \[ |F_\ell'| f^\ell+ p_\ell n_\ell + 3 (1-p_\ell) n_\ell = n_\ell(\beta_\ell \gamma + 3 - 2p_\ell) \leq \alpha ( f^\ell k^* + n_\ell) = \alpha n_\ell (\gamma + 1)\]
 e, portanto, 
 \begin{equation} 
@@ -77,4 +80,4 @@ em que a última desigualdade vale para algum $c' \in (c,1)$, uma vez que $4\alp
 Assim, temos uma aproximação para o problema de cobertura de conjuntos com razão de aproximação estritamente menor que $\ln n$ para $n$ suficientemente grande.
 \end{proof}
 
-Juntando esse resultado com o resultado do Feige, temos que a existência de uma $\alpha$-aproximação para o problema de localização de instalações com $\alpha < 1.463$ implica a existência de um algoritmo determinístico que leva tempo $O(n^{O(\log \log n)})$ para todo problema $\NP$-completo.
+Juntando esse resultado com o resultado do Feige, temos que a existência de uma $\alpha$-aproximação para o problema de localização de instalações métrico com $\alpha < 1.463$ implica a existência de um algoritmo determinístico que leva tempo $O(n^{O(\log \log n)})$ para todo problema $\NP$-completo.

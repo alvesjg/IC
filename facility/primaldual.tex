@@ -1,9 +1,6 @@
-Nessa seção vamos apresentar o algoritmo primal-dual para o problema de localização de instalações. Esse algoritmo foi estudado na Seção 7.6 do livro WS2011 e foi desenvolvido pelo Jain e pelo Vazirani~\cite{JV}.
+Nessa seção vamos apresentar o algoritmo primal-dual para o problema de localização de instalações métrico. Esse algoritmo foi estudado na Seção 7.6 do livro WS2011 e foi desenvolvido pelo Jain e pelo Vazirani~\cite{JV}. Vamos utilizar os programas lineares~\eqref{P1} e~\eqref{D1}.
 
-Vamos assumir que a função custo satisfaz a desigualdade triangular. Como a função custo só está definida de um cliente para uma instalação, então a desigualdade triangular terá uma cara diferente. Para clientes $j,l$ e  instalações $i,k$, vale que
-\[c_{ij} \leq c_{il} + c_{kl} + c_{kj}.\]
-
-Chamamos uma solução $(v,w)$ para o programa dual de \emph{maximal} se não existe solução viável $(v',w')$ tal que:
+Chamamos uma solução $(v,w)$ para~\eqref{D1} de \emph{maximal} se não existe solução viável $(v',w')$ tal que:
 \begin{enumerate}[(i)]
     \item $v_j \leq v'_j$ para todo cliente $j$;
     \item $w_{ij} \leq w'_{ij}$ para todo cliente $j$ e instalação $i$;
@@ -13,26 +10,26 @@ ou seja, não conseguimos encontrar uma solução viável com valor objetivo mai
 
 Vamos utilizar a seguinte definição ao longo da explicação do método.
 \begin{definition}
-    Seja $(v,w)$ uma solução viável do dual. Denotamos por $N(j) = \{i \in F:v_j \geq c_{ij}\}$ a \emph{vizinhança} de um cliente $j$ e $N(i) = \{j \in D:v_j \geq c_{ij}\}$ a \emph{vizinhança} de uma instalação $i$.
+    Seja $(v,w)$ uma solução viável de~\eqref{D1}. Denotamos por ${N(j) \coloneqq \{i \in F:v_j \geq c_{ij}\}}$ a \emph{vizinhança} de um cliente $j$ e $N(i) \coloneqq \{j \in D:v_j \geq c_{ij}\}$ a \emph{vizinhança} de uma instalação $i$.
 \end{definition}
 
 \begin{theorem}
-    Seja $(\overline v, \overline w)$ solução maximal para o programa dual e $T \coloneqq \{i \in F: \sum_{j \in D} \overline{w}_{ij} = f_i\}$. Então, todo cliente está na vizinhança de uma instalação em $T$.      
+    Seja $(v,w)$ uma solução maximal de~\eqref{D1} e ${T \coloneqq \{i \in F: \sum_{j \in D} w_{ij} = f_i\}}$ o conjunto de instalações que receberam contruibuições suficientes para serem abertas. Então, todo cliente está na vizinhança de uma instalação em $T$. 
 \end{theorem}
 \begin{proof}
-    Vamos provar por absurdo. Suponha a existência de um cliente $j$ que não está na vizinhança de nenhuma instalação em $T$. Claramente, as desigualdades~\eqref{D3} não são justas para $j$ e nenhuma instalação em $T$. Assim, conseguimos aumentar $\overline{w}_{ij}$ para uma instalação $i$ qualquer que não esteja em $T$, aumentando simultaneamente o $\overline{v}_j$ sem infringir nenhuma das restrições do dual. Com isso, apenas aumentando os valores das variáveis, conseguimos encontrar uma solução viável do dual com valor objetivo maior e isso contradiz o fato da solução $(\overline{v},\overline{w})$ ser maximal. 
+    Vamos provar por absurdo. Seja $(v,w)$ uma solução maximal e suponha a existência de um cliente $j$ que não está na vizinhança de nenhuma instalação em $T$. Como $(v,w)$ é maximal então existe $i \in F$ tal que a desigualdade~\eqref{D3} é justa para $i$ e $j$, caso contrário conseguiríamos aumentar $v_j$. Como $j$ não tem vizinho em $T$, é evidente que $i \not \in T$, uma vez que, para $i \in T$, vale que $v_j < c_{ij} \leq c_{ij} + w_{ij}$. Portanto, vale que $v_j = c_{ij} + w_{ij}$ para algum $i \in F \setminus T$. Como $ i \not \in T$, então $\sum_{j \in D} w_{ij} < f_i$. Assim, conseguimos aumentar o valor de $w_{ij}$ sem violar~\eqref{D2} e, após isso, aumentar $v_j$ no mesmo valor sem violar~\eqref{D3}.
 \end{proof}
 
-Como cada cliente está na vizinhança de uma instalação que pertence a $T$, abrir todas as instalações em $T$ seria suficiente, mas um cliente poderia contribuir para mais que uma instalação de $T$. Assim, possivelmente estaríamos contando o orçamento de um cliente na contribuição para a abertura de mais de uma instalação, o que interferiria na comparação do custo da solução com o valor ótimo.
-Para evitar este problema, podemos escolher um conjunto $T' \subseteq T$ tal que cada cliente esteja na vizinhança de no máximo uma instalação de $T'$ e vamos garantir que um cliente que não esteja na vizinhança de nenhuma instalação de $T'$ esteja próximo a alguma delas.
+Como cada cliente está na vizinhança de uma instalação que pertence a $T$, abrir todas as instalações em $T$ seria suficiente, mas um cliente poderia contribuir para mais que uma instalação de $T$. Assim, possivelmente estaríamos contando o orçamento de um cliente na contribuição para a abertura de mais de uma instalação, o que interferiria na comparação do custo da solução com o valor objetivo de~\eqref{D1} e, consequentemente, com o valor da solução ótima.
+Para evitar este problema, podemos escolher um conjunto $T' \subseteq T$ tal que cada cliente contribua para no máximo uma instalação de $T'$ e vamos garantir que um cliente que não esteja na vizinhança de nenhuma instalação de $T'$ esteja próximo a alguma delas.
 
 Nosso algoritmo contará com as seguintes invariantes.
 \begin{itemize}
-    \item $(v,w)$ é uma solução viável do programa dual.
-    \item $T$ são as instalações que têm contribuições suficientes para serem abertas.
+    \item $(v,w)$ é uma solução viável de~\eqref{D1};
+    \item $T$ é um conjunto de instalações que têm contribuições suficientes para serem abertas; e
     \item $S$ é o conjunto de clientes que não têm nenhum vizinho em $T$.
 \end{itemize}
-\begin{algorithm}[tbh]
+\begin{algorithm}[tbh] \label{primaldual}
     \caption{\sc PrimalDual-JV(${F,D,c,f}$)}
     \label{fl:primaldual}
     \begin{algorithmic}[1]
@@ -56,7 +53,7 @@ Nosso algoritmo contará com as seguintes invariantes.
         \EndWhile
         \State $T' \gets \emptyset$
         \While{$T \neq \emptyset$}
-        \State Escolha $i \in T$
+        \State Escolha $i \in T$ arbitrariamente
         \State $T' \gets T' \cup \{i\}$
         \State $T \gets T \setminus \{h \in T : \text{existe $k \in D$ com $w_{ik}> 0 $ e $w_{hk} > 0$} \}$
         \EndWhile
@@ -66,40 +63,40 @@ Nosso algoritmo contará com as seguintes invariantes.
 
 No algoritmo {\sc PrimalDual-JV}, claramente as coordenadas das variáveis $v$ e $w$ crescerão de maneira uniforme, pois em cada iteração o mesmo valor $\theta$ será somado a elas. Precisamos então garantir que a nossa solução seja sempre viável. Pela escolha de $\theta_1$ na linha~\ref{theta1} do algoritmo, garantimos que a desigualdade~\eqref{D3} não seja violada para $i$ e $j$ em que $i$ é uma instalação que não está na vizinhança do cliente $j$. Quando a instalação $i$ está na vizinhança de $j$, aumentamos $v_j$ e $w_{ij}$ do mesmo valor $\theta$ e isso nunca violará a desigualdade~\eqref{D3}. 
 Pela escolha de $\theta_2$ na linha~\ref{theta2}, garantimos que a desigualdade~\eqref{D2} não seja violada para nenhuma instalação. 
-Assim, $(v,w)$ é uma solução viável para o problema dual durante todo o algoritmo.
-Para cada cliente $j$ e cada instalação $i$, primeiro aumentaremos apenas as variáveis $v_j$ até que $j$ esteja na vizinhança de $i$. Note que nesse momento a desigualdade~\eqref{D3} se torna justa, pois ainda não aumentamos a variável $w_{ij}$. Uma vez que isso acontece, aumentamos uniformemente $v_j$ e $w_{ij}$, assim a desigualdade~\eqref{D3} continuará justa. Desse modo, para $j \in D$ e $i \in N(j)$, vale que 
+Assim, $(v,w)$ é uma solução viável de~\eqref{D1} durante todo o algoritmo.
+Para cada cliente $j$ e cada instalação $i$, primeiro aumentaremos apenas as variáveis $v_j$ até que $j$ esteja na vizinhança de $i$. Note que nesse momento a desigualdade~\eqref{D3} se torna justa para $i$ e $j$, pois ainda não aumentamos a variável $w_{ij}$. Uma vez que isso acontece, aumentamos uniformemente $v_j$ e $w_{ij}$, assim a desigualdade~\eqref{D3} continuará justa. Desse modo, para $j \in D$ e $i \in N(j)$, vale que 
 \begin{equation}\label{Djusta:*}  
 w_{ij} = v_j - c_{ij}.
 \end{equation}
-Note também que ao final do algoritmo $(v,w)$ é uma solução maximal para o problema dual. Isso acontece pois para todo cliente $j$ existe uma instalação $i$ tal que a desigualdade~\eqref{D3} é justa para $i$ e $j$ e, além disso, a desigualdade~\eqref{D2} é justa para $i$. Desse modo, não conseguimos encontrar uma solução viável com valor objetivo maior apenas aumentando as variáveis, pois $w_{ij}$ não pode ser aumentado e é ele quem está impedindo o aumento de $v_j$.
+Note também que ao final do algoritmo $(v,w)$ é uma solução maximal de~\eqref{D1}. Isso acontece pois para todo cliente $j$ existe uma instalação $i$ tal que a desigualdade~\eqref{D3} é justa para $i$ e $j$ e, além disso, a desigualdade~\eqref{D2} é justa para $i$. Desse modo, não conseguimos encontrar uma solução viável com valor objetivo maior apenas aumentando as variáveis, pois $w_{ij}$ não pode ser aumentado e é ele quem está impedindo o aumento de $v_j$.
 
 Para provar a razão de aproximação vamos precisar primeiro de um lema.
 \begin{lemma}
-    \label{lemma:3.9}
-    Seja $T'$ a solução devolvida e $(v,w)$ solução do dual produzida pelo Algoritmo {\sc PrimalDual-JV }. Se $j \in D$ não está na vizinhança de nenhuma instalação de $T'$, então existe uma instalação $i \in T'$ tal que $c_{ij} \leq 3v_j$.
+    \label{lemma:3.5}
+    Seja $T'$ a solução devolvida e $(v,w)$ solução de~\eqref{D1} produzida por {\sc PrimalDual-JV}. Se $j \in D$ não está na vizinhança de nenhuma instalação de $T'$, então existe uma instalação $i \in T'$ tal que $c_{ij} \leq 3v_j$.
 \end{lemma}
 \begin{proof}
     Seja $h \in T$ a instalação responsável pela remoção de $j$ de $S$, conforme a linha 12 ou 16 do algoritmo. Claramente, $j$ pertence a vizinhança de $h$. Sabemos que $h$ não pertence a $T'$ uma vez que, por hipótese, $j$ não tem vizinhos em $T'$. Como $h$ foi retirada de $T$, conforme a linha 21 do algoritmo, existe $i \in T'$ e $k \in D$ tal que $k$ contribui para $i$ e para $h$. Pela desigualdade triangular,
     \[c_{ij} \leq c_{hj} + c_{hk} + c_{ik}\]
-    como $j \in N(h)$ e $k \in N(h) \cap N(i)$ vale que $c_{hj} \leq v_j$ e $c_{hk} + c_{ik} \leq 2v_k$. Como $k$ contribui para $h$, então $k$ já estava na vizinhança de $h$ no momento que $h$ foi retirado de $T$. Assim, $k$ saiu de $S$ no mesmo momento ou anterior a $h$ sair de $T$. Como $h$ foi responsável pela retirada de $j$ de $S$, então $j$ não foi retirado de $S$ antes de $k$. Como as variáveis crescem de maneira uniforme, então $v_k \leq v_j$. 
+    como $j \in N(h)$ e $k \in N(h) \cap N(i)$ vale que $c_{hj} \leq v_j$ e $c_{hk} + c_{ik} \leq 2v_k$. Como $k$ contribui para $h$, então $k$ já estava na vizinhança de $h$ no momento que $h$ foi retirado de $T$. Assim, $k$ saiu de $S$ no mesmo momento ou em um momento anterior a $h$ sair de $T$. Como $h$ foi responsável pela retirada de $j$ de $S$, então $j$ não foi retirado de $S$ antes de $k$. Como as variáveis crescem de maneira uniforme, então $v_k \leq v_j$. 
     Portanto, $c_{ij}\leq 3v_j$. 
 \end{proof}
 
 Agora, podemos mostrar o teorema abaixo.
 \begin{theorem}
-    O algoritmo {\sc PrimalDual-JV} é uma $3$-aproximação para o problema da localização de instalações.
+    O algoritmo {\sc PrimalDual-JV} é uma $3$-aproximação para o problema de localização de instalações métrico.
 \end{theorem}
 \begin{proof}
-    Claramente o algoritmo roda em tempo polinomial. 
+    O algoritmo roda em tempo polinomial, uma vez que para cada iteração do laço {\bf Enquanto} da linha 5 pelo menos uma restrição de~\eqref{D1} se torna justa. Desse modo, o laço executa $O(|F| \cdot |D|)$ iterações. As outras linhas são claramente polinomiais.
 
     Para cada cliente que contribui para uma instalação de $T'$, vamos associá-lo a essa instalação. Como cada cliente contribui para no máximo uma instalação de $T'$, então essa associação é única. Para clientes que estão na vizinhança de instalações de $T'$, mas não contribuem para nenhuma delas, vamos associá-los a qualquer instalação de $T'$ na sua vizinhança.
     Seja $A(i) \subseteq N(i)$ os clientes vizinhos associados a instalação $i \in T'$. Então o custo de abertura das facilidades em $T'$ mais o custo de associar os clientes vizinhos é
     \[\sum_{i \in T'} (f_i + \sum_{j \in A(i)} c_{ij}) = \sum_{i \in T'} \sum_{j \in A(i)} (w_{ij} + c_{ij}) = \sum_{i \in T'} \sum_{j \in A(i)} v_j\]
     em que a primeira igualdade vale pela definição de $T$ e a segunda igualdade vale por~\eqref{Djusta:*} e também pois $w_{ij} > 0$ implica $j \in A(i)$. Claramente o somatório não repete clientes, uma vez que cada cliente está associado a apenas uma instalação.
 
-    Para um cliente $j$ que não está na vizinhança de nenhuma instalação de $T'$, podemos utilizar o Lema~\ref{lemma:3.9}. Então existe uma instalação de $i \in T'$ tal que $c_{ij} \leq 3v_j$. Vamos associar $j$ a $i$. Seja $Z$ o conjunto de clientes que não têm vizinhos em $T'$. Temos
-    \[\sum_{j \in Z}c_{\sigma(j)j} \leq 3\sum_{j \in Z}v_j.\]
+    Para um cliente $j$ que não está na vizinhança de nenhuma instalação de $T'$, podemos utilizar o Lema~\ref{lemma:3.5}. Seja $Z$ o conjunto de clientes que não têm vizinhos em $T'$. Temos
+    \[\sum_{j \in Z}c(j,T') \leq 3\sum_{j \in Z}v_j.\]
     Juntando os limitantes encontrados para os clientes que têm vizinhos em $T'$ e os que não têm, encontramos
-    \[\sum_{i \in T'} (f_i + \sum_{j \in A(i)} c_{ij}) + \sum_{j \in Z} c_{\sigma(j)j}\leq \sum_{i \in T'} \sum_{j \in A(i)} v_j + 3 \sum_{j \in Z} v_j \leq 3 \sum_{j \in D} v_j\leq 3\,\opt(I)\]
+    \[\sum_{i \in T'} (f_i + \sum_{j \in A(i)} c_{ij}) + \sum_{j \in Z} c(j,T')\leq \sum_{i \in T'} \sum_{j \in A(i)} v_j + 3 \sum_{j \in Z} v_j \leq 3 \sum_{j \in D} v_j\leq 3\,\opt(I)\]
     em que a última desigualdade vale pela dualidade fraca.
 \end{proof}

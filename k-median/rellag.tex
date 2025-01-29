@@ -1,26 +1,26 @@
 Nessa seção falaremos sobre o algoritmo que utiliza o método de relaxação Lagrangeana para o problema das $k$-medianas métrico. Esse algoritmo foi estudado na Seção 7.7 do livro WS2011 e foi desenvolvido por Jain e Vazirani~\cite{JV}.
 
-A relaxação Lagrangeana é um modo de aumentar o conjunto de soluções viáveis de um programa linear retirando uma de suas restrições e penalizando, da função objetivo, soluções que não respeitem essa restrição. Para o programa linear que é uma relaxação da formulação por um programa linear inteiro do problema das $k$-medianas, iremos retirar a restrição (23), que limita a quantidade de instalações abertas. Essa remoção resultará no seguinte programa.
+A relaxação Lagrangeana é um modo de aumentar o conjunto de soluções viáveis de um programa linear retirando uma de suas restrições e penalizando, na função objetivo, soluções que não respeitem essa restrição. Para o programa linear que é uma relaxação da formulação por um programa linear inteiro do problema das $k$-medianas, iremos retirar a restrição~\eqref{PL:k-med}, que limita a quantidade de instalações abertas. Essa remoção resultará no seguinte programa.
 \begin{align*}
-    \text{Minimizar} \quad & \sum_{i \in F, j \in D} c_{ij}x_{ij} + \lambda \left(\sum_{i \in F} (y_i) - k\right) \\
+    \text{Minimizar} \quad & \sum_{i \in F, j \in D} c_{ij}x_{ij} + \lambda \left(\sum_{i \in F} (y_i) - k\right)\label{RL} \tag{RL} \\
     \text{sujeito a} \quad & \sum_{i \in F} x_{ij} \geq 1, &&\forall j \in D, \\
                            & y_i - x_{ij} \geq 0, &&\forall i \in F, j \in D, \\
                            & x_{ij} \geq 0, && \forall i \in F,j \in D, \\
                            & y_i \geq 0, &&\forall i \in F.
 \end{align*}
-A constante $\lambda$ é chamada de \emph{multiplicador de Lagrange}, e é o que nos deixará escolher o quão grande será o desconto no valor de soluções que infrinjam a restrição (23).
-Como queremos piorar o valor das solução que não respeitavam a restrição (23) e como nosso problema é de maximização, então vamos restringir $\lambda$ a valores não-negativos.
+A constante $\lambda$ é chamada de \emph{multiplicador de Lagrange}, e é o que nos deixará escolher o quão grande será o desconto no valor de soluções que infrinjam a restrição~\eqref{PL:k-med}.
+Como queremos piorar o valor das solução que não respeitavam a restrição~\eqref{PL:k-med} e como nosso problema é de maximização, então vamos restringir $\lambda$ a valores não-negativos.
 O valor de uma solução ótima desse programa é no máximo o valor de uma solução ótima do programa original, uma vez que as soluções anteriores continuam viáveis e o seu custo não aumentou.
 
 Como essa relaxação é um programa linear, podemos considerar o seu dual. O dual desse programa é o seguinte.
 \begin{align*}
-    \text{Minimizar} \quad & \sum_{j \in D} v_j - \lambda k \\
+    \text{Minimizar} \quad & \sum_{j \in D} v_j - \lambda k \label{DL} \tag{DL}\\
     \text{sujeito a} \quad & v_j - w_{ij} \leq c_{ij}, &&\forall i \in F, j\in D, \\
                            & \sum_{j\in D} w_{ij} \leq \lambda, &&\forall i \in F, \\
                            & v_j \geq 0, &&\forall j\in D, \\
                            & w_{ij} \geq 0, && \forall i \in F,j \in D.
 \end{align*}
-As restrições desses programas são iguais às restrições do programa linear do problema de localização de instalações e do seu dual, respectivamente, da Seção 3.1, considerando que cada instalação tem custo de abertura $\lambda$.
+As restrições desses programas são iguais às restrições do programa linear do problema de localização de instalações e do seu dual, respectivamente, da Seção~\eqref{facility:PL}, considerando que cada instalação tem custo de abertura $\lambda$.
 Desse modo, podemos utilizar algum algoritmo para o problema de localização de instalações para encontrar uma solução para o problema das $k$-medianas. 
 
 No algoritmo de dual fitting para o problema de localização de instalações, da Seção~\ref{facility:guloso&fitting}, encontramos um conjunto $X$ de instalações e valores para as variáveis $\alpha$ tais que, definindo $v_j \coloneqq \frac{\alpha_j}{2}$ e $w_{ij} \coloneqq \max(0,v_j - c_{ij})$ para toda instalação $i$ e cliente~$j$, vale que $(v, w)$ é solução viável do dual e, pelo Teorema~\ref{greedy:5}, vale que
@@ -72,11 +72,11 @@ Agora, vamos provar o seguinte lema que nos permitirá limitar as instâncias à
     Seja $I$ uma instância para o problema das $k$-medianas métrico. É possível decidir se $\opt(I) = 0$ em tempo polinomial.
 \end{lemma}
 \begin{proof}
-    Suponha $I = (F,D,c,k)$. Seja $Z(i) \coloneqq \{j \in D: c_{ij} = 0\}$, ou seja, $Z(i)$ é o conjunto de clientes que a instalação $i$ pode suprir com custo 0. Então, para que $\opt(I) = 0$, precisa existir $S \subseteq F$ tal que $|S|\leq k$ e $Z(S) \coloneqq \bigcup_{i \in S} Z(i) = D$.
+    Seja $I = (F,D,c,k)$ uma instância para o problema das $k$-medianas métrico. Seja $Z(i) \coloneqq \{j \in D: c_{ij} = 0\}$, ou seja, $Z(i)$ é o conjunto de clientes que a instalação $i$ pode suprir com custo 0. Então, para que $\opt(I) = 0$, precisa existir $S \subseteq F$ tal que $|S|\leq k$ e $Z(S) \coloneqq \bigcup_{i \in S} Z(i) = D$.
 
-    Primeiro, vamos mostrar que se $i_1, i_2\in F $ e $Z(i_1) \cap Z(i_2) \neq \emptyset$, então $Z(i_1) = Z(i_2)$.  Seja $j \in Z(i_1)$ e $\ell \in Z(i_1) \cap Z(i_2)$. Então $c_{i_1j} = c_{i_1\ell} = c_{i_1\ell} = c_{i_2\ell} = 0$ e, pela desigualdade triangular, vale que
+    Primeiro, vamos mostrar que, para $i_1, i_2\in F $, se $Z(i_1) \cap Z(i_2) \neq \emptyset$, então $Z(i_1) = Z(i_2)$.  Seja $j \in Z(i_1)$ e $\ell \in Z(i_1) \cap Z(i_2)$. Então $c_{i_1j} = c_{i_1\ell} = c_{i_1\ell} = c_{i_2\ell} = 0$ e, pela desigualdade triangular, vale que
     \[c_{i_2j} \leq c_{i_2\ell} + c_{i_1\ell} + c_{i_1j} = 0.\]
-    Como todos os custos são não negativos, então $c_{i_2j} = 0$ e portanto $j \in Z(i_2)$.
+    Como todos os custos são não negativos, então $c_{i_2j} = 0$ e portanto $j \in Z(i_2)$. Analogamente, conseguimos ver que para todo $j \in Z(i_2)$, vale que $j \in Z(i_1)$.
 
     Seja $S \subseteq F$ construído escolhendo uma instalação para cada grupo de instalações com o mesmo $Z$, ignorando-se instalações com $Z$ vazio. É evidente que $S$ pode ser construído em tempo polinomial. Vamos mostrar que $\opt(I) = 0$ se e somente se $|S| \leq k$ e $Z(S) = D$.
 
@@ -90,7 +90,7 @@ Agora, iremos relacionar o custo das soluções $X_1$ e $X_2$ encontradas com o 
 
 Considere as variáveis $\alpha^1$ e $\alpha^2$ produzidas por {\sc DualFitting-JMMSV} associadas às soluções $X_1$ e $X_2$, respectivamente. Seja $v_j^\ell \coloneqq \frac{\alpha_j^\ell}{2}$ e $w_{ij}^\ell \coloneqq \max(0,v_j^\ell - c_{ij})$ para $i \in F$, $j \in D$ e $\ell = 1,2$. Sejam $a \coloneqq \frac{k - |X_2|}{|X_1| - |X_2|}$ e $b \coloneqq \frac{|X_1| - k}{|X_1| - |X_2|}$. É evidente que $a + b = 1$ e $a,b >0$. Note que $a|X_1| + b |X_2| = k$. Portanto, $k$ é combinação convexa de $|X_1|$ e $|X_2|$.
 
-Defina $ v \coloneqq av^1 + bv^2$ e $w \coloneqq aw^1 + bw^2$. Note que $(v,w)$ é solução viável do programa dual (DL) utilizando custos de abertura $\lambda_2$. Isso é verdade pois $(v^1,w^1)$ também é solução viável desse dual quando utilizamos custos de abertura $\lambda_2$ e, portanto, $(v,w)$ é combinação convexa de duas solução viáveis de (DL) e é um fato que o conjunto de soluções viáveis de um programa linear é convexo.
+Defina $ v \coloneqq av^1 + bv^2$ e $w \coloneqq aw^1 + bw^2$. Note que $(v,w)$ é solução viável do programa linear~\eqref{DL} utilizando custos de abertura $\lambda_2$. Isso é verdade pois $(v^1,w^1)$ também é solução viável desse dual quando utilizamos custos de abertura $\lambda_2$ e, portanto, $(v,w)$ é combinação convexa de duas solução viáveis de~\eqref{DL} e é um fato que o conjunto de soluções viáveis de um programa linear é convexo.
 
 %Note qsolução $(v,w)$ do dual definindo ${v = av^1 + bv^2}$ e ${w = aw^1 + bw^2}$. É fácil notar que essa solução é viável para o problema de localização de instalações quando utilizamos custos de abertura $\lambda_2$ para todas as instalações, uma vez que $(v^1,w^1)$ também é solução viável do dual quando utilizamos $\lambda_2$ e, portanto, $(v,w)$ é uma combinação convexa de duas soluções viáveis. 
 

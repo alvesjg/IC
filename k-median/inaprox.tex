@@ -1,9 +1,10 @@
-Nesta seção vamos mostrar um resultado que, sob certa hipótese, limita inferiormente a razão de aproximação para os algoritmos do problema das $k$-medianas métricos. Esse resultado é o Teorema 16.17 que se encontra na Seção 16.2 do livro WS2011. Ele foi provado por Jain, Mahdian, Markakis, Saberi e Vazirani~\cite{jain2002greedy}.
+Nesta seção vamos mostrar um resultado que, sob certa hipótese, limita inferiormente a razão de aproximação para os algoritmos do problema das $k$-medianas métrico. Esse resultado é o Teorema 16.17 que se encontra na Seção 16.2 do livro WS2011. Ele foi provado por Jain, Mahdian, Markakis, Saberi e Vazirani~\cite{jain2002greedy}.
 
+Relembre o Problema~\eqref{otsetcover} que é a versão de otimização do problema de cobertura de conjuntos.
 Vamos mostrar que, se existe uma $\alpha$-aproximação $A$ para o problema das $k$-medianas métrico com $\alpha < 1.735$, então existe uma $(c \ln n)$-aproximação para o problema da cobertura de conjuntos para uma constante $c<1$. 
 Feige~\cite{Feige98} mostrou que a existência desse segundo algoritmo implica na existência de um algoritmo determinístico que leva tempo $O(n^{O(\log\log n)})$ para resolver instâncias de tamanho $n$ de qualquer problema em $\NP$.
 
-Vamos apresentar um algoritmo de aproximação para o problema da cobertura de conjuntos que utiliza várias chamadas ao algoritmo $A$.
+Vamos apresentar um algoritmo de aproximação para o problema da cobertura de conjuntos que utiliza várias chamadas ao algoritmo que é uma $\alpha$-aproximação para o problema das $k$-medianas métrico.
 
 \begin{algorithm}
     \caption{\sc Inaprox-JMMSV$(E,\{S_1,\ldots,S_m\})$}
@@ -18,12 +19,12 @@ Vamos apresentar um algoritmo de aproximação para o problema da cobertura de c
             \EndFor
         \EndFor
         \For{$k \gets 1$ até $m$}
-            \State $I_k \gets \emptyset$; $D \gets E$; $F \gets [m]$
+            \State $I_k \gets \emptyset$;\quad $D \gets E$;\quad $F \gets [m]$
             \While{$D\neq \emptyset$}
                 \State $F' \gets$ {\sc $\alpha$-aprox-k-med}$(F,D,c,k)$
                 \State $I_k \gets I_k \cup F'$
                 \State $D' \gets \{j \in D: c(j,F') = 1 \}$
-                \State $F \gets F \setminus F'$; $D\gets D\setminus D'$
+                \State $F \gets F \setminus F'$;\quad $D\gets D\setminus D'$
             \EndWhile
         \EndFor
     \State \Return $I_k$ que minimize $|I_k|$.
@@ -32,7 +33,7 @@ Vamos apresentar um algoritmo de aproximação para o problema da cobertura de c
 
 Seja $I = (E,\{S_1,\ldots,S_m\})$ uma instância do problema da cobertura de conjuntos. Para um $k$ fixo, o algoritmo cria uma sequência de instâncias métricas para o problema das $k$-medianas. Todas elas terão a mesma função de custo $c$ tal que, para todo $i \in [m]$ e $j \in E$, $c_{ij} = 1$ se $j \in S_i$ e $c_{ij} = 3$ caso contrário. É fácil notar que essa função é uma métrica.
 A primeira instância da sequência terá o conjunto de instalações $F \coloneqq [m]$ e o conjunto de clientes $D \coloneqq E$. 
-A ideia é que escolheremos um conjunto $F' \subseteq F$ de instalações que serão abertas e existirá um conjunto $D' \subseteq D$ tal que, para todo $j \in D'$, existe $i \in F'$ tal que $j \in S_i$. 
+A ideia é que usamos o algoritmo {\sc $\alpha$-aprox-k-med} para encontrar um conjunto $F' \subseteq F$ de instalações que serão abertas e existirá um conjunto $D' \subseteq D$ tal que, para todo $j \in D'$, existe $i \in F'$ tal que $j \in S_i$. 
 Então, para construir a próxima instância, usaremos o conjunto de instalações $F \setminus F'$ e o conjunto de clientes $D \setminus D'$, que representam os subconjuntos de $E$ que ainda podem ser escolhidos e os elementos de $E$ que ainda não foram cobertos, respectivamente.
 Isso acontecerá sucessivamente até que todos os elementos de $E$ sejam cobertos, ou seja, até que $D = \emptyset$.
 Queremos escolher $k^*$ instalações em cada chamada do algoritmo do problema das $k$-medianas, em que $k^* = \opt(I)$. Como é difícil saber o tamanho de uma cobertura de conjuntos ótima, vamos rodar essa rotina para todo $k \in [m]$, ou seja, para todos os candidatos para o tamanho $k^*$ de uma cobertura de conjuntos ótima para essa instância.
@@ -43,8 +44,8 @@ Se existe uma $\alpha$-aproximação para o problema das $k$-medianas com $\alph
 
 \begin{proof}
 Seja $k^*$ o tamanho de uma cobertura de conjuntos ótima da instância $(E,\{S_1,\ldots,S_m\})$ do problema de cobertura de conjuntos. Suponha que estamos na iteração $k^*$ do laço {\bf Para} e na iteração $\ell$ do laço {\bf Enquanto} do algoritmo {\sc Inaprox-JMMSV}.
-Seja $D_\ell$ e $F_\ell$ os conjuntos $D$ e $F$ no começo dessa iteração do laço {\bf Enquanto}. Seja $n_\ell \coloneqq |D_\ell|$. Note que existe uma solução para a instância $(F_\ell,D_\ell,c,k^*)$ do problema das $k$-medianas com custo $n_\ell$ em que abrimos todas as instalações que representam subconjuntos que estão em uma mesma resposta ótima da cobertura de conjuntos e associamos os clientes restantes às instalações com custo de conexão 1.
-Seja $F_\ell'$ o conjunto das instalações devolvido pela chamada do algoritmo na linha~6 e $D_\ell'$ o conjunto de clientes encontrado na linha~8. Denote $p_\ell \coloneqq  |D_\ell'|/n_ell$. É fácil notar que o custo da solução $F'_\ell$ é
+Seja $D_\ell$ e $F_\ell$ os conjuntos $D$ e $F$ no começo dessa iteração do laço {\bf Enquanto}. Seja $n_\ell \coloneqq |D_\ell|$. Note que existe uma solução para a instância $(F_\ell,D_\ell,c,k^*)$ do problema das $k$-medianas com custo $n_\ell$ em que abrimos todas as instalações que representam subconjuntos que estão em uma mesma resposta ótima da cobertura de conjuntos.
+Seja $F_\ell'$ o conjunto das instalações devolvido pela chamada de {\sc $\alpha$-aprox-k-med} na linha~10 e $D_\ell'$ o conjunto de clientes encontrado na linha~12. Denote $p_\ell \coloneqq  |D_\ell'|/n_\ell$. É fácil notar que o custo da solução $F'_\ell$ é
 \[ p_\ell n_\ell + 3 (1-p_\ell) n_\ell \leq \alpha  n_\ell\]
 e, portanto, 
 \[
@@ -64,4 +65,4 @@ em que a última desigualdade vale para algum $c' \in (c,1)$, uma vez que, pelo 
 Assim, temos uma aproximação para o problema de cobertura de conjuntos com razão de aproximação estritamente menor que $\ln n$ para $n$ suficientemente grande.
 \end{proof}
 
-Juntando esse resultado com o resultado do Feige temos que a existência de uma $\alpha$-aproximação para o problema das $k$-medianas com $\alpha < 1.735$ implica a existência de um algoritmo determinístico que leva tempo $O(n^{O(\log \log n)})$ para todo problema $\NP$-completo.
+Juntando esse resultado com o resultado do Feige temos que a existência de uma $\alpha$-aproximação para o problema das $k$-medianas métrico com $\alpha < 1.735$ implica a existência de um algoritmo determinístico que leva tempo $O(n^{O(\log \log n)})$ para todo problema $\NP$-completo.

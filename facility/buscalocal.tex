@@ -1,12 +1,12 @@
-Nessa seção falaremos sobre o algoritmo de busca local para o problema de localização de instalações. Esse algoritmo foi estudado na Seção 9.1 do livro WS2011 e foi proposto primeiramente por Kuen e Hamburger~\cite{KH}. Charikar e Guha~\cite{Charikar&Guha'05} provaram a razão de aproximação igual a 3 e introduziram a ideia de reescala, porém a análise a ser apresentada foi feita por Gupta e Tangwongsan~\cite{DBLP:journals/corr/abs-0809-2554}.
+Nessa seção falaremos sobre o algoritmo de busca local para o problema de localização de instalações métrico. Esse algoritmo foi estudado na Seção 9.1 do livro WS2011 e foi proposto primeiramente por Kuen e Hamburger~\cite{KH}. Charikar e Guha~\cite{Charikar&Guha'05} provaram a razão de aproximação igual a 3 e introduziram a ideia de reescala, porém a análise a ser apresentada foi feita por Gupta e Tangwongsan~\cite{DBLP:journals/corr/abs-0809-2554}.
 
 Numa instância $(F,D,c,f)$ do problema de localização de instalações, o custo de transporte está definido apenas para um cliente e uma instalação.
-Definimos o custo de transporte entre duas instalações como o menor custo de transporte entre essas duas instalações passando por um cliente qualquer. Então a desigualdade triangular valerá da seguinte forma: para todo $i,j,k \in F \cup D$, 
-\[ c_{ij} \leq c_{ik} + c_{kj}.\]
+Definimos o custo de transporte entre duas instalações como o menor custo de transporte entre essas duas instalações passando por um cliente qualquer. Igualmente, definimos o custo de transporte entre dois clientes como o menor custo de transporte entre esses dois clientes passando por uma instalação qualquer. Então a desigualdade triangular valerá da seguinte forma: para todo $i,j,\ell \in F \cup D$, 
+\[ c_{ij} \leq c_{i\ell} + c_{\ell j}.\]
 
 Um algoritmo de busca local começa com uma solução viável para o problema e checa se alguma alteração local melhora o custo da solução atual. Caso essa melhora ocorra, essa alteração é feita. Esse processo se repete até que não exista alteração local que melhore o custo da solução corrente. A solução resultante é chamada de \emph{localmente ótima}. O tempo de execução de uma implementação dessa ideia e a qualidade da solução obtida dependem da definição adotada de alteração local. Quanto mais abrangente essa definição, melhor a solução, porém em geral mais lento será o algoritmo. Quanto mais restrita a definição, mais rápido o algoritmo, porém pior em geral a qualidade da solução final. Usualmente adotam-se restrições mínimas que garantam a polinomialidade do algoritmo.
 
-O algoritmo que descreveremos contará com três operações: abrir instalações fechadas, fechar instalações abertas ou trocar uma instalação aberta por uma fechada. A solução inicial terá todas as instalações abertas. Para garantir a polinomialidade, uma operação só será feita se diminuir o custo da solução atual em uma razão de $1-\delta$, para um $\delta>0$. Como essa solução não é necessariamente localmente ótima, iremos chamá-la de solução \emph{quase localmente ótima}. Ao final, mostraremos que, dado um $\eps > 0$, o algoritmo é uma $3(1 + \epsilon)$-aproximação para o problema de localização de instalações, onde o $\delta$ será escolhido em função do $\epsilon$ e o consumo de tempo do algoritmo será afetado pelo valor de $\delta$.
+O algoritmo que descreveremos contará com três operações: abrir instalações fechadas, fechar instalações abertas ou trocar uma instalação aberta por uma fechada. A solução inicial terá todas as instalações abertas. Para garantir a polinomialidade, uma operação só será feita se diminuir o custo da solução atual em uma razão de $1-\delta$, para um $\delta>0$. Como essa solução não é necessariamente localmente ótima, iremos chamá-la de solução \emph{quase localmente ótima}. Ao final, mostraremos que, dado um $\eps > 0$, o algoritmo é uma $3(1 + \epsilon)$-aproximação para o problema de localização de instalações métrico, onde o $\delta$ será escolhido em função do $\epsilon$ e o consumo de tempo do algoritmo será afetado pelo valor de $\delta$.
 
 \begin{algorithm}
     \caption{\sc BuscaLocal$_\eps$-KHCGGT$(F,D,c,f)$}
@@ -28,14 +28,16 @@ O algoritmo que descreveremos contará com três operações: abrir instalaçõe
         \State \Return $S$
     \end{algorithmic}
 \end{algorithm}
-Vamos mostrar o Lema~\ref{lema:3.12} e o Lema~\ref{lema:3.14} que serão fundamentais para chegar na razão de aproximação do algoritmo. A partir daqui utilizaremos uma instância $I(F,D,c,f)$. Seja $S \subseteq F$ solução devolvida pelo algoritmo {\sc BuscaLocal$_\eps$-KHCGGT$(F,D,c,f)$}. Seja $\sigma : D \rightarrow S$ com $\sigma(j) \coloneqq \arg\min_{i \in S}c_{ij}$. Sejam $A \coloneqq \sum_{i \in S} f_i$ e $T \coloneqq \sum_{j\in D} \min_{i\in S}c_{ij}$. Seja $S^* \subseteq F$ tal que custo$(S^*) =\opt(I)$. Seja $\sigma^* : D \rightarrow S^*$ com $\sigma^*(j) \coloneqq \arg\min_{i \in S^*}c_{ij}$. Sejam também $A^* \coloneqq \sum_{i \in S^*} f_i$ e $T^* \coloneqq \sum_{j\in D} \min_{i\in S^*}c_{ij}$. Seja $m \coloneqq |F|$.
+Vamos mostrar o Lema~\ref{lemma:3.13} e o Lema~\ref{lemma:3.15} que serão fundamentais para chegar na razão de aproximação do algoritmo. A partir daqui utilizaremos uma instância $I=(F,D,c,f)$. Seja $S \subseteq F$ solução devolvida pelo algoritmo {\sc BuscaLocal$_\eps$-KHCGGT$(F,D,c,f)$}. Seja $\sigma : D \rightarrow S$ com $\sigma(j) \coloneqq \arg\min_{i \in S}c_{ij}$ função de associação dos clientes para a instalação mais próxima em $S$. Sejam $A \coloneqq \sum_{i \in S} f_i$ e $T \coloneqq \sum_{j\in D} \min_{i\in S}c_{ij}$ custos de abertura das instalações e de associação dos clientes na solução $S$, respectivamente. Seja $S^* \subseteq F$ tal que custo$(S^*) =\opt(I)$ uma solução ótima para $I$. Seja $\sigma^* : D \rightarrow S^*$ com $\sigma^*(j) \coloneqq \arg\min_{i \in S^*}c_{ij}$ função de associação dos clientes para a instalação mais próxima em $S^*$. Sejam também $A^* \coloneqq \sum_{i \in S^*} f_i$ e $T^* \coloneqq \sum_{j\in D} \min_{i\in S^*}c_{ij}$ custos de abertura das instalações e de associação dos clientes na solução $S^*$, respectivamente. Seja $m \coloneqq |F|$.
+
 \begin{lemma}
-    \label{lema:3.12}
-    Sejam $S$ e $S^*$ as soluções como definidas acima. Então, vale que
+    \label{lemma:3.13}
+    Sejam $S$ e $S^*$ as soluções como definidas. Então, vale que
     \[ T - A^* - T^* \leq m \delta (A+T).\]
 \end{lemma}
+
 \begin{proof} 
-    Para todo $i^* \in S^* \setminus S$, como a solução $S$ é quase localmente ótima, se abrimos a instalação $i^*$ e associamos a ela em $\sigma$ os clientes que estão associados a ela em $\sigma^*$ não diminuímos o custo da solução de uma fração $1-\delta$. Então,
+    Para todo $i^* \in S^* \setminus S$, como a solução $S$ é quase localmente ótima, se abrirmos a instalação $i^*$ e associarmos a ela, em $\sigma$, os clientes que estão associados a ela em $\sigma^*$, o custo da solução não diminui em mais que uma fração $1-\delta$. Então,
     \begin{align*} 
       A + f_{i^*} + T + \sum_{j : \sigma^*(j) = i^*} (c_{i^*j} - c_{\sigma(j)j}) &> (1-\delta)(A+T)
     \end{align*} 
@@ -55,15 +57,18 @@ que equivale a
     \end{align*}
     \end{subequations}
 \end{proof}
-Para o Lema~\ref{lema:3.14}, precisaremos de uma função e de um lema que ajudará a limitar o custo da redistribuição de clientes. 
-Vamos definir a função ${}\phi : S^* \rightarrow S$ como ${\phi(i^*) = \arg\min_{i \in S} c_{i^*i}}$, ou seja, uma instalação $i$ em $S$ mais próxima a $i^*$ em $S^*$. Então, teremos o seguinte lema.
+
+Para o Lema~\ref{lemma:3.15}, precisaremos de uma função e de um lema que ajudará a limitar o custo da redistribuição de clientes. 
+Vamos definir a função $\phi : S^* \rightarrow S$ como ${\phi(i^*) \coloneqq \arg\min_{i \in S} c_{i^*i}}$, ou seja, uma instalação $i$ em $S$ mais próxima à $i^*$ em $S^*$. Então, teremos o seguinte lema.
+
 \begin{lemma}
-    \label{lemma:3.8}
+    \label{lemma:3.14}
     Seja $j$ um cliente tal que $\sigma(j) = i$, $\sigma^*(j) = i^*$, $\phi(i^*) = i'$ e $i\neq i'.$ Então, \[c_{i'j} - c_{ij} \leq 2c_{i^*j}.\]
 \end{lemma}
+
 \begin{proof}
     Pela desigualdade triangular, temos que
-    \[c_{i'j} \leq c_{i'i^*} + c_{i^*j}.\] Além disso, devido à definição de $i'$, temos que $c_{i'i^*} \leq c_{ii^*}$. Assim,
+    \[c_{i'j} \leq c_{i'i^*} + c_{i^*j}.\] Além disso, pela definição de $i'$, temos que $c_{i'i^*} \leq c_{ii^*}$. Assim,
     \[c_{i'j} \leq c_{ii^*} + c_{i^*j}.\]
     Novamente, pela desigualdade triangular, vale que $c_{ii^*} \leq c_{ij} + c_{i^*j}$. Então,
     \[
@@ -73,10 +78,11 @@ Vamos definir a função ${}\phi : S^* \rightarrow S$ como ${\phi(i^*) = \arg\mi
 \end{proof}
 
 \begin{lemma}
-    \label{lema:3.14}
+    \label{lemma:3.15}
     Sejam $S$ e $S^*$ soluções como já definidas. Então,
     \[A - A^* - 2T^* \leq m \delta(A+T).\]
 \end{lemma}
+
 \begin{proof}
     Uma instalação $i \in S$ é \emph{segura} se não existe $i^* \in S^*$ tal que $\phi(i^*)=i$.
 
@@ -87,14 +93,14 @@ Vamos definir a função ${}\phi : S^* \rightarrow S$ como ${\phi(i^*) = \arg\mi
         \[
         - f_i + \sum_{j:\sigma(j) = i} (c_{\phi(\sigma^*(j))j} - c_{\sigma(j)j}) > -\delta(A+T).
         \]
-    Como $i$ é uma instalação segura, o Lema~\ref{lemma:3.8} vale para todos os clientes que estão associados a $i$ em $\sigma$. Então
+    Como $i$ é uma instalação segura, o Lema~\ref{lemma:3.14} vale para todos os clientes que estão associados a $i$ em $\sigma$. Então
     \begin{align} 
         \label{segura}
         - f_i + \sum_{j:\sigma(j) = i} 2c_{\sigma^*(j)j} &> -\delta(A+T).
     \end{align}
 
-    Seja $i\in S$ uma instalação não segura. Seja $R(i)\coloneqq \{i^* \in S^* : \phi(i^*) = i\}$. Seja $i' \coloneqq \arg\min_{i^* \in R(i)} c_{i^*i}$, ou seja, $i'$ é a instalação de $R(i)$ mais próxima à instalação $i$.
-    Para cada $i^* \in R\setminus\{i'\}$, abrir $i^*$ e associar a $i^*$ os clientes que estão associados a $i$ em $\sigma $ e a $i^*$ em $\sigma^*$ não pode melhorar a solução em uma razão de $1-\delta$. Assim
+    Seja $i\in S$ uma instalação não segura. Definimos $R(i)\coloneqq \{i^* \in S^* : \phi(i^*) = i\}$ como o conjunto de instalações de $S^*$ para as quais $i$ é a instalação mais próxima em $S$. Seja $i' \coloneqq \arg\min_{i^* \in R(i)} c_{i^*i}$ a instalação de $R(i)$ mais próxima à $i$.
+    Para cada $i^* \in R(i)\setminus\{i'\}$, abrir $i^*$ e associar a $i^*$ os clientes que estão associados a $i$ em $\sigma $ e a $i^*$ em $\sigma^*$ não pode melhorar a solução em uma razão de $1-\delta$. Assim
     \[
         A + f_{i^*} + T + \sum_{j: \sigma(j) = i \text{ e } \sigma^*(j) = i^*}(c_{i^*j} - c_{ij}) > (1-\delta)(A+T),\]
     o que equivale a 
@@ -103,11 +109,11 @@ Vamos definir a função ${}\phi : S^* \rightarrow S$ como ${\phi(i^*) = \arg\mi
         f_{i^*} + \sum_{j: \sigma(j) = i \text{ e } \sigma^*(j) = i^*}(c_{i^*j} - c_{ij}) > -\delta(A+T).        
     \end{equation}    
 
-    Agora vamos ver o que acontece se abrimos $i'$, fecharmos $i$ e associarmos cada cliente $j$ associado a $i$ em $\sigma$ para $\phi(\sigma^*(j))$ se $\sigma^*(j) \not \in R$ e a $i'$ caso contrário. Disso, deduzimos que
+    Agora vamos ver o que acontece se abrirmos $i'$, fecharmos $i$ e associarmos cada cliente $j$ associado a $i$ em $\sigma$ para $\phi(\sigma^*(j))$ se $\sigma^*(j) \not \in R(i)$ e a $i'$ caso contrário. Disso, deduzimos que
     \begin{align*}
         - f_i + f_{i'} + \sum_{j: \sigma(j) = i \text{ e } \sigma^*(j)\not \in R(i)}(c_{\phi(\sigma^*(j))j} - c_{ij}) + \sum_{j: \sigma(j)=i \text{ e }\sigma^*(j) \in R(i)}(c_{i'j} - c_{ij}) &> -\delta(A+T).
     \end{align*}
-    No somatório dos clientes $j$ em que $\sigma^*(j) \not \in R(i)$, podemos utilizar o Lema~\ref{lemma:3.8} e obtemos
+    No somatório dos clientes $j$ em que $\sigma^*(j) \not \in R(i)$, podemos utilizar o Lema~\ref{lemma:3.14} e obtemos
     \begin{align*}
         - f_i + f_{i'} + \sum_{j: \sigma(j) = i \text{ e } \sigma^*(j)\not \in R} 2c_{\sigma^*(j)j} + \sum_{j: \sigma(j)=i \text{ e }\sigma^*(j) \in R(i)}(c_{i'j} - c_{ij}) &> -\delta(A+T).
     \end{align*}
@@ -134,7 +140,7 @@ Vamos definir a função ${}\phi : S^* \rightarrow S$ como ${\phi(i^*) = \arg\mi
     \[\sum_{i^* \in R(i)}f_{i^*} - f_i + \sum_{j: \sigma(j)= i } 2c_{\sigma^*(j)j} > - |R(i)| \delta(A+T).\]
     Vamos juntar essa última desigualdade para todas as instalações não seguras e~\eqref{segura} para todas as instalações seguras. Chamando de $P$ o conjunto das instalações seguras, temos que
     \[\sum_{i \in P}\Big( - f_i + \sum_{j:\sigma(j) = i} 2c_{\sigma^*(j)j}\Big) + \sum_{i \in S\setminus P}\Big( \sum_{i^* \in R(i)}f_{i^*} - f_i + \sum_{j: \sigma(j)= i } 2c_{\sigma^*(j)j}\Big ) > - m \delta(A+T). \]
-    É fácil notar que estamos subtraindo o custo de todas as instalações de $S$ e somando $2c_{\sigma^*(j)j}$ para todo cliente $j\in D$. Notemos também que estamos somando o custo de abertura de todas as instalações de $S^*$, uma vez que toda instalação de $S^*$ pertence a exatamente um conjunto $R(i)$. Portanto,
+    É fácil notar que estamos subtraindo o custo de abertura de todas as instalações de $S$ e somando $2c_{\sigma^*(j)j}$ para todo cliente $j\in D$. Notemos também que estamos somando o custo de abertura de todas as instalações de $S^*$ exatamente uma vez, uma vez que toda instalação de $S^*$ pertence a exatamente um conjunto $R(i)$. Portanto,
     \begin{subequations}
         \begin{align*}
             m\delta(A+T) &\geq - (\sum_{i^* \in S^*}f_{i^*} + 2 \sum_{j \in D} c_{\sigma^*(j)j} - \sum_{i \in S} f_i)\\
@@ -142,21 +148,30 @@ Vamos definir a função ${}\phi : S^* \rightarrow S$ como ${\phi(i^*) = \arg\mi
         \end{align*}
     \end{subequations}
 \end{proof}
+
 Agora que temos essas duas desigualdades, conseguimos mostrar o seguinte.
 
 \begin{theorem}
-    O algoritmo {\sc BuscaLocal$_\eps$-KHCGGT} é uma $3(1+\epsilon)$-aproximação para o problema de localização de instalações.
+    O algoritmo {\sc BuscaLocal$_\eps$-KHCGGT} é uma $3(1+\epsilon)$-aproximação para o problema de localização de instalações métrico.
 \end{theorem}
-\begin{proof}
-    Primeiro, vamos mostrar que o algoritmo roda em tempo polinomial. Claramente, todas as operações podem ser feitas em tempo polinomial, precisamos apenas mostrar que o algoritmo sempre executa um número polinomial de operações.
-    Seja $M$ o valor da solução inicial. Note que se existir um inteiro $k$ tal que $(1-\delta)^kM < 1$, então o algoritmo não fará mais que $k$ operações, uma vez que os custos são inteiros. Por uma desigualdade conhecida, sabemos que $(1 - \delta)^{\frac{1}{\delta}} \leq \frac{1}{e}$. Quando elevamos tudo por $\ln M$ temos $(1- \delta)^{\frac{1}{\delta}\ln M} \leq \frac{1}{M}$ e isso nos traz $ (1- \delta)^{\frac{1}{\delta}\ln M}M \leq 1$, como $(1-\delta)$ é estritamente menor que 1, então $\frac{1}{\delta}\ln M + 1$ iterações são suficientes para terminar o programa. Perceba que $\ln M$ é polinomial no tamanho da instância, uma vez que $\ln M$ está apenas a uma constante de $\log M$ e $M$ é no máximo a soma de todos os custos. Como precisamos de $\log$ soma dos custos bits para guardar a instância, então $\log M$ é polinomial no tamanho da instância.
 
-    Agora, vamos mostrar a razão de aproximação. Somando as desigualdades encontradas nos Lemas~\ref{lema:3.12} e \ref{lema:3.14}, temos que 
+\begin{proof}
+    Primeiro, vamos mostrar que o algoritmo executa em tempo polinomial. Claramente, todas as operações podem ser feitas em tempo polinomial, precisamos apenas mostrar que o algoritmo sempre executa um número polinomial de operações.
+
+    Uma instância do problema de localização de instalações consiste em inteiros $n$ e $m$ que designam o número de instalações e clientes, uma matriz $C$ com $nm$ elementos e uma matriz $F$ com $n$ elementos. Se $C_\text{max}$ é o maior valor absoluto de um elemento de $C$ e $F_\text{max}$ é o maior valor absoluto de um elemento de $F$, então o tamanho da instância é $O(mn\log{C_\text{max}} + n\log{F_\text{max}})$. 
+    Podemos assumir sem perda de generalidade que todos os custos são inteiros. Seja $M$ o valor da solução inicial, note que $M \leq mC_\text{max} + nF_\text{max}$. Note que se $\rho$ é um inteiro tal que $(1-\delta)^\rho M < 1$, então o algoritmo não fará mais que $\rho$ iterações. Como $ 1 + x < e^x$ para todo $x\neq 0$, sabemos que $(1 - \delta)^{\frac{1}{\delta}} < \frac{1}{e}$. Quando elevamos tudo por $\ln M$ temos $(1- \delta)^{\frac{1}{\delta}\ln M} < \frac{1}{M}$ e, portanto, vale que $ (1- \delta)^{\frac{1}{\delta}\ln M}M < 1$. Então o número de iterações do laço da linha 3 do algoritmo é no máximo 
+    \begin{equation}
+        \frac{1}{\delta}\ln M \leq \frac{1}{\delta} \ln(mC_\text{max} + nF_\text{max}).  \nonumber
+    \end{equation}
+    Assim, concluímos que o número de iterações é polinomial no tamanho da instância.
+
+    Agora, vamos mostrar a razão de aproximação. Somando as desigualdades encontradas nos Lemas~\ref{lemma:3.13} e \ref{lemma:3.15}, temos que 
         \[A + T - 2A^* - 3T^* \leq 2m\delta(A+T)\] 
         e, assim, podemos concluir que
         \[A+T \leq \frac{2A^* + 3T^*}{1-2m\delta} \leq \frac{3}{1-2m\delta} \ \opt(I) = (1+\eps)3 \ \opt(I)\]
         em que a última igualdade vale uma vez que $\delta = \frac{\eps}{(1+\eps)2m}$.
 \end{proof}
+
 Durante a prova da razão do algoritmo, utilizamos que $(2A^* + 3T^*) \leq 3\opt(I)$. Vamos utilizar essa folga para melhorar o algoritmo. 
 A partir da instância recebida, vamos criar uma nova instância $(F,D,c,\frac{f}{\mu})$ dividindo o custo de abertura das instalações por uma constante $\mu \leq 1$. Ao final, vamos encontrar um valor para $\mu$ que irá diminuir a razão de aproximação do algoritmo o máximo possível. 
 
@@ -182,4 +197,4 @@ e, assim,
 \[(A+T)\leq \frac{(1+\sqrt{2})}{(1 - (1+\sqrt{2 })m\delta)}\opt(I).\]
 Analogamente ao que foi feito na análise da razão de aproximação $3(1 + \epsilon)$, escolhendo $\delta = \frac{\epsilon}{2m(1+\sqrt{2})}$ encontramos 
 \[(A+T) \leq (1 + \sqrt{2} + \epsilon )\opt(I).\]
-Assim, se fizermos a reescala dos custos de abertura das facilidades antes de rodar o algoritmo de busca local temos um novo algoritmo que é uma $(1 + \sqrt{2} + \epsilon )$-aproximação para o problema de localização de instalações.
+Assim, se fizermos a reescala dos custos de abertura das facilidades antes de executar o algoritmo de busca local temos um novo algoritmo que é uma $(1 + \sqrt{2} + \epsilon )$-aproximação para o problema de localização de instalações métrico.

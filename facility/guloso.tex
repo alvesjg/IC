@@ -1,20 +1,20 @@
 Nessa seção vamos apresentar o algoritmo guloso que é equivalente a uma 2-aproximação que utiliza o método de \emph{dual fitting}. Esse algoritmo foi estudado pela Seção 9.4 do livro WS2011 e foi desenvolvido por Jain, Mahdian, Markakis, Saberi e Vazirani~\cite{jain2002greedy}.
 
 O algoritmo guloso para o problema da localização de instalações consiste em, a cada iteração, abrir uma instalação fechada e associá-la a um conjunto de clientes ainda não associados, garantindo um baixo aumento no custo total. 
-Isso se repete até que todos os clientes estejam associados a uma instalação aberta. Então, seja $X$ o conjunto de instalações abertas até o momento e $C$ o conjunto de clientes ainda não associados a uma instalação em $X$. Queremos escolher $i \in F \setminus X$ e $\emptyset \neq Y \subseteq C$ que minimize
+Isso se repete até que todos os clientes estejam associados a uma instalação aberta. Então, seja $X$ o conjunto de instalações abertas até o momento e $S$ o conjunto de clientes ainda não associados a uma instalação em $X$. Queremos escolher $i \in F \setminus X$ e $\emptyset \neq Y \subseteq S$ que minimize
 \[ \frac{f_i + \sum_{j \in Y} c_{ij}}{|Y|}.
     \] 
 
-Para contemplar a possibilidade que, em alguma iteração do algoritmo, a melhor escolha seja associar mais alguns clientes a alguma instalação já aberta, no momento em que uma instalação é aberta, o seu custo de abertura é alterado para 0 e permite-se que ela seja escolhida novamente no futuro. Também há um ajuste no critério de escolha que permite que clientes mudem sua escolha de instalação aberta à medida que mais instalações são abertas. Desse modo, conseguimos melhorar ainda mais o custo da solução produzida por esse algoritmo. Defina $c(j,X) \coloneqq \min_{i \in X} c_{ij}$ e também $(a)_+\coloneqq\max\{0,a\}$. Assim, teremos o seguinte algoritmo guloso para o problema da localização de instalações.
+Para contemplar a possibilidade que, em alguma iteração do algoritmo, a melhor escolha seja associar mais alguns clientes a alguma instalação já aberta, no momento em que uma instalação é aberta, o seu custo de abertura é alterado para 0 e permite-se que ela seja escolhida novamente no futuro. Também há um ajuste no critério de escolha que permite que clientes mudem sua escolha de instalação aberta à medida que mais instalações são abertas. Desse modo, conseguimos melhorar ainda mais o custo da solução produzida por esse algoritmo. Defina $(a)_+\coloneqq\max\{0,a\}$. Assim, teremos o seguinte algoritmo guloso para o problema da localização de instalações.
 \begin{algorithm}
     \caption{\sc Guloso-JMMSV($F,D,c,f$)}
     \begin{algorithmic}[1]
-        \State $C \gets D$
+        \State $S \gets D$
         \State $X \gets \emptyset$
-        \While{$C \neq \emptyset$}
-        \State Escolha $i \in F$ e $\emptyset \neq Y \subseteq C$ que minimize $\frac{f_i + \sum_{j \in Y}c_{ij} - \sum_{j \not \in C}(c(j,X) - c_{ij})_+ }{|Y|}$
+        \While{$S \neq \emptyset$}
+        \State Escolha $i \in F$ e $\emptyset \neq Y \subseteq S$ que minimize $\frac{f_i + \sum_{j \in Y}c_{ij} - \sum_{j \not \in C}(c(j,X) - c_{ij})_+ }{|Y|}$
         \State $f_i \gets 0$
-        \State $C \gets C \setminus Y$
+        \State $S \gets S \setminus Y$
         \State $X \gets X \cup \{i\}$
         \EndWhile
         \State \Return $X$
@@ -23,55 +23,61 @@ Para contemplar a possibilidade que, em alguma iteração do algoritmo, a melhor
 
 Para a análise do algoritmo guloso, iremos apresentar um algoritmo que utiliza o método dual fitting, mostrar uma razão de aproximação para ele e mostrar que eles são equivalentes.
 
-Relembre o programa inteiro e as relaxações associadas ao problema de localização de instalações na Seção~\ref{D}. 
-O algoritmo dual fitting devolve um conjunto $X$ de instalações e produz variáveis $\alpha$ para as quais não existam variáveis $w$ tais que $(\alpha,w)$ seja solução viável para o dual. 
-Vamos mostrar que a solução em que as instalações de $X$ são abertas e todos os clientes estão ligados a uma instalação mais próxima em $X$ tem custo no máximo $\sum_{j \in D} \alpha_j$ e que conseguimos obter variáveis $w$ tais que $(\frac{\alpha}{2},w)$ é solução viável para o dual. 
-Assim, deduzimos que o algoritmo é uma 2-aproximação.
-
-Para cada instalação $i$, seja $N(i) \coloneqq \{j \in D: \alpha_j \geq c_{ij}\}$. Chamaremos de \emph{oferta} o valor que um cliente pode contribuir para a abertura de uma instalação. Para um cliente $j$ que ainda não foi associado a nenhuma instalação, a sua oferta para a abertura da instalação $i$ é $(\alpha_j - c_{ij})_+$. Já para um cliente $j$ que já foi associado a alguma instalação, a sua oferta para a abertura da instalação $i$ é $(c(j,X) - c_{ij})_+$.
+Relembre os programas lineares~\eqref{P1} e~\eqref{D1}. Ao longo do algoritmo vamos construir variáveis $\alpha_j$ semelhantes às variáveis $v_j$ do programa~\eqref{D1}. Denote por ${N(i) \coloneqq \set{j \in d : \alpha_j \geq c_{ij}}}$.
 
 \begin{algorithm}
     \caption{\sc DualFitting-JMMSV$(F,D,c,f)$}
     \begin{algorithmic}[1]
-    \State $\alpha \gets 0$
-    \State $C \gets D$
+    \State $\alpha_j \gets 0$ para todo $j \in D$
+    \State $S \gets D$
     \State $X \gets \emptyset$
     \State $f' \gets 2f$
-    \While{$C \neq \emptyset$}
-    \State $\theta_1 \gets \min\{c_{ij} - \alpha_j:j \in C,i\in X\}$
-    \State $\theta_2 \gets \min\{(f'_i - \sum_{j \in C}(\alpha_j - c_{ij})_+ - \sum_{j \not \in C}(c(j,X) - c_{ij})_+)/|C|: i \in F \setminus X\}$
+    \While{$S \neq \emptyset$}
+    \State $\theta_1 \gets \min\{c_{ij} - \alpha_j:j \in S,i\in X\}$
+    \State $\theta_2 \gets \min\{(f'_i - \sum_{j \in S}(\alpha_j - c_{ij})_+ - \sum_{j \not \in S}(c(j,X) - c_{ij})_+)/|S|: i \in F \setminus X\}$
     \State $\theta \gets \min\{\theta_1,\theta_2\}$
-    \State $\alpha_j \gets \alpha_j + \theta$ para todo $j \in C$
-    \If{$\alpha_j = c_{ij}$ para algum $j \in C$ e $i \in X$}
-    \State $C \gets C \setminus \{j\}$
+    \State $\alpha_j \gets \alpha_j + \theta$ para todo $j \in S$
+    \If{$\alpha_j = c_{ij}$ para algum $j \in S$ e $i \in X$}
+    \State $S \gets S \setminus \{j\}$
     \EndIf
-    \If{$\sum_{j \in C} (\alpha_j - c_{ij})_+ + \sum_{j \not \in C}(c(j,X) - c_{ij})_+ = f'_i$ para algum $i \in F \setminus X$}
-    \State $C \gets C\setminus N(i)$
+    \If{$\sum_{j \in S} (\alpha_j - c_{ij})_+ + \sum_{j \not \in S}(c(j,X) - c_{ij})_+ = f'_i$ para algum $i \in F \setminus X$}
+    \State $S \gets S\setminus N(i)$
     \State $X \gets X \cup \{i\}$
     \EndIf
     \EndWhile
     \State \Return $X$
     \end{algorithmic}
 \end{algorithm}
+
+A intuição do algoritmo {\sc DualFitting-JMMSV} é parecida com a ideia do algoritmo {\sc PrimalDual-JV} da Seção~\ref{primaldual}. As variáveis $\alpha_j$ tem interpretações semelhantes às variáveis $v_j$ do programa linear~\eqref{D1}. A linha 6 do algoritmo está relacionada com a restrição~\eqref{D3} e a linha 7 está relacionada com a restrição~\eqref{D2}. Assim como no algoritmo primal dual, os clientes também vão contribuir para a abertura de uma instalação fechada. Um cliente $j$ que está em $S$ contribui $(\alpha_j - c_{ij})_+$ para a abertura de~$i$, enquanto um cliente que não está em $S$ contribui $(c(j,X) - c_{ij})_+$ para a abertura de~$i$. A ideia é que o cliente consegue contribuir mais para uma instalação caso diminua o seu custo de conexão.
+
+Note que os valores de $\alpha$ crescem de maneira uniforme para os clientes que estão em $S$. Assim, para quaisquer clientes $\ell$ e $j$ tais que $\alpha_\ell < \alpha_j$, vale que $\ell$ foi removido do conjunto $S$ em uma iteração anterior àquela em que $j$ foi removido de $S$.
+
+Vamos mostrar que, ao final do algoritmo, custo$(X)\leq \sum_{j \in D} \alpha_j$ e que conseguimos obter variáveis $w$ tais que $(\frac{\alpha}{2},w)$ é solução viável para~\eqref{D1}. 
+Assim, deduzimos que o algoritmo é uma 2-aproximação.
+
+
 Apresentaremos dois lemas principais, os Lemas~\ref{greedy:4} e~\ref{greedy:5}, donde segue a razão de aproximação do algoritmo {\sc DualFitting-JMMSV}.
 Para o primeiro desses lemas, iremos, primeiramente, provar outros três lemas.
 
 \begin{lemma}
     \label{upbound_bid}
-    Seja $k$ a iteração em que o cliente $j$ sai de $C$ e seja $\ell$ um cliente tal que $\alpha_\ell \leq \alpha_j$. Então, a oferta do cliente $\ell$ para uma facilidade i no início da iteração $k$ é pelo menos $\alpha_j - c_{ij} - 2c_{i\ell}$.
+    Seja $k$ a iteração em que o cliente $j$ é removido de $S$ e seja $\ell$ um cliente tal que $\alpha_\ell \leq \alpha_j$. Então, a oferta do cliente $\ell$ para uma facilidade i no início da iteração $k$ é pelo menos $\alpha_j - c_{ij} - 2c_{i\ell}$.
 \end{lemma}
 
 \begin{proof}
-Se $\alpha_\ell = \alpha_j$, então $\ell$ sai de $C$ na iteração $k$ e nesse momento oferta a $i$ exatamente $(\alpha_\ell - c_{i\ell})_+ = (\alpha_j - c_{i\ell})_+ \geq \alpha_j - c_{ij} - 2c_{i\ell}$, onde a desigualdade vale pois $c_{ij}\geq 0$ e $c_{i\ell} \geq 0$.
+Se $\alpha_\ell = \alpha_j$, então $\ell$ é removido de $S$ na iteração $k$. Portanto, no começo da iteração $k$, $\ell$ contribui $(\alpha_\ell - c_{i\ell})_+ = (\alpha_j - c_{i\ell})_+ \geq \alpha_j - c_{ij} - 2c_{i\ell}$ para a abertura de $i$, onde a desigualdade vale pois $c_{ij}\geq 0$ e $c_{i\ell} \geq 0$.
 
-Se $\alpha_\ell < \alpha_j $, então $\ell$ já está fora de $C$ no início da iteração $k$. 
-Seja $h$ a instalação a qual $\ell$ está conectado nesse momento. 
-Então $\ell$ oferta $(c_{h\ell} - c_{i\ell})_+$ a $i$ nesse momento. 
+Se $\alpha_\ell < \alpha_j $, então $\ell$ foi removido de $S$ antes da iteração $k$.
+Seja $h$ a instalação de $X$ que minimiza $c_{h\ell}$.
+Então, $\ell$ contribui $(c_{h\ell} - c_{i\ell})_+$ para a abertura de $i$ nesse momento. 
 Pela desigualdade triangular, $c_{hj} \leq c_{h\ell} + c_{i\ell} + c_{ij}$. 
-Note que $\alpha_j \leq c_{hj}$, caso contrário $j$ estaria conectado a $h$ e, portanto, estaria fora de $C$. Então $\alpha_j \leq c_{h\ell} + c_{i\ell } + c_{ij} $. 
+Note que $\alpha_j \leq c_{hj}$, caso contrário $j$ estaria na vizinhança de uma instalação de $X$ antes da iteração $k$ e, portanto, teria sido removido de $S$. Então $\alpha_j \leq c_{h\ell} + c_{i\ell } + c_{ij} $. 
 Portanto,
 \[ (c_{h\ell} - c_{i\ell})_+ \geq c_{h\ell} - c_{i\ell} \geq \alpha_j - c_{ij} - 2c_{i\ell}.\]
 \end{proof}
+
+
 \begin{lemma}
 \label{lowerbound_fcost}
 Seja $A \subseteq D$ um conjunto qualquer de clientes. Podemos assumir que $A = \set{1,\ldots,|A|}$ onde $\alpha_1 \leq \alpha_2 \leq \cdots \leq \alpha_{|A|}$. Então, para $i \in F$ e $j \in A$, vale que
@@ -79,7 +85,7 @@ Seja $A \subseteq D$ um conjunto qualquer de clientes. Podemos assumir que $A = 
 \]
 \end{lemma}
 \begin{proof}
-Sabemos que as ofertas recebidas por $i$ sempre serão no máximo $f_i'$. Assim, é suficiente mostrar que o lado esquerdo da desigualdade é no máximo a soma das ofertas recebidas por $i$ em algum momento. Seja $k$ a iteração em que $j$ se conecta a uma instalação pela primeira vez. Pelo Lema~\ref{upbound_bid}, vale que a oferta recebida por $i$ na iteração $k$ por cada cliente $\ell$ tal que $\alpha_\ell \leq \alpha_j$ é no máximo $\alpha_j - c_{ij} - 2c_{i\ell}$. Sabemos que um cliente $\ell$ tal que $\alpha_\ell \geq \alpha_j$, no início da iteração $k$, ainda não está associado a uma instalação e, 
+Sabemos que as contribuições recebidas por $i$ para a sua abertura sempre serão no máximo $f_i'$. Assim, é suficiente mostrar que o lado esquerdo da desigualdade é no máximo a soma das contribuições recebidas por $i$ em alguma iteração. Seja $k$ a iteração em que $j$ se conecta a uma instalação pela primeira vez. Pelo Lema~\ref{upbound_bid}, vale que a oferta recebida por $i$ na iteração $k$ por cada cliente $\ell$ tal que $\alpha_\ell \leq \alpha_j$ é no máximo $\alpha_j - c_{ij} - 2c_{i\ell}$. Sabemos que um cliente $\ell$ tal que $\alpha_\ell \geq \alpha_j$, no início da iteração $k$, ainda não está associado a uma instalação e, 
 portanto, oferta a $i$ exatamente $(\alpha_j - c_{i\ell})_+$  que é pelo menos $\alpha_j - c_{i\ell}$. Portanto, $\sum_{\ell=1}^{j-1}(\alpha_j - c_{ij} - 2c_{i\ell}) + \sum_{\ell= j}^{|A|}(\alpha_j - c_{i\ell}) \leq f'_i$.
 \end{proof}
 
@@ -97,7 +103,8 @@ Seja $p \coloneqq |A|$. Usando o Lema~\ref{lowerbound_fcost} para todo $j \in A$
   p f'_i &\geq \sum_{j=1}^p {\big (} \sum_{k=1}^{j-1} (\alpha_j - c_{ij} - 2c_{ik}) + \sum_{k=j}^p (\alpha_j - c_{ik}) {\big )} \\
   &= p\sum_{j \in A}\alpha_j - \sum_{k=1}^p (k-1)c_{ik} - p\sum_{k=1}^p c_{ik} - \sum_{k=1}^p (p-k) c_{ik} \\
   &= p\sum_{j \in A}\alpha_j - \sum_{k=1}^p (k-1+p+p-k)c_{ik} \\
-  &= p\sum_{j \in A}\alpha_j - (2p -1 )\sum_{k=1}^p c_{ik} \ \geq \ p\sum_{j \in A}\alpha_j - 2p\sum_{k=1}^p c_{ik}.
+  &= p\sum_{j \in A}\alpha_j - (2p -1 )\sum_{k=1}^p c_{ik} \\
+    &\geq p\sum_{j \in A}\alpha_j - 2p\sum_{k=1}^p c_{ik} = p \sum_{j \in A}( \alpha_j - 2 c_{ij}).
 \end{align*}
 \end{subequations}
 
@@ -109,7 +116,7 @@ Assim, temos os lemas necessários para provar o primeiro dos dois lemas fundame
 
 \begin{lemma}
 \label{greedy:4}
-Seja $\alpha$ o vetor com as variáveis produzidas pelo algoritmo {\sc DualFitting-JMMSV}, seja também $v_j \coloneqq \alpha_j/2$ e $w_{ij} \coloneqq (v_j - c_{ij})_+$ para todos os clientes $j$ e instalações $i$. Então $(v,w)$ é solução viável para o dual. 
+Seja $\alpha$ o vetor com as variáveis produzidas pelo algoritmo {\sc DualFitting-JMMSV}, seja também $v_j \coloneqq \alpha_j/2$ e $w_{ij} \coloneqq (v_j - c_{ij})_+$ para todos os clientes $j$ e instalações $i$. Então $(v,w)$ é solução viável para~\eqref{D1}. 
 \end{lemma}
 
 \begin{proof}
@@ -120,7 +127,7 @@ Seja $\alpha$ o vetor com as variáveis produzidas pelo algoritmo {\sc DualFitti
  &= \sum_{j \in A}(2v_j - 2c_{ij}) = 2 \sum_{j \in A} w_{ij}.
 \end{align*}
 \end{subequations}
-Assim, temos que $\sum_{j \in D} w_{ij} \leq f_i$. Portanto, $(v,w)$ é solução viável para o dual.
+Assim, temos que $\sum_{j \in D} w_{ij} \leq f_i$. Portanto, $(v,w)$ é solução viável para~\eqref{D1}.
 \end{proof}
 
 
@@ -134,32 +141,34 @@ Seja $\alpha$ a variável produzida e $X$ o conjunto de clientes escolhido pelo 
 \end{lemma}
 
 \begin{proof}
-    Seja $C_k$ e $X_k$ os conjuntos $C$ e $X$ no início da iteração $k$ do algoritmo {\sc DualFitting-JMMSV}, respectivamente.
-Vamos provar que, para qualquer $k$, vale que $\sum_{j \in D \setminus C_k} \alpha_j = 2 \sum_{i \in X_k} f_i + \sum_{j \in D \setminus C_k} c(j,X) $. Como no final do algoritmo $C = \emptyset$ e $D\setminus C = D$, o que vamos provar é equivalente ao lema.
+    Seja $S_k$ e $X_k$ os conjuntos $S$ e $X$ no início da iteração $k$ do algoritmo {\sc DualFitting-JMMSV}, respectivamente.
+Vamos provar que, para qualquer $k$, vale que $\sum_{j \in D \setminus S_k} \alpha_j = 2 \sum_{i \in X_k} f_i + \sum_{j \in D \setminus S_k} c(j,X) $. Como no final do algoritmo $S = \emptyset$, então $D\setminus S = D$ e o que vamos provar implica o lema.
 
-Suponha, por absurdo, que a afirmação é falsa. Seja $k$ a primeira iteração em que a afirmação não vale. Se $k=1$, então no começo da iteração $k$ não retiramos nenhum cliente de $C$ e, portanto, $D\setminus C_k = \emptyset$, assim a afirmação vale. Então $k > 1$.
+Suponha, por absurdo, que a afirmação é falsa. Seja $k$ a primeira iteração em que a afirmação não vale. Se $k=1$, então no começo da iteração $k$ vale que $D\setminus C_k = \emptyset$. Portanto, a afirmação vale. Então $k > 1$.
 
-Se, na iteração $k-1$, vale que $\alpha_j = c_{ij}$ para algum $j \in C_{k-1}$ e $i \in X_{k-1}$, então $C_k = C_{k-1} \setminus \set{j}$ para algum $j \in D$. Portanto 
+Se, na iteração $k-1$, vale que $\alpha_j = c_{ij}$ para algum $j \in S_{k-1}$ e $i \in X_{k-1}$, então $S_k = S_{k-1} \setminus \set{j}$ e $X_k = X_{k-1}$. Portanto 
 \begin{subequations}
 \begin{align*}
- \sum_{\ell \in D \setminus C_k} \alpha_\ell =  \alpha_j + \sum_{\ell \in D \setminus C_{k-1}} \alpha_\ell  &=  \alpha_j + 2 \sum_{i \in X_{k-1}} f_i +\sum_{\ell \in D\setminus  C_{k-1}}c(\ell,X_{k-1}) \\
- &= 2 \sum_{i \in X_{k}} f_i + \sum_{\ell \in D\setminus C_{k}}c(\ell,X_k) ,
+ \sum_{\ell \in D \setminus S_k} \alpha_\ell =  \alpha_j + \sum_{\ell \in D \setminus S_{k-1}} \alpha_\ell  &=  \alpha_j + 2 \sum_{i \in X_{k-1}} f_i +\sum_{\ell \in D\setminus  S_{k-1}}c(\ell,X_{k-1}) \\
+ &= 2 \sum_{i \in X_{k}} f_i + \sum_{\ell \in D\setminus S_{k}}c(\ell,X_k) ,
 \end{align*}
 \end{subequations}
-em que a segunda igualdade vale, pois a afirmação vale para $C_{k-1}$ e a terceira vale pois $\alpha_j = c_{ij} = c(j,X)$, caso contrário $j$ não estaria em $C_{k-1}$.
+em que a segunda igualdade vale, pois a afirmação vale para $S_{k-1}$ e a terceira vale pois $\alpha_j = c_{ij} = c(j,X)$, caso contrário $j$ não estaria em $S_{k-1}$.
 
-Se, na iteração $k-1$, vale que $\sum_{j \in C_{k-1}} (\alpha_j - c_{ij})_+ + \sum_{j \not \in C_{k-1}}(c(j,X) - c_{ij})_+ = f'_i$ para algum $i \in F \setminus X_{k-1}$, então $X_k = X_{k-1} \cup \set{i}$ e $C_k = C_{k-1} \setminus N(i)$. Consequentemente 
+Se, na iteração $k-1$, vale que $\sum_{j \in S_{k-1}} (\alpha_j - c_{ij})_+ + \sum_{j \not \in S_{k-1}}(c(j,X) - c_{ij})_+ = f'_i$ para algum $i \in F \setminus X_{k-1}$, então $X_k = X_{k-1} \cup \set{i}$ e $S_k = S_{k-1} \setminus N(i)$. Consequentemente 
 \begin{align*}
-\sum_{j \in D \setminus C_k} \alpha_j &= \sum_{j \in D\setminus C_{k-1}} \alpha_j + \sum_{j \in C_{k-1}\cap N(i)} \alpha_j \\
-&= \sum_{j \in C_{k-1}\cap N(i)} \alpha_j +  \sum_{j \in D\setminus C_{k-1}}c(j,X_{k-1}) + 2 \sum_{h \in X_{k-1}} f_h.
+\sum_{j \in D \setminus S_k} \alpha_j &= \sum_{j \in D\setminus S_{k-1}} \alpha_j + \sum_{j \in S_{k-1}\cap N(i)} \alpha_j \\
+&= \sum_{j \in S_{k-1}\cap N(i)} \alpha_j +  \sum_{j \in D\setminus S_{k-1}}c(j,X_{k-1}) + 2 \sum_{h \in X_{k-1}} f_h.
 \end{align*}
-Defina $A\coloneqq \set{j \in D\setminus C_{k-1}: c(j,X_{k-1}) \geq c_{ij}}$. Vale que
-\[ \sum_{j \in C_{k-1}\cap N(i)} \alpha_j = \sum_{j \in C_{k-1}\cap N(i)} c_{ij} - \sum_{j \in A} (c(j,X_{k-1}) - c_{ij}) + 2f_i. \]
-Seja $B$ tal que $A \cap B = \emptyset$ e $A \cup B = D\setminus C_{k-1}$. Portanto,
+Defina $A\coloneqq \set{j \in D\setminus S_{k-1}: c(j,X_{k-1}) \geq c_{ij}}$. Vale que
+\[ \sum_{j \in S_{k-1}\cap N(i)} (\alpha_j - c_{ij}) + \sum_{j \in A} (c(j,X_{k-1}) - c_{ij}) = f'_i = 2f_i \]
+e, portanto,
+\[ \sum_{j \in S_{k-1}\cap N(i)} \alpha_j = \sum_{j \in S_{k-1}\cap N(i)} c_{ij} - \sum_{j \in A} (c(j,X_{k-1}) - c_{ij}) + 2f_i. \]
+Seja $B$ tal que $A \cap B = \emptyset$ e $A \cup B = D\setminus S_{k-1}$. Portanto,
 \begin{subequations}
 \begin{align*}
-\sum_{j \in D \setminus C_k} \alpha_j &= 2\sum_{h \in X_k} f_h + \sum_{j \in B} c(j,X_{k-1}) + \sum_{j \in A} c_{ij} + \sum_{j \in C_{k-1} \cap N(i)} c_{ij}\\
-&= 2 \sum_{h \in X_k} f_h + \sum_{j \in D \setminus C_k} c(j,X_k). 
+\sum_{j \in D \setminus S_k} \alpha_j &= 2\sum_{h \in X_k} f_h + \sum_{j \in B} c(j,X_{k-1}) + \sum_{j \in A} c_{ij} + \sum_{j \in S_{k-1} \cap N(i)} c_{ij}\\
+&= 2 \sum_{h \in X_k} f_h + \sum_{j \in D \setminus S_k} c(j,X_k). 
 \end{align*}
 \end{subequations}
 Portanto, todos os casos caem em uma contradição e a afirmação é verdadeira.
@@ -168,7 +177,7 @@ Portanto, todos os casos caem em uma contradição e a afirmação é verdadeira
 Agora, podemos provar a razão de aproximação do algoritmo {\sc DualFitting-JMMSV}.
 
 \begin{theorem}
-O algoritmo {\sc DualFitting\_JMMSV} é uma 2-aproximação para o problema de localização de instalações.
+O algoritmo {\sc DualFitting\_JMMSV} é uma 2-aproximação para o problema de localização de instalações métrico.
 \end{theorem} 
 \begin{proof}
 Seja $X$ o conjunto de instalações devolvido pelo algoritmo {\sc DualFitting-JMMSV}. O custo da solução em que abrimos as instalações em $X$ e conectamos cada cliente à instalação aberta mais próxima a ele é
@@ -180,34 +189,34 @@ Seja $X$ o conjunto de instalações devolvido pelo algoritmo {\sc DualFitting-J
 em que a primeira igualdade vale pelo Lema~\ref{greedy:5} e a última desigualdade vale pois $\sum_{j \in D} \alpha_j/2 $ é o valor objetivo da solução viável do dual construída como no Lema~\ref{greedy:4} e, portanto, a desigualdade vale pela dualidade fraca.
 \end{proof}
 
-Agora, vamos mostrar que o algoritmo {Guloso-JMMSV} e o algoritmo {\sc DualFitting-JMMSV} são equivalentes. Para facilitar a prova, vamos supor que no algoritmo guloso o desempate é feito escolhendo o conjunto com menor tamanho e que no algoritmo de dual fitting quando a condicional da linha 10 é verdadeira apenas um cliente é retirado de $C$.
+Agora, vamos mostrar que o algoritmo {Guloso-JMMSV} e o algoritmo {\sc DualFitting-JMMSV} são equivalentes. Para facilitar a prova, vamos supor que no algoritmo guloso o desempate é feito escolhendo o conjunto com menor tamanho e que no algoritmo de dual fitting quando a condicional da linha 10 é verdadeira apenas um cliente é retirado de $S$.
 
 \begin{theorem}
 Os algoritmos {\sc DualFitting\_JMMSV} e {\sc Guloso\_JMMSV} são equivalentes.
 \end{theorem}
 
 \begin{proof}
-Vamos chamar de $(C_k^1,X_k^1)$ e $(C_k^2,X_k^2)$ os pares de conjuntos $C$ e $X$ no começo da iteração $k$ no algoritmo guloso e no algoritmo de dual fitting, respectivamente. Para mostrar que os algoritmos são equivalentes, é suficiente mostrar que $(C_k^1,X_k^2) = (C_k^2,X_k^2)$ para todo $k$.
+Vamos chamar de $(S_k^1,X_k^1)$ e $(S_k^2,X_k^2)$ os pares de conjuntos $S$ e $X$ no começo da iteração $k$ no algoritmo guloso e no algoritmo de dual fitting, respectivamente. Para mostrar que os algoritmos são equivalentes, é suficiente mostrar que $(S_k^1,X_k^2) = (S_k^2,X_k^2)$ para todo $k$.
 
-Suponha, por absurdo, que a afirmação é falsa para algum $k$. Seja $k$ a primeira iteração tal que a afirmação não vale. Se $k=1$, então $(C_k^1,X_k^1) = (D,\emptyset) = (C_k^2,X_k^2)$.
+Suponha, por absurdo, que a afirmação é falsa para algum $k$. Seja $k$ a primeira iteração tal que a afirmação não vale. Se $k=1$, então $(S_k^1,X_k^1) = (D,\emptyset) = (S_k^2,X_k^2)$.
 Então, $k>1$.
 Caso, na iteração $k-1$, o algoritmo de dual fitting escolha abrir uma instalação $i$. Então, vale que 
 \[
-    \sum_{j \in C_{k-1}^2} (\alpha_j - c_{ij})_+ + \sum_{j \not \in C_{k-1}^2}(c(j,X_{k-1}^2) - c_{ij})_+ = 2f_i
+    \sum_{j \in S_{k-1}^2} (\alpha_j - c_{ij})_+ + \sum_{j \not \in S_{k-1}^2}(c(j,X_{k-1}^2) - c_{ij})_+ = 2f_i
 \] 
 e, portanto,
 \[
-    \sum_{j \in C_{k-1}^2 \cap N(i)} \alpha_j = 2f_i - \sum_{j \not \in C_{k-1}^2} (c(j,X)- c_{ij})_+  + \sum_{j \in  C_{k-1}^2 \cap N(i)} c_{ij}. 
+    \sum_{j \in S_{k-1}^2 \cap N(i)} \alpha_j = 2f_i - \sum_{j \not \in S_{k-1}^2} (c(j,X)- c_{ij})_+  + \sum_{j \in  S_{k-1}^2 \cap N(i)} c_{ij}. 
 \]
-Note que, por construção, todos os clientes de  $C_{k-1}^2 \cap N(i)$ têm o mesmo valor de $\alpha$ neste momento. Seja $j \in C_{k-1}^2 \cap N(i)$, vale que
+Note que, por construção, todos os clientes de  $S_{k-1}^2 \cap N(i)$ têm o mesmo valor de $\alpha$ neste momento. Seja $j \in S_{k-1}^2 \cap N(i)$, vale que
 \[
-    |C_{k-1}^2 \cap N(i)| \alpha_j = \sum_{j \in C_{k-1}^2 \cap N(i)} \alpha_j = 2f_i - \sum_{j \not \in C_{k-1}^2} (c(j,X)- c_{ij})_+  + \sum_{j \in  C_{k-1}^2 \cap N(i)} c_{ij}.
+    |S_{k-1}^2 \cap N(i)| \alpha_j = \sum_{j \in S_{k-1}^2 \cap N(i)} \alpha_j = 2f_i - \sum_{j \not \in S_{k-1}^2} (c(j,X)- c_{ij})_+  + \sum_{j \in  S_{k-1}^2 \cap N(i)} c_{ij}.
 \]
 Logo, 
 \[
-    \alpha_j = \frac{ 2f_i - \sum_{j \not \in C_{k-1}^2} (c(j,X)- c_{ij})_+  + \sum_{j \in  C_{k-1}^2 \cap N(i)} c_{ij}}{|C_{k-1}^2 \cap N(i)|}.
+    \alpha_j = \frac{ 2f_i - \sum_{j \not \in S_{k-1}^2} (c(j,X)- c_{ij})_+  + \sum_{j \in  S_{k-1}^2 \cap N(i)} c_{ij}}{|S_{k-1}^2 \cap N(i)|}.
 \]
-Como as variáveis em $\alpha$ crescem uniformemente e como $(C_{k-1}^1,X_{k-1}^1) = (C_{k-1}^2,X_{k-1}^2)$, é fácil notar que o conjunto $(i,C_{k-1}^2 \cap N(i))$ minimiza a função de escolha do algoritmo guloso e, portanto, $(C_{k}^1,X_{k}^1) = (C_{k}^2,X_{k}^2)$. Então, na iteração $k-1$, o algoritmo de dual fitting escolhe apenas retirar um elemento de $C_{k-1}^2$. Seja $j$ o elemento que foi retirado e $i \in X_{k-1}^2$ a instalação tal que $\alpha_j = c_{ij}$. Como $i \in X_{k-1}^2$ e $X_{k-1}^1 = X_{k-1}^2$, então na iteração $k-1$ do algoritmo guloso, vale que $f_i = 0$. Note que a função de escolha do guloso aplicada ao par $(i,\set{j})$ tem valor $c_{ij}$, uma vez que a instalação $i$ já estava aberta no início da iteração $k-1$ e, portanto, não haverá melhora no custo de conexão dos clientes que já estavam ligados a alguma instalação aberta. Novamente, como as variáveis em $\alpha$ crescem uniformemente e como $(C_{k-1}^1,X_{k-1}^1) = (C_{k-1}^2,X_{k-1}^2)$, é fácil notar que o conjunto $(i,\set{j})$ minimiza a função de escolha do algoritmo guloso e, portanto, $(C_{k}^1,X_{k}^1) = (C_{k}^2,X_{k}^2)$.
+Como as variáveis em $\alpha$ crescem uniformemente e como $(S_{k-1}^1,X_{k-1}^1) = (S_{k-1}^2,X_{k-1}^2)$, é fácil notar que o par $(i,S_{k-1}^2 \cap N(i))$ minimiza a função de escolha do algoritmo guloso e, portanto, $(S_{k}^1,X_{k}^1) = (S_{k}^2,X_{k}^2)$. Então, na iteração $k-1$, o algoritmo de dual fitting escolhe apenas retirar um elemento de $S_{k-1}^2$. Seja $j$ o elemento que foi retirado e $i \in X_{k-1}^2$ a instalação tal que $\alpha_j = c_{ij}$. Como $i \in X_{k-1}^2$ e $X_{k-1}^1 = X_{k-1}^2$, então na iteração $k-1$ do algoritmo guloso, vale que $f_i = 0$. Note que a função de escolha do guloso aplicada ao par $(i,\set{j})$ tem valor $c_{ij}$, uma vez que a instalação $i$ já estava aberta no início da iteração $k-1$ e, portanto, não haverá melhora no custo de conexão dos clientes que já estavam ligados a alguma instalação aberta. Novamente, como as variáveis em $\alpha$ crescem uniformemente e como $(S_{k-1}^1,X_{k-1}^1) = (S_{k-1}^2,X_{k-1}^2)$, é fácil notar que o par $(i,\set{j})$ minimiza a função de escolha do algoritmo guloso e, portanto, $(S_{k}^1,X_{k}^1) = (S_{k}^2,X_{k}^2)$.
 
 Todos os casos nos levam a uma contradição à escolha de $k$, então a afirmação é verdadeira.   
 \end{proof}

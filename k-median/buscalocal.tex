@@ -25,16 +25,16 @@ Vamos mostrar que, para um $\eps > 0$, {\sc BuscaLocal$_\eps$-AGKMMP} é uma $(5
 \end{algorithm}
 
 \begin{theorem}
-    A solução $S$ devolvida por {\sc BuscaLocal$_\eps$-AGKMMP$(F,D,c,k)$} tem custo no máximo $(5+\eps)\,\opt(F,D,c,k)$.
+    A solução devolvida por {\sc BuscaLocal$_\eps$-AGKMMP} tendo a instância $I$ como entrada tem custo no máximo $(5+\eps)\,\opt(I)$.
 \end{theorem}
 
 \begin{proof}
-Seja $S$ a solução devolvida pelo algoritmo. Seja $S^* \subseteq F$ com $|S^*| = k$ tal que custo$(S^*) = \opt(I)$, onde $I = (F,D,c,k)$. Seja ${\sigma : D \rightarrow S}$ com ${\sigma(j) \coloneqq \arg\min_{i \in S} c_{ij}}$ e ${\sigma^* : D \rightarrow S^*}$ com ${\sigma^*(j) \coloneqq \arg\min_{i\in S^*} c_{ij}}$.
-Além disso, seja $\phi:S^* \rightarrow S$ com $\phi(i^*) \coloneqq \arg\min_{i \in S} c_{i^*i}$.
+Seja $S$ a solução devolvida pelo algoritmo e $S^* \subseteq F$ com $|S^*| = k$ uma resposta ótima para $I$. Seja ${\sigma : D \rightarrow S}$ com ${\sigma(j) \coloneqq \arg\min_{i \in S} c_{ij}}$ e ${\sigma^* : D \rightarrow S^*}$ com ${\sigma^*(j) \coloneqq \arg\min_{i\in S^*} c_{ij}}$ funções que associam cada cliente à instalação de $S$ e $S^*$ mais próxima, respectivamente.
+Além disso, seja $\phi:S^* \rightarrow S$ com $\phi(i^*) \coloneqq \arg\min_{i \in S} c_{i^*i}$ função que mapeia cada instalação de $S^*$ para a instalação de $S$ mais próxima.
 
-Para relacionar o custo de $S$ e o custo de $S^*$, iremos descrever um conjunto de $k$ trocas entre instalação de $S$ e instalações de $S^*$ que serão chamadas de trocas \emph{cruciais}. Como $S$ é quase localmente ótima, nenhuma dessas trocas pode melhorar o custo da solução $S$ em uma razão melhor que $ 1- \delta$. Isso vai nos permitir delimitar o custo de $S$ em termos de $\delta$ e do custo de $S^*$.
+Para relacionar o custo de $S$ e o custo de $S^*$, iremos descrever um conjunto de $k$ trocas entre instalações de $S$ e instalações de $S^*$ que serão chamadas de trocas \emph{cruciais}. Como $S$ é quase localmente ótima, nenhuma dessas trocas pode melhorar o custo da solução $S$ em uma razão melhor que $ 1-\delta$. Isso vai nos permitir delimitar o custo de $S$ em termos de $\delta$ e do custo de $S^*$.
 
-Vamos definir uma partição $\{Z,O,T\}$ das instalações em $S$ que será fundamental para descrevermos as trocas cruciais. Uma instalação $i \in S$ pertence a 
+Vamos definir uma partição $\{Z,O,T\}$ das instalações de $S$ que será fundamental para descrevermos as trocas cruciais. Uma instalação $i \in S$ pertence a 
 \begin{enumerate}[i.]
 \item $Z$ se $|\{i^* \in S^* : \phi(i^*) = i\}| = 0$;
 \item $O$ se $|\{i^* \in S^* : \phi(i^*) = i\}| = 1$;
@@ -47,19 +47,20 @@ Agora, vamos descrever as trocas cruciais. Para cada $i^* \in O^*$, consideramos
 Considere uma troca crucial entre a instalação $i \in S$ e a instalação $ i^* \in S^*$. Seja $S' \coloneqq S \setminus \set{i} \cup \set{i^*}$. Vamos construir uma função de associação $\sigma' : D \rightarrow S'$. Para cada cliente $j$ tal que $\sigma^*(j) \neq i^*$ e $\sigma(j) \neq i$, tome $\sigma'(j) \coloneqq \sigma(j)$. Para cada cliente $j$ tal que $\sigma^*(j) = i^*$, tome $\sigma'(j)\coloneqq i^*$. Para cada cliente $j$ tal que $\sigma^*(j) \neq i^*$ e $\sigma(j)=i$, tome $\sigma'(j) \coloneqq \phi(\sigma^*(j))$. Para que $\sigma'(j) \in S'$, é essencial que nesse último caso valha que $\phi(\sigma^*(j)) \neq i$ então vamos mostrar que isso acontece. Suponha por absurdo que $\phi(\sigma^*(j))=i$. Então, sabemos que $i$ não pertence a $Z$. Como nas trocas cruciais as instalações de $S$ que serão fechadas são sempre de $O$ ou de $Z$, então $i$ pertence a $O$. Logo, existe apenas uma instalação $h$ em $O^*$ tal que $\phi(h) = i$ que é $h = i^*$ e, portanto, $\sigma^*(j) = i^*$, o que é uma contradição à hipótese desse caso. Assim, vale que 
 \begin{subequations}
     \begin{align*}
-        \text{custo}(S') - \text{custo}(S) &\leq \sum_{j \in D} c_{\sigma'(j)j} - \text{custo}(S) \\
-        & = \sum_{j:\sigma^*(j) = i^*} (c_{\sigma^*(j)j} - c_{\sigma(j)j}) \ + \sum_{\substack{j : \sigma^*(j)\neq i^*,\\ \sigma(j) = i}} (c_{\phi(\sigma^*(j))j} - c_{\sigma(j)j}).
+        - \delta \text{ custo}(S)&\leq \text{custo}(S') - \text{custo}(S)  \\
+        &\leq \sum_{j \in D} c_{\sigma'(j)j} - \text{custo}(S) \\
+        &= \sum_{j:\sigma^*(j) = i^*} (c_{\sigma^*(j)j} - c_{\sigma(j)j}) \ + \sum_{\substack{j : \sigma^*(j)\neq i^*,\\ \sigma(j) = i}} (c_{\phi(\sigma^*(j))j} - c_{\sigma(j)j}).
     \end{align*}
 \end{subequations}
 
 Primeiro, vamos encontrar um limitante superior para o segundo somatório. Pela desigualdade triangular, temos que $c_{\phi(\sigma^*(j))j} \leq c_{\phi(\sigma^*(j))\sigma^*(j)}+c_{\sigma^*(j)j}$. Além disso, por definição de $\phi$, vale que $c_{\phi(\sigma^*(j))\sigma^*(j)}\leq c_{\sigma(j)\sigma^*(j)}$. Aplicando a desigualdade triangular novamente, temos que $c_{\sigma(j)\sigma^*(j)} \leq c_{\sigma(j)j} + c_{\sigma^*(j)j}$. Juntando essas desigualdades, temos que $c_{\phi(\sigma^*(j))j} \leq c_{\sigma(j)j} + 2c_{\sigma^*(j)j}$ e, consequentemente, $c_{\phi(\sigma^*(j))j} - c_{\sigma(j)j} \leq 2c_{\sigma^*(j)j}$. Portanto, vale que
 \begin{subequations}
 \begin{align*}
-    - \delta C &\leq \sum_{j:\sigma^*(j) = i^*} (c_{\sigma^*(j)j} - c_{\sigma(j)j}) \ + \sum_{\substack{j : \sigma^*(j)\neq i^*, \\ \sigma(j) = i}} (c_{\phi(\sigma^*(j))j} - c_{\sigma(j)j}) \\
-    &\leq \sum_{j:\sigma^*(j) = i^*} (c_{\sigma^*(j)j} - c_{\sigma(j)j}) \ + 2\sum_{\substack{j : \sigma^*(j)\neq i^*,\\ \sigma(j) = i}} c_{\sigma^*(j)j}
+    - \delta \text{ custo}(S) &\leq \sum_{j:\sigma^*(j) = i^*} (c_{\sigma^*(j)j} - c_{\sigma(j)j}) \ + \sum_{\substack{j : \sigma^*(j)\neq i^*, \\ \sigma(j) = i}} (c_{\phi(\sigma^*(j))j} - c_{\sigma(j)j}) \\
+    &\leq \sum_{j:\sigma^*(j) = i^*} (c_{\sigma^*(j)j} - c_{\sigma(j)j}) \ + 2\sum_{\substack{j : \sigma^*(j)\neq i^*,\\ \sigma(j) = i}} c_{\sigma^*(j)j}.
 \end{align*}
 \end{subequations}
-onde $C\coloneqq \text{custo}(S)$.
+
 
 Como essa desigualdade vale para toda troca crucial, podemos somá-las. Vamos chamar de $i_\ell$ e $i_\ell^*$ a instalação de $S$ e de $S^*$ referentes à troca $\ell$, respectivamente. Observe que $\set{i^*_1,\ldots,i^*_k} = O^* \cup T^* $. Portanto,
 \begin{subequations}
@@ -69,7 +70,7 @@ Como essa desigualdade vale para toda troca crucial, podemos somá-las. Vamos ch
 &= C^* - C + 2 \sum_{\ell = 1}^k \ \sum_{\substack{ j : \sigma^*(j)\neq i_\ell^*,\\  \sigma(j) = i_\ell}} c_{\sigma^*(j)j}
 \end{align*}
 \end{subequations}
-em que $C^* \coloneqq \text{custo}(S^*)$. Considere o último somatório. É evidente que 
+em que $C \coloneqq \text{custo}(S)$ e $C^* \coloneqq \text{custo}(S^*)$. Considere o último somatório. É evidente que 
 \[\sum_{\substack{ j : \sigma^*(j)\neq i_\ell^*,\\  \sigma(j) = i_\ell}} c_{\sigma^*(j)j} \leq \sum_{\substack{j:\sigma(j) = i_\ell}} c_{\sigma^*(j)j}.\]
 Cada instalação de $S$ aparece em no máximo duas trocas crucias. Então
 \[ \sum_{\ell=1}^k \sum_{j: \sigma(j) = i_\ell} c_{\sigma^*(j)j} \leq 2\sum_{i \in S} \sum_{j: \sigma(j) = i} c_{\sigma^*(j)j} = 2 \sum_{j\in D}c_{\sigma^*(j)j} =2 C^*.\]
@@ -79,7 +80,7 @@ consequentemente,
 \[C \leq \frac{5C^*}{1 - k\delta} = (5+\epsilon)C^*\]
 em que a igualdade vale uma vez que $\delta = \frac{\epsilon}{(5+\epsilon)k}$.
 \end{proof}
-Agora, é necessário mostrar que o é polinomial.
+Agora, é necessário mostrar que o algoritmo é polinomial.
 
 \begin{theorem}
     O algoritmo {\sc BuscaLocal$_\eps$-AGKMMP$(F,D,c,k)$} toma tempo polinomial para executar.
@@ -90,3 +91,5 @@ Agora, é necessário mostrar que o é polinomial.
     Claramente, uma iteração do laço da linha 3 consome tempo polinomial. Precisamos apenas mostrar que o número de iterações do laço do linha 3 é polinomial no tamanho da instância.
     Podemos assumir sem perda de generalidade que todos os custos são inteiros. Seja $M$ o valor da solução inicial. Note que se $\rho$ é um inteiro tal que $(1-\delta)^\rho M < 1$, então o algoritmo não fará mais que $\rho$ iterações. Como $ 1 + x < e^x$ para todo $x\neq 0$, sabemos que $(1 - \delta)^{\frac{1}{\delta}} < \frac{1}{e}$. Quando elevamos tudo por $\ln M$ temos $(1- \delta)^{\frac{1}{\delta}\ln M} < \frac{1}{M}$ e, portanto, vale que $ (1- \delta)^{\frac{1}{\delta}\ln M}M < 1$. Então o número de iterações do laço da linha 3 do algoritmo é no máximo $\frac{1}{\delta}\ln M$. Como $M \leq m C_\text{max}$, concluímos que o número de iterações é polinomial no tamanho da instância.
 \end{proof}
+
+Arya, Garg, Khandekar, Meyerson, Munagala e Pandit~\cite{AryaLocal} também desenvolveram um algoritmo de busca local para o problema das $k$-medianas métrico que permite trocas de conjuntos de instalações de tamanho maior que 1. Esse algoritmo é parametrizado em um número $p$ e, no lugar de trocar uma instalação aberta por uma instalação fechada, ele troca um conjunto $A$ de instalações abertas por um conjunto $B$ de instalações fechadas, tais que $|A| = |B| \leq p$. Isso resulta em uma $(3 + \frac{2}{p})$-aproximação. O parâmetro $p$ está diretamente ligado ao tempo de execução do algoritmo. Tomando $p$ grande o suficiente, é possível desenvolver um algoritmo que é uma $(3+\eps)$-aproximação para qualquer $\eps >0$.
