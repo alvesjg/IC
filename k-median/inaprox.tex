@@ -48,21 +48,17 @@ Seja $D_\ell$ e $F_\ell$ os conjuntos $D$ e $F$ no começo dessa iteração do l
 Seja $F_\ell'$ o conjunto das instalações devolvido pela chamada de {\sc $\alpha$-aprox-k-med} na linha~10 e $D_\ell'$ o conjunto de clientes encontrado na linha~12. Denote $p_\ell \coloneqq  |D_\ell'|/n_\ell$. É fácil notar que o custo da solução $F'_\ell$ é
 \[ p_\ell n_\ell + 3 (1-p_\ell) n_\ell \leq \alpha  n_\ell\]
 e, portanto, 
-\[
-3 - 2p_\ell \leq \alpha.
-\]
+\[3 - 2p_\ell \leq \alpha.\]
 
 Seja $c$ uma constante entre 0 e 1 que vamos escolher depois. Suponha que ${p_\ell \leq 1 - e^{-\frac{1}{c}}}$ para algum $\ell$. 
 Então
-\[ 1 + 2e^{-\frac{1}{c}} \leq 3 - 2p_\ell < \alpha\]
-
+\[ 1 + 2e^{-\frac{1}{c}} \leq 3 - 2p_\ell < \alpha.\]
 O valor de $c$ que maximiza o lado esquerdo da desigualdade é $c$ próximo de 1 e teremos $1.735 \leq \alpha < 1.735$ o que é um absurdo. Note que o lado esquerdo da desigualdade é quem nos traz o valor do resultado de inaproximabilidade para o problema das $k$-medianas.
 
-Agora, vamos mostrar que, se $p_\ell > 1 - e^{ - \frac{1}{c}}$ para todo $\ell$, então {\sc Inaprox-JMMSV} devolve uma $(c'\ln n)$-aproximação para o problema da cobertura de conjuntos com $c' < 1$. Vamos chamar de $r$ a quantidade de iterações que o laço {\bf Enquanto} realiza. É evidente que $|I_{k^*}| \leq k^*r$, logo a razão de aproximação desse algoritmo é no máximo $r$. Para todo $\ell$ vale que $p_\ell > 1 - e^{ - \frac{1}{c}}$, então temos que $1 < c \ln\left( \frac{1}{1-p_\ell}\right)$. Note que $n_{\ell + 1} = n_\ell(1-p_\ell)$ e $n_r \geq 1$. Assim, vale que $n_1 \prod_{\ell =1}^{r-1} (1 - p_\ell) = n_r \geq 1$ e, consequentemente, $\ln\left(\prod_{\ell =1 }^{r-1} \frac{1}{1-p_\ell}\right) \leq \ln n_1 = \ln n$. Assim,
-\[ r = (r - 1) + 1 < c\sum_{\ell = 1}^{r-1} \ln \left( \frac{1}{1-p_\ell}\right) + 1 \leq c \ln n + 1 \leq c' \ln n, \]
+Agora, vamos mostrar que, se $p_\ell > 1 - e^{ - \frac{1}{c}}$ para todo $\ell$, então {\sc Inaprox-JMMSV} devolve uma $(c'\ln n)$-aproximação para o problema da cobertura de conjuntos com $c' < 1$. Vamos chamar de $r$ a quantidade de iterações que o laço {\bf Enquanto} realiza. É evidente que $|I_{k^*}| \leq k^*r$, logo a razão de aproximação desse algoritmo é no máximo $r$. Para todo $\ell$ vale que $p_\ell > 1 - e^{ - \frac{1}{c}}$, então temos que $1 < c \ln\left( \frac{1}{1-p_\ell}\right)$. Note que $n_{\ell + 1} = n_\ell(1-p_\ell)$ e $n_r \geq 1$. Assim, vale que $n_1 \prod_{\ell =1}^{r-1} (1 - p_\ell) = n_r \geq 1$ e, consequentemente, $\ln\left(\prod_{\ell =1 }^{r-1} \frac{1}{1-p_\ell}\right) \leq \ln n_1 = \ln n$. Assim, \[ r = (r - 1) + 1 < c\sum_{\ell = 1}^{r-1} \ln \left( \frac{1}{1-p_\ell}\right) + 1 \leq c \ln n + 1 \leq c' \ln n, \]
 em que a última desigualdade vale para algum $c' \in (c,1)$, uma vez que, pelo enunciado do teorema, podemos assumir que $n$ é suficientemente grande.
 
 Assim, temos uma aproximação para o problema de cobertura de conjuntos com razão de aproximação estritamente menor que $\ln n$ para $n$ suficientemente grande.
 \end{proof}
 
-Juntando esse resultado com o resultado do Feige temos que a existência de uma $\alpha$-aproximação para o problema das $k$-medianas métrico com $\alpha < 1.735$ implica a existência de um algoritmo determinístico que leva tempo $O(n^{O(\log \log n)})$ para todo problema $\NP$-completo.
+Juntando esse resultado com o resultado do Feige, temos que a existência de uma $\alpha$-aproximação para o problema das $k$-medianas métrico com $\alpha < 1.735$ implica a existência de um algoritmo determinístico que leva tempo $O(n^{O(\log \log n)})$ para todo problema $\NP$-completo.

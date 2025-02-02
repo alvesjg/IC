@@ -20,7 +20,7 @@ Como essa relaxação é um programa linear, podemos considerar o seu dual. O du
                            & v_j \geq 0, &&\forall j\in D, \\
                            & w_{ij} \geq 0, && \forall i \in F,j \in D.
 \end{align*}
-As restrições desses programas são iguais às restrições do programa linear do problema de localização de instalações e do seu dual, respectivamente, da Seção~\eqref{facility:PL}, considerando que cada instalação tem custo de abertura $\lambda$.
+As restrições desses programas são iguais às restrições do programa linear do problema de localização de instalações e do seu dual, respectivamente, da Seção~\ref{facility:PL}, considerando que cada instalação tem custo de abertura $\lambda$.
 Desse modo, podemos utilizar algum algoritmo para o problema de localização de instalações para encontrar uma solução para o problema das $k$-medianas. 
 
 No algoritmo de dual fitting para o problema de localização de instalações, da Seção~\ref{facility:guloso&fitting}, encontramos um conjunto $X$ de instalações e valores para as variáveis $\alpha$ tais que, definindo $v_j \coloneqq \frac{\alpha_j}{2}$ e $w_{ij} \coloneqq \max(0,v_j - c_{ij})$ para toda instalação $i$ e cliente~$j$, vale que $(v, w)$ é solução viável do dual e, pelo Teorema~\ref{greedy:5}, vale que
@@ -46,6 +46,7 @@ A seguir formalizamos o algoritmo que representa a busca binária em $\lambda$.
 
 \begin{algorithm}
     \caption{\sc BuscaBinária$_\eps(F,D,c,k)$}
+    \label{bb}
     \begin{algorithmic}[1]
         \State $\lambda_1 \gets 0; \quad \lambda_2 \gets \sum_{j \in D}\sum_{i \in F}c_{ij} $
         \State $X_1 \gets F$; \quad $X_2 \gets \emptyset$
@@ -116,7 +117,8 @@ onde a primeira desigualdade vale pela garantia do algoritmo utilizado para enco
         a \, \custo(X_1) + b \,\custo(X_2) &\leq 2a \left(\sum_{j\in D} v_j^1 - \lambda_2|X_1|\right) + 2a\, \epsilon\,\opt(I) + 2b\left(\sum_{j\in D} v_j^2 - \lambda_2|X_2|\right) \\
         &= 2\sum_{j \in D} \left(a v_j^1 + b v_j^2\right) - 2\lambda_2\left( a|X_1| + b|X_2|\right) + 2a\,\epsilon\,\opt(I)\\
         & = 2\left(\sum_{j\in D } v_j\right) - 2\lambda_2 k + 2a\,\epsilon\,\opt(I)\\
-        & = 2\left( \sum_{j \in D } v_j -\lambda_2 k\right) + 2a\,\epsilon\,\opt(I) \leq 2(1+\epsilon)\opt(I)
+        & = 2\left( \sum_{j \in D } v_j -\lambda_2 k\right) + 2a\,\epsilon\,\opt(I) \\
+        &\leq 2(1+\epsilon)\opt(I)
     \end{align*}
 \end{subequations}
 onde a última desigualdade vale pois $(v,w)$ é uma solução viável para o dual com custo de abertura de instalações $\lambda_2$ e porque $a \leq 1$.
@@ -172,9 +174,9 @@ O algoritmo então considera dois casos: um caso simples, em que $b \geq \frac{1
     \end{align*}
 \end{subequations}
 
-Agora precisamos mostrar que esse limitante superior também vale para a solução produzida pelo algoritmo no caso em que $ b < \frac{1}{2}$. Considerando $X$ inicializado nas linhas 7-9 do algoritmo, para cada instalação $i \in X_2$, a instalação $h \in X_1$ que minimiza $c_{ih}$ estará em~$X$. É possível que instalações de $X_2$ tenham como instalação mais próxima em $X_1$ a mesma instalação. Em seguida, nas linhas 10-12, incluímos em $X$ instalações de $X_1$ arbitrariamente até que $|X| = |X_2|$. Após isso, na linha 13, escolhemos aleatoriamente um subconjunto de tamanho $k - |X_2|$ das $|X_1| - |X_2|$ instalações restantes de $X_1$ para incluir em $X$. 
+Agora precisamos mostrar que esse limitante superior também vale para a solução produzida pelo algoritmo no caso em que $ b < \frac{1}{2}$. Considerando $X$ inicializado nas linhas~7-9 do algoritmo, para cada instalação $i \in X_2$, a instalação $h \in X_1$ que minimiza $c_{ih}$ estará em~$X$. É possível que instalações de $X_2$ tenham como instalação mais próxima em $X_1$ a mesma instalação. Em seguida, nas linhas 10-12, incluímos em $X$ instalações de $X_1$ arbitrariamente até que $|X| = |X_2|$. Após isso, na linha 13, escolhemos aleatoriamente um subconjunto de tamanho $k - |X_2|$ das $|X_1| - |X_2|$ instalações restantes de $X_1$ para incluir em $X$. 
 
-Considere o custo de associação esperado entre um cliente $j$ e uma instalação em $X$. Seja $i_1$ a instalação de $X_1$ mais próxima de $j$ e $i_2$ a instalação de $X_2$ mais próxima de $j$. Note que a probabilidade de $i_1$ ser aberta pela parte aleatória do algoritmo é $\frac{k - |X_2|}{|X_1| - |X_2|} = a$, caso ela não tenha sido aberta na primeira parte do algoritmo. Então, com probabilidade pelo menos $a$, o custo de associação de $j$ para a instalação mais próxima em $X$ é no máximo $c_{i_1j}$. Com probabilidade no máximo $1 - a = b$, a instalação $i_1$ não será aberta. Assim, no pior dos casos, iremos associar $j$ a uma instalação aberta no primeiro passo do algoritmo, em particular, a instalação de $X_1$ mais próxima à $i_2$. Seja $i$ a instalação  de $X_1$ mais próxima a $i_2$. Então, pela desigualdade triangular, vale que
+Considere o custo de associação esperado entre um cliente $j$ e uma instalação em~$X$. Seja $i_1$ a instalação de $X_1$ mais próxima de $j$ e $i_2$ a instalação de $X_2$ mais próxima de $j$. Note que a probabilidade de $i_1$ ser aberta pela parte aleatória do algoritmo é~$\frac{k - |X_2|}{|X_1| - |X_2|} = a$, caso ela não tenha sido aberta na primeira parte do algoritmo. Então, com probabilidade pelo menos $a$, o custo de associação de $j$ para a instalação mais próxima em $X$ é no máximo $c_{i_1j}$. Com probabilidade no máximo $1 - a = b$, a instalação $i_1$ não será aberta. Assim, no pior dos casos, iremos associar $j$ a uma instalação aberta no primeiro passo do algoritmo, em particular, a instalação de $X_1$ mais próxima à $i_2$. Seja $i$ a instalação  de $X_1$ mais próxima a $i_2$. Então, pela desigualdade triangular, vale que
 \[c_{ij} \leq c_{ii_2} + c_{i_2j}.\]
 Pela definição de $i$, sabemos que $c_{ii_2} \leq c_{i_1i_2}$. Então \(c_{ij} \leq c_{i_1i_2} + c_{i_2j}\). Novamente pela desigualdade triangular, vale que 
 \[c_{i_1i_2} \leq c_{i_1j} + c_{i_2j}\]
@@ -194,14 +196,14 @@ Somando para todos os clientes $j$, temos
 em que a última desigualdade vale pelo Lema~\ref{k-median_relLag_lema1}.
 \end{proof}
 
-Assim, temos uma $(1 + \eps)4$-aproximação aleatória para o problema das $k$-medianas que utiliza o método de relaxação Lagrangeana. Vamos agora desaleatoriza-lo.
+Assim, temos uma $4(1 + \eps)$-aproximação aleatória para o problema das $k$-medianas que utiliza o método de relaxação Lagrangeana. Vamos agora desaleatorizá-lo.
 
 A desaleatorização utiliza o método das esperanças condicionais. Não precisamos tratar o caso em que $b \geq \frac{1}{2}$, uma vez que ele é determinístico. Então vamos tratar apenas do caso em que $b < \frac{1}{2}$.
 
-No caso em que $b < \frac{1}{2}$ abrimos $|X_2|$ instalações de $X_1$ de maneira determinística. Após isso, escolhemos aleatoriamente $k - |X_2|$ instalações das $|X_1| - |X_2|$ instalações restantes de $X_1$. Considerando $X$ na linha 13 do algoritmo, seja $X'_1 \coloneqq X_1 \setminus X$. Para uma escolha $S \subseteq X_1'$ com $|S| \leq k - |X_2|$, vamos definir $\mathbb{E}(S,X_1' - S)$ o custo esperado em que todas as facilidades em $S$ são abertas e outras $k - |X_2| - |S|$ instalações são escolhidas aleatoriamente de $X_1' - S$. Como cada instalação de $X_1' \setminus S$ tem a mesma chance de ser escolhida, temos que 
+No caso em que $b < \frac{1}{2}$, abrimos $|X_2|$ instalações de $X_1$ de maneira determinística. Após isso, escolhemos aleatoriamente $k - |X_2|$ instalações das $|X_1| - |X_2|$ instalações restantes de $X_1$. Considerando $X$ na linha 13 do algoritmo, seja $X'_1 \coloneqq X_1 \setminus X$. Para uma escolha $S \subseteq X_1'$ com $|S| \leq k - |X_2|$, vamos definir $\mathbb{E}(S,X_1' - S)$ o custo esperado em que todas as facilidades em $S$ são abertas e outras $k - |X_2| - |S|$ instalações são escolhidas aleatoriamente de $X_1' - S$. Como cada instalação de $X_1' \setminus S$ tem a mesma chance de ser escolhida, temos que 
 \[ \mathbb{E}(S,X_1' \setminus S) = \frac{1}{|X_1' - S|}\sum_{i \in X_1' - S} \mathbb{E}(S \cup \{i\}, X_1' \setminus \left( S \cup \{i\}\right)).\]
 
-Isso implica que existe um $i$ tal que $\mathbb{E}(S \cup \{i\}, X_1' \setminus (S \cup \{i\})) \leq \mathbb{E}(S,X_1' \setminus S)$. Assim, para desaleatorizar o algoritmo trocaremos a linha 13 de {\sc RelLag-JV} pelo seguinte conjunto de linhas.
+Isso implica que existe um $i$ tal que $\mathbb{E}(S \cup \{i\}, X_1' \setminus (S \cup \{i\})) \leq \mathbb{E}(S,X_1' \setminus S)$. Assim, para desaleatorizar o algoritmo, trocaremos a linha 13 de {\sc RelLag-JV} pelo seguinte conjunto de linhas.
 \begin{algorithm}
     \begin{algorithmic}[1]
         \State $X_1' \gets X_1 \setminus X$

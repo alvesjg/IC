@@ -72,9 +72,7 @@ Os valores de $c$ e $\gamma$ que maximizam essa função são $\gamma = 0.463$ e
 Agora, vamos mostrar que, se $p_\ell > 1 - e^{ - \frac{\beta_\ell}{c}}$ para todo $\ell$, então o algoritmo {\sc Inaprox-GK} com $\gamma = 0.463$ devolve uma $(c'\ln n)$-aproximação para o problema da cobertura de conjuntos com $c' < 1$. Vamos chamar de $r$ a quantidade de iterações que o laço {\bf Enquanto} realiza. É evidente que $|I_{k^*}| = k^*\sum_{\ell = 1}^r \beta_\ell$, logo a razão de aproximação desse algoritmo é no máximo $\sum_{\ell = 1}^r \beta_\ell$. Para todo $\ell$, como vale que $p_\ell > 1 - e^{ - \frac{\beta_\ell}{c}}$, então temos que $\beta_\ell < c \ln\left( \frac{1}{1-p_\ell}\right)$. Note que $n_{\ell + 1} = n_\ell(1-p_\ell)$ e $n_r \geq 1$. Assim, vale que $n_1 \prod_{\ell =1}^{r-1} (1 - p_\ell) = n_r \geq 1$ e, consequentemente, $\ln\left(\prod_{\ell =1 }^{r-1} \frac{1}{1-p_\ell}\right) \leq \ln n_1 = \ln n$. Assim,
 \[ \sum_{\ell= 1}^r \beta_\ell = \sum_{\ell =1}^{r-1} \beta_\ell + \beta_r < c\sum_{\ell = 1}^{r-1} \ln \left( \frac{1}{1-p\ell}\right) + \beta_r \leq c \ln n + \beta_r. \]
 Como $r$ é a última iteração, vale que $p_r= 1$. Então pela desigualdade~\eqref{inaprox:beta} temos que $\beta_r \leq \alpha(1 + \frac{1}{\gamma}) < 4\alpha$ uma vez que escolhemos $\gamma = 0.463$. Portanto,
-\[
-\sum_{\ell =1}^r \beta_\ell < c \ln n + \beta_r < c\ln n + 4\alpha \leq c' \ln n,
-\]
+\[ \sum_{\ell =1}^r \beta_\ell < c \ln n + \beta_r < c\ln n + 4\alpha \leq c' \ln n, \]
 em que a última desigualdade vale para algum $c' \in (c,1)$, uma vez que $4\alpha$ é constante e, pelo enunciado do teorema, podemos assumir que $n$ é suficientemente grande.
 
 Assim, temos uma aproximação para o problema de cobertura de conjuntos com razão de aproximação estritamente menor que $\ln n$ para $n$ suficientemente grande.

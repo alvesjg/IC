@@ -71,10 +71,8 @@ Vamos definir a função $\phi : S^* \rightarrow S$ como ${\phi(i^*) \coloneqq \
     \[c_{i'j} \leq c_{i'i^*} + c_{i^*j}.\] Além disso, pela definição de $i'$, temos que $c_{i'i^*} \leq c_{ii^*}$. Assim,
     \[c_{i'j} \leq c_{ii^*} + c_{i^*j}.\]
     Novamente, pela desigualdade triangular, vale que $c_{ii^*} \leq c_{ij} + c_{i^*j}$. Então,
-    \[
-        c_{i'j} \leq c_{ij} + 2 c_{i^*j}.
-    \] Equivalentemente \[
-        c_{i'j} - c_{ij} \leq 2 c_{i^*j}. \]
+    \[  c_{i'j} \leq c_{ij} + 2 c_{i^*j}.\] 
+    Equivalentemente \( c_{i'j} - c_{ij} \leq 2 c_{i^*j}. \)
 \end{proof}
 
 \begin{lemma}
@@ -195,6 +193,5 @@ Note que $(1+\frac{1}{\mu})$ decresce e $1 + 2\mu$ cresce quando $\mu$ cresce. E
 \[(A+T)(1 - (1+\frac{1}{\mu})m\delta)\leq A^* (1 + \frac{1}{\mu}) + T^*(1 + 2\mu) \leq (1+\sqrt{2})\opt(I)\]
 e, assim, 
 \[(A+T)\leq \frac{(1+\sqrt{2})}{(1 - (1+\sqrt{2 })m\delta)}\opt(I).\]
-Analogamente ao que foi feito na análise da razão de aproximação $3(1 + \epsilon)$, escolhendo $\delta = \frac{\epsilon}{2m(1+\sqrt{2})}$ encontramos 
-\[(A+T) \leq (1 + \sqrt{2} + \epsilon )\opt(I).\]
+Analogamente ao que foi feito na análise da razão de aproximação $3(1 + \epsilon)$, escolhendo $\delta = \frac{\epsilon}{2m(1+\sqrt{2})}$, deduzimos que \((A+T) \leq (1 + \sqrt{2} + \epsilon )\opt(I).\)
 Assim, se fizermos a reescala dos custos de abertura das facilidades antes de executar o algoritmo de busca local temos um novo algoritmo que é uma $(1 + \sqrt{2} + \epsilon )$-aproximação para o problema de localização de instalações métrico.

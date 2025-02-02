@@ -72,9 +72,11 @@ Se $\alpha_\ell < \alpha_j $, então $\ell$ foi removido de $S$ antes da iteraç
 Seja $h$ a instalação de $X$ que minimiza $c_{h\ell}$.
 Então, $\ell$ contribui $(c_{h\ell} - c_{i\ell})_+$ para a abertura de $i$ nesse momento. 
 Pela desigualdade triangular, $c_{hj} \leq c_{h\ell} + c_{i\ell} + c_{ij}$. 
-Note que $\alpha_j \leq c_{hj}$, caso contrário $j$ estaria na vizinhança de uma instalação de $X$ antes da iteração $k$ e, portanto, teria sido removido de $S$. Então $\alpha_j \leq c_{h\ell} + c_{i\ell } + c_{ij} $. 
+Note que $\alpha_j \leq c_{hj}$, caso contrário $j$ estaria na vizinhança de uma instalação de $X$ antes da iteração $k$ e, portanto, teria sido removido de $S$. Então $\alpha_j \leq c_{h\ell} + c_{i\ell } + c_{ij}$. 
 Portanto,
-\[ (c_{h\ell} - c_{i\ell})_+ \geq c_{h\ell} - c_{i\ell} \geq \alpha_j - c_{ij} - 2c_{i\ell}.\]
+\begin{equation}
+    (c_{h\ell} - c_{i\ell})_+ \geq c_{h\ell} - c_{i\ell} \geq \alpha_j - c_{ij} - 2c_{i\ell}. \nonumber
+\end{equation}
 \end{proof}
 
 
@@ -107,9 +109,7 @@ Seja $p \coloneqq |A|$. Usando o Lema~\ref{lowerbound_fcost} para todo $j \in A$
     &\geq p\sum_{j \in A}\alpha_j - 2p\sum_{k=1}^p c_{ik} = p \sum_{j \in A}( \alpha_j - 2 c_{ij}).
 \end{align*}
 \end{subequations}
-
 Então, temos que $\sum_{j \in A}\alpha_j - 2c_{ij} \leq f'_i$.
-
 \end{proof}
 
 Assim, temos os lemas necessários para provar o primeiro dos dois lemas fundamentais para a prova da razão de aproximação do algoritmo {\sc DualFitting-JMMSV}.
@@ -121,12 +121,9 @@ Seja $\alpha$ o vetor com as variáveis produzidas pelo algoritmo {\sc DualFitti
 
 \begin{proof}
 É evidente que $v_j \geq 0$ para todo $j \in D$ e que $w_{ij} \geq 0$ para todo $i \in F$ e $j \in D$. É evidente também que $v_{ij} - w_{ij} \leq c_{ij}$ para todo $i \in F$ e $j \in D$. Pelo Lema~\ref{greedy:3}, para uma instalação $i\in F$ e $A \coloneqq \set{j \in D: w_{ij} > 0}$, temos que
-\begin{subequations}
 \begin{align*}
-2 f_i = f'_i &\geq \sum_{j \in A} (\alpha_j - 2c_{ij}) \\
- &= \sum_{j \in A}(2v_j - 2c_{ij}) = 2 \sum_{j \in A} w_{ij}.
+2 f_i = f'_i &\geq \sum_{j \in A} (\alpha_j - 2c_{ij}) = \sum_{j \in A}(2v_j - 2c_{ij}) = 2 \sum_{j \in A} w_{ij}.
 \end{align*}
-\end{subequations}
 Assim, temos que $\sum_{j \in D} w_{ij} \leq f_i$. Portanto, $(v,w)$ é solução viável para~\eqref{D1}.
 \end{proof}
 
@@ -171,7 +168,7 @@ Seja $B$ tal que $A \cap B = \emptyset$ e $A \cup B = D\setminus S_{k-1}$. Porta
 &= 2 \sum_{h \in X_k} f_h + \sum_{j \in D \setminus S_k} c(j,X_k). 
 \end{align*}
 \end{subequations}
-Portanto, todos os casos caem em uma contradição e a afirmação é verdadeira.
+Logo, todos os casos caem em uma contradição e a afirmação é verdadeira.
 \end{proof}
 
 Agora, podemos provar a razão de aproximação do algoritmo {\sc DualFitting-JMMSV}.
